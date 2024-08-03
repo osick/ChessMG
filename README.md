@@ -13,12 +13,10 @@ Download it, then compile
 git clone https://github.com/osick/pycmg.git
 make libpycmg
 ```
-Then make a first test using _test.py_
-```
-python test.py
-```
 
-The result should look like
+### 1st Try
+
+Make a first test:  `python test.py `. The test result should look like
 
 ```
 test_correctness...
