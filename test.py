@@ -28,7 +28,7 @@ def test_correctness():
     sleep(0.1)
     for pos in testdata:
         nodes = perft(pos["fen"], pos["depth"])
-        print(f"{'  ERROR: ' if nodes != pos['nodes'] else 'SUCCESS: '}depth={pos['depth']:<5} MUST_nodes={pos['nodes']:<15} IS_nodes={nodes:<10} remark: {pos['remark']:<30} {pos['fen']=:<15}")
+        print(f"{'  ERROR: ' if nodes != pos['nodes'] else 'SUCCESS: '}depth={pos['depth']:<2} MUST_nodes={pos['nodes']:<10} IS_nodes={nodes:<10} remark:{pos['remark'][:17]+('...' if len(pos['remark'])>15 else''):<21} {pos['fen']=:<15}")
         
 def test_perft(data,depth):
     allnodes=0
