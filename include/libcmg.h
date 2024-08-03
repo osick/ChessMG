@@ -52,9 +52,7 @@ namespace cmg{
             CMG_POSITION_STATE _b_state; //position state when it is black's turn
 
     };
-
-    bool king_contact(std::string fen);
-    bool illegal_pawn(std::string fen);
+    std::string sqstr(int idx);
 }
 
 #endif

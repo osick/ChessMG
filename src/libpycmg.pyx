@@ -24,7 +24,7 @@ cdef extern from "libcmg.h" namespace "cmg":
         void move_piece(int _from, int to)
         int64_t perft_w(int depth)
         int64_t perft_b(int depth)   
-    cdef bool king_contact(string fen)
+    cdef string sqstr(int idx)
 
 
 cdef class Pos:
@@ -42,11 +42,25 @@ cdef class Pos:
     def print(self): 
         return self._pos.print()
 
-    def get_w_moves(self): 
-        return self._pos.get_w_moves()
+    def get_w_moves(self,as_string=False): 
+        moves=self._pos.get_w_moves()
+        if as_string:
+            sq_moves=[]
+            for m in range(0,len(moves)-1,3):
+                sq_moves.append(f"{sqstr(moves[m])}-{sqstr(moves[m+1])}")
+            return sq_moves
+        else:
+            return self._pos.get_b_moves()
 
-    def get_b_moves(self): 
-        return self._pos.get_b_moves()
+    def get_b_moves(self, as_string=False): 
+        moves=self._pos.get_b_moves()
+        if as_string:
+            sq_moves=[]
+            for m in range(0,len(moves)-1,3):
+                sq_moves.append(f"{sqstr(moves[m])}-{sqstr(moves[m+1])}")
+            return sq_moves
+        else:
+            return self._pos.get_b_moves()
     
     def turn(self): 
         return self._pos.turn()

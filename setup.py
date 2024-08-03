@@ -9,12 +9,13 @@ environ["CXX"]      = "g++-13"
 
 extensions = [
     Extension(
-        name="libpycmg", 
-        sources=[path.join(getcwd(),"src","libpycmg.pyx"), path.join(getcwd(),"src","libcmg.cpp")],
-        language="c++",        
-        include_dirs =["include"],  
-        library_dirs =[f"{working_directory}"],
-        libraries    =["cmg"],
+        name          = "libpycmg", 
+        sources       = [path.join(getcwd(),"src","libpycmg.pyx"), path.join(getcwd(),"src","libcmg.cpp")],
+        language      = "c++",        
+        include_dirs  = ["include"],  
+        #library_dirs = [f"{working_directory}"],
+        libraries     = ["cmg"],
+        library_dirs  = ["."],
         extra_compile_args=["-std=c++20"]
     ),
 ]

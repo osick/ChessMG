@@ -3,7 +3,7 @@
 **pycmg** is a python library which generates chess moves in a given FEN position quite fast.
 Technically it uses the very fast Chess Move Generator libary "surge" (see https://github.com/nkarve/surge) written in C++, which is embedded in the python module via cython.
 
-## INSTALLATION
+## Installation
 The installation requires the following components
 - The cython libary (https://github.com/cython/cython)
 - A quite decent version of the GCC C++ compiler () which supports std=c++20 and higher
@@ -14,7 +14,7 @@ git clone https://github.com/osick/pycmg.git
 make libpycmg
 ```
 
-### 1st Try
+### First Try
 
 Make a first test:  `python test.py `. The test result should look like
 
@@ -53,9 +53,22 @@ SUCCESS: depth=1     MUST_nodes=6               IS_nodes=6          remark: chec
 ```
 **Note**: The two "ERROR" messages indicate a bug with en passant in the fen description.... will be fixed....
 
-## NEXT STEPS
+### Simple usage
+
+It all starts with the **Pos** class in the module pycmg. If you want to get the white moves in the starting position 
+'''python
+from libpycmg import Pos
+position = Pos("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
+print(position.get_w_moves(as_string=True))
+'''
+
+and you get the list of the possible 20 moves 
+'''
+['b1-a3', 'b1-c3', 'g1-f3', 'g1-h3', 'a2-a3', 'b2-b3', 'c2-c3', 'd2-d3', 'e2-e3', 'f2-f3', 'g2-g3', 'h2-h3', 'a2-a4', 'b2-b4', 'c2-c4', 'd2-d4', 'e2-e4', 'f2-f4', 'g2-g4', 'h2-h4']
+'''
 
 
+## Next steps
 
 ## Acknowledgements
 

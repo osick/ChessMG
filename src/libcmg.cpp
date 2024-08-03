@@ -199,4 +199,8 @@ namespace cmg {
 		}
 		
 	}
+
+	std::string sqstr(int idx){
+		return  SQSTR[idx];
+	}
 };
