@@ -53,13 +53,13 @@ SUCCESS: depth=4     MUST_nodes=0               IS_nodes=0          remark: wP o
 SUCCESS: depth=1     MUST_nodes=6               IS_nodes=6          remark: check by white                 pos['fen']=8/4k3/8/8/7B/8/8/4K3 b - - 0 1
 
 ```
-
+**Note**: The two "ERROR" messages indicate a bug with en passant in the fen description.... will be fixed....
 
 ## NEXT STEPS
 
 
 
-## Acknowledgments
+## Acknowledgements
 
 This project uses code from the following open-source projects:
 
