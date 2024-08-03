@@ -1,8 +1,10 @@
 pycmg/*.so
 pycmg/*.o
+*.o
 
 pycmg/*/*.so
 pycmg/*/*.o
+*.so
 
 pycmg/libpycmg.cpp
 Makefile
