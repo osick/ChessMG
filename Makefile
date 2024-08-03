@@ -1,7 +1,6 @@
 SHELL := /bin/bash
 CXXFLAGS     := -O2 -fPIC -std=c++20 -march=native -I./include 
 CXX          := g++-13
-#SRC 		 := src/types.cpp src/tables.cpp src/position.cpp src/libcmg.cpp
 SRC 		 := src/libsurge.cpp src/libcmg.cpp
 OBJS 		 := $(SRC:.cpp=.o)
 TARGET 		 := lib/libcmg.so
@@ -10,7 +9,7 @@ LD_LIBRARY_PATH := .
 
 .PHONY: all
 
-all: clean libpycmg install clean
+all: clean libpycmg
 
 libsurge:
 	$(CXX) $(CXXFLAGS) src/libsurge.cpp -c  
