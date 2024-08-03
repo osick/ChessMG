@@ -1,22 +1,23 @@
 # PYCMG
 
 **pycmg** is a python library which generates chess moves in a given FEN position quite fast.
-Technically it uses the very fast Chess Move Generator libary "surge" (see https://github.com/nkarve/surge) written in C++, which is embedded in the python module via cython.
+Technically it uses the very fast Chess Move Generator libary "surge" (see https://github.com/nkarve/surge) written in C++, which is embedded in the python module via cython. It is quite fast and it has more than 200_000_000 NPS (nodes per second) in the perft test. For more details see below.   
 
-## Installation
-The installation requires the following components
-- The cython libary (https://github.com/cython/cython)
-- A quite decent version of the GCC C++ compiler () which supports std=c++20 and higher
+## Installation and first steps
+1. The installation requires the following components
+  - The cython libary (https://github.com/cython/cython). It can simply been installed by `pip install cython`
+  - A quite decent version of the GCC C++ compiler (https://gcc.gnu.org) which supports std=c++20 and higher. This is the standard comiling environment on main Linux/Unix Platforms and also available for Windows, for more see https://gcc.gnu.org. 
 
-Download it, then compile
+2. Download it and build it
 ```bash
-git clone https://github.com/osick/pycmg.git
-make libpycmg
+> git clone https://github.com/osick/pycmg.git
+> cd pycmg
+> make libpycmg
 ```
+3. install
+> pip install .
 
-### First Try
-
-Make a first test:  `python test.py `. The test result should look like
+Now make a first test:  `python test.py `. The test result should look like
 
 ```
 SUCCESS: depth=1  MUST_nodes=8          IS_nodes=8          remark:black's turn and ...  pos['fen']=r6r/1b2k1bq/8/8/7B/8/8/R3K2R b - - 0 1
@@ -51,7 +52,7 @@ SUCCESS: depth=1  MUST_nodes=6          IS_nodes=6          remark:check by whit
 ```
 **Note**: The two "ERROR" messages indicate a bug with en passant in the fen description.... will be fixed....
 
-### Simple usage
+### Simple usage of pycmg
 
 It all starts with the **Pos** class in the module pycmg. If you want to get the white moves in the starting position 
 ```python
@@ -65,6 +66,14 @@ and you get the list of the possible 20 moves
 ['b1-a3', 'b1-c3', 'g1-f3', 'g1-h3', 'a2-a3', 'b2-b3', 'c2-c3', 'd2-d3', 'e2-e3', 'f2-f3', 
  'g2-g3', 'h2-h3', 'a2-a4', 'b2-b4', 'c2-c4', 'd2-d4', 'e2-e4', 'f2-f4', 'g2-g4', 'h2-h4']
 ```
+
+You can also make a perft test (see https://www.chessprogramming.org/Perft_Results)
+
+```
+nodes = perft(fen="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",7); duration=time()-start
+```
+
+It gives the correct number `Perft(7) = nodes = 3_195_901_860`  and takes about 15 seconds (** more than 210.000.000 NPS**). Not the best NPS value, but quite nice for python usage...  
 
 
 ## Next steps
