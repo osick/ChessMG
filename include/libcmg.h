@@ -1,0 +1,60 @@
+#ifndef LIBCMG_H
+#define LIBCMG_H
+#include <cstdint>
+#include <vector>
+#include <string>
+#include "libsurge.h"
+
+enum CMG_POSITION_STATE : uint8_t {
+	CMG_CHECKMATE           = 0b00000000, //0
+	CMG_STALEMATE           = 0b00000010, //2
+	CMG_CHECK               = 0b00000100, //4
+    CMG_OPEN_STATE          = 0b00100000, //32
+	CMG_ILLEGAL_POSITION    = 0b10000000, //128
+	CMG_ILLEGAL_PAWN_SQUARE = 0b10001000, //136
+	CMG_ILLEGAL_KING_CONTACT= 0b10010000, //144
+};
+
+// The two methods must be caled to init the shared library libsurge and so libcmg
+static bool surge_init =[](){
+    initialise_all_databases(); 
+    zobrist::initialise_zobrist_keys(); 
+    return true;
+}();
+
+namespace cmg{
+    class CPosition {
+        public:
+            CPosition();
+            CPosition(std::string fen);
+            ~CPosition();
+            std::vector<std::int32_t> get_w_moves();
+            std::vector<std::int32_t> get_b_moves();
+            std::string fen();
+            void set_fen(std::string fen);
+            std::vector<std::uint64_t> all_pieces();
+            void print();
+            template<Color Us> void play(Move &move);
+            template<Color Us> void undo(Move &move);
+            void move_piece(std::int32_t from, std::int32_t to);
+            std::int64_t perft_w(unsigned int depth);
+            std::int64_t perft_b(unsigned int depth);
+            Color turn();
+            bool is_legal();
+            CMG_POSITION_STATE b_state();
+            CMG_POSITION_STATE w_state();
+        private:
+            Position _position;
+            bool _king_contact();
+            bool _illegal_pawn();
+            void _state();
+            CMG_POSITION_STATE _w_state; //position state when it is white's turn
+            CMG_POSITION_STATE _b_state; //position state when it is black's turn
+
+    };
+
+    bool king_contact(std::string fen);
+    bool illegal_pawn(std::string fen);
+}
+
+#endif
