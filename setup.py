@@ -8,55 +8,54 @@ environ["CC"]       = "g++-13"
 environ["CXX"]      = "g++-13"
 
 extensions = [
-    Extension(
-        name          = "libsurge", 
-        sources       = [path.join(getcwd(),"src","libsurge.cpp")],
-        language      = "c++",        
-        include_dirs  = ["include"],  
-        libraries     = ["surge"],
-        library_dirs  = ["."],
-        extra_compile_args=["-std=c++20"]
-    ),    
-    Extension(
-        name          = "libcmg", 
-        sources       = [path.join(getcwd(),"src","libcmg.cpp")],
-        language      = "c++",        
-        include_dirs  = ["include"],  
-        libraries     = ["cmg"],
-        library_dirs  = ["."],
-        extra_compile_args=["-std=c++20"]
-    ),
+    #Extension(
+    #     name          = "libsurge", 
+    #     sources       = [path.join(getcwd(),"pycmg","libcmg","libsurge.cpp")],
+    #     language      = "c++",        
+    #     include_dirs  = [path.join(getcwd(),"pycmg","libcmg")],  
+    #     library_dirs  = [path.join(getcwd(),"pycmg")],
+    #     libraries     = [],
+    #     extra_compile_args=["-std=c++20"]
+    # ),    
+    # Extension(
+    #     name          = "libcmg", 
+    #     sources       = [path.join(getcwd(),"pycmg","libcmg","libcmg.cpp")],
+    #     language      = "c++",        
+    #     include_dirs  = [path.join(getcwd(),"pycmg","libcmg")],  
+    #     library_dirs  = [path.join(getcwd(),"pycmg")],
+    #     libraries     = [],
+    #     extra_compile_args=["-std=c++20"]
+    # ),
     Extension(
         name          = "pycmg", 
-        sources       = [path.join(getcwd(),"src","libpycmg.pyx"), path.join(getcwd(),"src","libcmg.cpp")],
+        sources       = [path.join(getcwd(),"pycmg","libpycmg.pyx"), path.join(getcwd(),"pycmg","libcmg","libcmg.cpp")],
         language      = "c++",        
-        include_dirs  = ["include"],  
-        #library_dirs = [f"{working_directory}"],
-        libraries     = [],
-        library_dirs  = ["."],
+        include_dirs  = [path.join(getcwd(),"pycmg","libcmg")],
+        library_dirs  = [path.join(getcwd(),"pycmg")],
+        libraries     = ["cmg"],
         extra_compile_args=["-std=c++20"]
     ),
 ]
 
 setup(
-    name            = "pycmg",
-    version         = '0.0.1',
-    url             = 'https://github.com/osick/pycmg',
-    author          = 'Oliver Sick',
-    author_email    = 'oliver.sick@gmail.com',
-    description     = 'fast chess move generator for python',
-    long_description= long_description,
-    long_description_content_type= 'text/markdown',
-    packages        = find_packages(),
-    ext_modules     = cythonize(extensions),
-    python_requires = '>=3.6',
-    install_requires= open('requirements.txt').read().splitlines(),
-    classifiers     = [
-        'Programming Language :: Python :: 3',
-        'Programming Language :: C++',
-        'License :: OSI Approved :: MIT License',
-        'Operating System :: OS Independent',
-        'Topic :: Games/Entertainment :: Board Games',
-        'Topic :: Software Development :: Libraries :: Python Modules',
+    name                                = "pycmg",
+    version                             = open('Version.txt').read(),
+    url                                 = 'https://github.com/osick/pycmg',
+    author                              = 'Oliver Sick',
+    author_email                        = 'oliver.sick@gmail.com',
+    description                         = 'Fast chess move generator for python',
+    long_description                    = long_description,
+    long_description_content_type       = 'text/markdown',
+    packages                            = find_packages(),
+    ext_modules                         = cythonize(extensions),
+    python_requires                     = '>=3.6',
+    install_requires                    = open('requirements.txt').read().splitlines(),
+    classifiers                         = [
+    'Programming Language :: Python :: 3',
+    'Programming Language :: C++',
+    'License :: OSI Approved :: MIT License',
+    'Operating System :: OS Independent',
+    'Topic :: Games/Entertainment :: Board Games',
+    'Topic :: Software Development :: Libraries :: Python Modules',
     ],
 )

@@ -1,2 +1,8 @@
-*.so
-src/libpycmg.cpp
+pycmg/*.so
+pycmg/*.o
+
+pycmg/*/*.so
+pycmg/*/*.o
+
+pycmg/libpycmg.cpp
+Makefile
