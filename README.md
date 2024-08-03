@@ -20,7 +20,7 @@ python test.py
 
 The result should look like
 
-<P style='font-size:8px'>
+```
 test_correctness...
 
 SUCCESS: depth=1     MUST_nodes=8               IS_nodes=8          remark: black's turn and check         pos['fen']=r6r/1b2k1bq/8/8/7B/8/8/R3K2R b - - 0 1
@@ -52,12 +52,10 @@ SUCCESS: depth=4     MUST_nodes=0               IS_nodes=0          remark: wP o
 SUCCESS: depth=4     MUST_nodes=0               IS_nodes=0          remark: wP on 8th rank                 pos['fen']=6P1/8/8/8/3k4/8/4K3/8 b - - 0 1
 SUCCESS: depth=1     MUST_nodes=6               IS_nodes=6          remark: check by white                 pos['fen']=8/4k3/8/8/7B/8/8/4K3 b - - 0 1
 
-▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉
-
-</P>
+```
 
 
-## INSTALLATION
+## NEXT STEPS
 
 
 
