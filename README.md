@@ -3,7 +3,8 @@
 **pycmg** is a python library which generates chess moves in a given FEN position quite fast.
 Technically it uses the very fast Chess Move Generator libary "surge" (see https://github.com/nkarve/surge) written in C++, which is embedded in the python module via cython. It is quite fast and it has more than 200_000_000 NPS (nodes per second) in the perft test. For more details see below.   
 
-## Installation and first steps
+## Start it!
+
 ### Prerequisites
 
 The installation requires the following components
@@ -14,7 +15,7 @@ The installation requires the following components
 ```bash
 > git clone https://github.com/osick/pycmg.git
 > cd pycmg
-> make libpycmg
+> make pycmg
 ```
 ### install
 ```bash
@@ -60,7 +61,7 @@ SUCCESS: depth=1  MUST_nodes=6          IS_nodes=6          remark:check by whit
 
 It all starts with the **Pos** class in the module pycmg. If you want to get the white moves in the starting position 
 ```python
-  from libpycmg import Pos
+  from pycmg import Pos
   position = Pos("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
   print(position.get_w_moves(as_string=True))
 ```
