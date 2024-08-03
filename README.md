@@ -20,7 +20,7 @@ python test.py
 
 The result should look like
 
-<font size="2">
+<P style='font-size:8px'>
 <code>
 test_correctness...
 
