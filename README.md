@@ -56,7 +56,7 @@ SUCCESS: depth=1     MUST_nodes=6               IS_nodes=6          remark: chec
 ### Simple usage
 
 It all starts with the **Pos** class in the module pycmg. If you want to get the white moves in the starting position 
-'''python
+'''Python
 from libpycmg import Pos
 position = Pos("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
 print(position.get_w_moves(as_string=True))
