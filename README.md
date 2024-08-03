@@ -4,20 +4,24 @@
 Technically it uses the very fast Chess Move Generator libary "surge" (see https://github.com/nkarve/surge) written in C++, which is embedded in the python module via cython. It is quite fast and it has more than 200_000_000 NPS (nodes per second) in the perft test. For more details see below.   
 
 ## Installation and first steps
-1. The installation requires the following components
+### Prerequisites
+
+The installation requires the following components
   - The cython libary (https://github.com/cython/cython). It can simply been installed by `pip install cython`
   - A quite decent version of the GCC C++ compiler (https://gcc.gnu.org) which supports std=c++20 and higher. This is the standard comiling environment on main Linux/Unix Platforms and also available for Windows, for more see https://gcc.gnu.org. 
 
-2. Download it and build it
+### Download it and build it
 ```bash
 > git clone https://github.com/osick/pycmg.git
 > cd pycmg
 > make libpycmg
 ```
-3. install
+### install
+```bash
 > pip install .
+```
 
-Now make a first test:  `python test.py `. The test result should look like
+Now a first test:  `python test.py `. The test looks for correct comuptation of nodes and the result should look like
 
 ```
 SUCCESS: depth=1  MUST_nodes=8          IS_nodes=8          remark:black's turn and ...  pos['fen']=r6r/1b2k1bq/8/8/7B/8/8/R3K2R b - - 0 1
