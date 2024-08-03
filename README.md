@@ -18,7 +18,7 @@ make libpycmg
 
 Make a first test:  `python test.py `. The test result should look like
 
-```
+```shell
 test_correctness...
 
 SUCCESS: depth=1  MUST_nodes=8          IS_nodes=8          remark:black's turn and ...  pos['fen']=r6r/1b2k1bq/8/8/7B/8/8/R3K2R b - - 0 1
