@@ -113,7 +113,7 @@ const Bitboard kf = 0x0101010101010101;
 
 
 
-constexpr int DEBRUIJN64[64] = {
+const int DEBRUIJN64[64] = {
 	0, 47,  1, 56, 48, 27,  2, 60,
    57, 49, 41, 37, 28, 16,  3, 61,
    54, 58, 35, 52, 50, 42, 21, 44,
@@ -125,6 +125,30 @@ constexpr int DEBRUIJN64[64] = {
 };
 
 const Bitboard MAGIC = 0x03f79d71b4cb0a89;
+
+///OSI
+//Returns number of set bits in the bitboard. Faster than pop_count(x) when the bitboard has few set bits
+int sparse_pop_count(Bitboard x) {
+	int count = 0;
+	while (x) {
+		count++;
+		x &= x - 1;
+	}
+	return count;
+}
+
+//Returns the index of the least significant bit in the bitboard
+Square bsf(Bitboard b) { //OSI
+	return Square(DEBRUIJN64[MAGIC * (b ^ (b - 1)) >> 58]);
+}
+
+//Returns the index of the least significant bit in the bitboard, and removes the bit from the bitboard
+Square pop_lsb(Bitboard* b) {
+	int lsb = bsf(*b);
+	*b &= *b - 1;
+	return Square(lsb);
+}
+///OSI
 
 
 //Returns the representation of the move type in algebraic chess notation. (capture) is used for debugging
@@ -139,6 +163,19 @@ std::ostream& operator<<(std::ostream& os, const Move& m) {
 	os << SQSTR[m.from()] << SQSTR[m.to()] << MOVE_TYPESTR[m.flags()];
 	return os;
 }
+
+
+//Returns number of set bits in the bitboard
+inline int pop_count(Bitboard x) {
+	x = x - ((x >> 1) & k1);
+	x = (x & k2) + ((x >> 2) & k2);
+	x = (x + (x >> 4)) & k4;
+	x = (x * kf) >> 56;
+	return int(x);
+}
+
+
+
 
 //All piece tables are generated from a program written in Java
 
@@ -348,6 +385,12 @@ void initialise_bishop_attacks() {
 		} while (subset);
 	}
 }
+
+//Returns the attacks bitboard for a bishop at a given square, using the magic lookup table
+Bitboard get_bishop_attacks(Square square, Bitboard occ) { return BISHOP_ATTACKS[square][((occ & BISHOP_ATTACK_MASKS[square]) * BISHOP_MAGICS[square]) >> BISHOP_ATTACK_SHIFTS[square]];}
+//Returns the attacks bitboard for a rook at a given square, using the magic lookup table
+Bitboard get_rook_attacks(Square square, Bitboard occ) { return ROOK_ATTACKS[square][((occ & ROOK_ATTACK_MASKS[square]) * ROOK_MAGICS[square]) >> ROOK_ATTACK_SHIFTS[square]];}
+
 
 //Returns the 'x-ray attacks' for a bishop at a given square. X-ray attacks cover squares that are not immediately
 //accessible by the rook, but become available when the immediate blockers are removed from the board 
