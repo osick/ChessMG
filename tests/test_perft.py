@@ -8,7 +8,7 @@ def test_perft(data,depth):
     for fen in data:
         start=time();  nodes = perft(fen,depth); duration=time()-start
         if nodes >0:
-            print(f"{'SUCCESS: '}NPS={int(round(nodes/duration,0)):<15_}{nodes=:<15_}{duration=:<6.1f}{fen=}")
+            print(f"{'SUCCESS: '}NPS={int(round(nodes/duration,0)):<15,}{nodes=:<15,}{duration=:<6.1f}{fen=}")
         allnodes+=nodes
     return allnodes
 
@@ -19,10 +19,11 @@ if __name__ =="__main__":
         allnodes=0
         alltext=""
         start_total_time=time()
-        for depth in range (4):
+        for depth in range (5):
             nodes=test_perft(data=alldata, depth=depth+1)
             allnodes+=nodes
-            alltext+=f"Depth {depth+1}: {nodes:_} nodes"+"\n"
+            alltext+=f"Depth {depth+1}: {nodes:,} nodes"+"\n"
         total_time=time() - start_total_time
         NPS=f"{int(round(allnodes/total_time)):,}"
+        print("\nTOTAL RESULT\n"+"="*50)
         print(f"{alltext}"+"\n"+f"{NPS} NPS, {allnodes:,} Nodes, {total_time:.1f} Sec.","\n")

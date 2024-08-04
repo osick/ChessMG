@@ -3,7 +3,7 @@
       "depth":1,
       "nodes":8,
       "fen":"r6r/1b2k1bq/8/8/7B/8/8/R3K2R b - - 0 1",
-      "remark":"black's turn and check"
+      "remark":"black checked"
    },
    {
       "depth":1,
@@ -15,13 +15,13 @@
        "depth":1,
        "nodes":8,
        "fen":"8/8/8/2k5/2pP4/8/B7/4K3 b - d3 0 3",
-       "remark":"en passant at d3"
+       "remark":"ep at d3"
     },
     {
       "depth":1,
       "nodes":8,
       "fen":"r6r/1b2k1bq/8/8/7B/8/8/R3K2R b - - 0 1",
-      "remark":"black's turn and check = #1"
+      "remark":"black check =#1"
    },
    
     {
@@ -64,19 +64,19 @@
        "depth":6,
        "nodes":1134888,
        "fen":"3k4/3p4/8/K1P4r/8/8/8/8 b - - 0 1",
-       "remark":"en passant pinning next ply"
+       "remark":"ep pin next ply"
     },
     {
        "depth":6,
        "nodes":1015133,
        "fen":"8/8/4k3/8/2p5/8/B2P2K1/8 w - - 0 1",
-       "remark":"en passant pinning next ply"
+       "remark":"ep pin next ply"
     },
     {
        "depth":6,
        "nodes":1440467,
        "fen":"8/8/1k6/2b5/2pP4/8/5K2/8 b - d3 0 1",
-       "remark":"en passant at d3"
+       "remark":"ep at d3"
     },
     {
        "depth":6,
@@ -148,19 +148,19 @@
        "depth":4,
        "nodes":0,
        "fen":"8/8/8/8/3k4/4K3/8/8 w - - 0 1",
-       "remark":"kings in direct contact"
+       "remark":"king contact"
     },
     {
        "depth":4,
        "nodes":0,
        "fen":"8/8/8/8/3k4/8/4K3/6P1 b - - 0 1",
-       "remark":"wP on 1st rank"
+       "remark":"wP 1st rank"
     },
     {
        "depth":4,
        "nodes":0,
        "fen":"6P1/8/8/8/3k4/8/4K3/8 b - - 0 1",
-       "remark":"wP on 8th rank"
+       "remark":"wP 8th rank"
     },
     {
        "depth":1,

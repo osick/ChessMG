@@ -10,7 +10,7 @@ def test_average(data):
         w=(fen.split(" ")[1])
         testmoves=moves(fen,w=="w")
         movenumber=len(testmoves)//3
-        result = timeit(stmt=f"p.get_{w}_moves()", setup=f'from libpycmg import Pos; p=Pos("{fen}")', number=rounds)
+        result = timeit(stmt=f"p.get_{w}_moves()", setup=f'from pycmg import Pos; p=Pos("{fen}")', number=rounds)
         print(f"SUCCESS: NPS={rounds*movenumber//result:_} ({rounds*movenumber:_} moves) {fen=}, turn={w}")
 
 if __name__=='__main__':
