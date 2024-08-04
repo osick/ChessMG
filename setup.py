@@ -48,7 +48,7 @@ setup(
     description                         = 'Fast chess move generator library for python',
     long_description                    = long_description,
     long_description_content_type       = 'text/markdown',
-    python_requires                     = '>=3.8',
+    python_requires                     = '>=3.6',
     classifiers                         = [
     'Programming Language :: Python :: 3',
     'Programming Language :: C++',

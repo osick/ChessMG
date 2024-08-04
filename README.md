@@ -10,8 +10,9 @@ For more details see below.
 
 The installation requires the following components
   - The cython libary (https://github.com/cython/cython). It can simply been installed by `pip install cython`
-  - A quite decent version of the GCC C++ compiler (https://gcc.gnu.org) which supports std=c++20 and higher. This is the standard comiling environment on main Linux/Unix Platforms and also available for Windows, for more see https://gcc.gnu.org. 
-
+  - The Python-development packages including the python header **Python.h** (*python-dev* on Debian, *python3-devel* on OpenSuSe, for more see https://docs.python.org/3/c-api/index.html)
+- A quite decent version of the GCC C++ compiler (https://gcc.gnu.org) which supports std=c++20 and higher. This is the standard comiling environment on main Linux/Unix Platforms and also available for Windows, for more see https://gcc.gnu.org. 
+  
 ### Installation
 get it from github and install it from the source directory via pip
 
