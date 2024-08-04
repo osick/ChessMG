@@ -1,10 +1,18 @@
 pycmg/*.so
 pycmg/*.o
+pycmg/*/*.a
 *.o
 
 pycmg/*/*.so
 pycmg/*/*.o
+pycmg/*/*.a
 *.so
+*.o
+*.a
+pycmg/a.out
+
 
 pycmg/libpycmg.cpp
-Makefile
+pycmg.egg-info/
+build/
+Makefile_private

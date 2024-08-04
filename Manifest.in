@@ -1,3 +1,6 @@
 include README.md
+include LICENCE
 include requirements.txt
-recursive-include pycmg/cmg *
+include pycmg/*.so
+recursive-include pycmg/ *.a
+recursive-include pycmg/ *.py
