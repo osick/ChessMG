@@ -16,12 +16,11 @@ using i32 = std::int32_t;
 
 namespace cmg {
 	CPosition::CPosition () {
-
 	};
 	
 	CPosition::CPosition (std::string fen){
 		Position::set(fen,_position); 
-		_state();
+		_set_states();
 	};
 	
 	CPosition::~CPosition () { 
@@ -34,7 +33,7 @@ namespace cmg {
 	
 	void CPosition::set_fen(std::string fen) {
 		Position::set(fen,_position);
-		//_state();
+		_set_states();
 	};
 	
 	void CPosition::print(){ 
@@ -68,11 +67,7 @@ namespace cmg {
 	
 	std::vector<std::int32_t> CPosition::get_w_moves(){
 		vector<i32> arr;
-		if (_w_state >= CMG_ILLEGAL_POSITION){
-			arr.push_back(0); 
-			arr.push_back(0); 
-			arr.push_back(_w_state);
-		}else{
+		if (_w_state < CMG_ILLEGAL_POSITION){
 			MoveList<WHITE> move_list(_position);
 			for (Move move : move_list) {
 				arr.push_back(move.from()); 
@@ -84,11 +79,7 @@ namespace cmg {
 	
 	std::vector<std::int32_t> CPosition::get_b_moves(){
 		vector<i32> arr;
-		if (_b_state >= CMG_ILLEGAL_POSITION){
-			arr.push_back(0); 
-			arr.push_back(0); 
-			arr.push_back(_b_state);
-		}else{
+		if (_b_state < CMG_ILLEGAL_POSITION){
 			MoveList<BLACK> move_list(_position);
 			for (Move move : move_list) {
 				arr.push_back(move.from()); 
@@ -133,8 +124,10 @@ namespace cmg {
 
 	bool CPosition::is_legal(){
 		switch (turn()){
-		case WHITE: return (_w_state < CMG_ILLEGAL_POSITION);
-		default: return (_b_state < CMG_ILLEGAL_POSITION); 
+		case WHITE: 
+			return (_w_state < CMG_ILLEGAL_POSITION);
+		default: 
+			return (_b_state < CMG_ILLEGAL_POSITION); 
 		}
 	}
 	
@@ -157,15 +150,15 @@ namespace cmg {
 		return (startstring.find("P") != string::npos or startstring.find("p") != string::npos);
 	};
 
-    CMG_POSITION_STATE CPosition::b_state(){
+    CMG_POSITION_STATE CPosition::btm_state(){
 		return _b_state;
 	}
 
-    CMG_POSITION_STATE CPosition::w_state(){
+    CMG_POSITION_STATE CPosition::wtm_state(){
 		return _w_state;
 	};
 
-	void CPosition::_state() {
+	void CPosition::_set_states() {
 		bool w_check  = _position.in_check<WHITE>();
 		bool b_check  = _position.in_check<BLACK>();
 		if (_illegal_pawn() or _king_contact() or (w_check and b_check)){

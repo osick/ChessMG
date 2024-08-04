@@ -6,7 +6,7 @@ from libcpp cimport bool
 from libcpp.string cimport string
 from libcpp.vector cimport vector
 import numpy as np
-from libc.stdint cimport int64_t, uint64_t
+from libc.stdint cimport int64_t, uint64_t, uint8_t
 
 cdef extern from "libcmg.h" namespace "cmg":
 
@@ -18,6 +18,8 @@ cdef extern from "libcmg.h" namespace "cmg":
         void print()
         int turn()
         bool is_legal()
+        uint8_t wtm_state()
+        uint8_t btm_state()
         vector[int] get_w_moves()           
         vector[int] get_b_moves()           
         vector[uint64_t] all_pieces()           
@@ -78,6 +80,13 @@ cdef class Pos:
 
     def is_legal(self):
         return self._pos.is_legal()
+
+    def wtm_state(self):
+        return self._pos.wtm_state()
+
+    def btm_state(self):
+        return self._pos.btm_state()
+
 
     def perft_b(self,int depth):
         cdef int64_t nodes

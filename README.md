@@ -1,7 +1,8 @@
 # PYCMG
 
 **pycmg** is a python library which generates chess moves in a given FEN position quite fast.
-Technically it uses the very fast Chess Move Generator libary "surge" (see https://github.com/nkarve/surge) written in C++, which is embedded in the python module via cython. It is quite fast and it has more than 200_000_000 NPS (nodes per second) in the perft test. For more details see below.   
+Technically it uses the very fast Chess Move Generator libary "surge" (see https://github.com/nkarve/surge) written in C++, which is embedded in the python module via cython. It is quite fast and can reach more than 200.000.000 NPS (nodes per second) in the perft test. 
+For more details see below.   
 
 ## Start it!
 
@@ -11,7 +12,7 @@ The installation requires the following components
   - The cython libary (https://github.com/cython/cython). It can simply been installed by `pip install cython`
   - A quite decent version of the GCC C++ compiler (https://gcc.gnu.org) which supports std=c++20 and higher. This is the standard comiling environment on main Linux/Unix Platforms and also available for Windows, for more see https://gcc.gnu.org. 
 
-### Istallation
+### Installation
 get it from github and install it from the source directory via pip
 
 ```bash
@@ -23,14 +24,13 @@ get it from github and install it from the source directory via pip
 Now a first test:  
 
 ```bash
-cd tests
-python test_perft_start_fen.py 
+> cd tests
+> python test_perft_start_fen.py 
 ```
 
 The test looks for correct comuptation of nodes and the result should look like
 
 ```
-
  perft results for chess starting position up to depth 7
 =========================================================
 passed: result=20              | perft(1)=20              | 586,616 NPS      | 0.0 seconds
@@ -62,10 +62,19 @@ result = ['b1-a3', 'b1-c3', 'g1-f3', 'g1-h3', 'a2-a3', 'b2-b3', 'c2-c3', 'd2-d3'
 
 ```
 
-You can also make a perft test (see https://www.chessprogramming.org/Perft_Results)
+or if you want it as an integer list (represented by the numbering of the squares a1=0, b1=1, ... h8=63)
 
 ```
-nodes = perft(fen="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",7); duration=time()-start
+  result = position.get_w_moves(as_string=True)
+  >>> result = 
+````
+### perft
+You can also make a perft test (see https://www.chessprogramming.org/Perft_Results)
+
+```python
+
+nodes = perft(fen="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",7)
+
 ```
 
 It gives the correct number `Perft(7) = nodes = 3_195_901_860`  and takes about 15 seconds (** more than 210.000.000 NPS**). Not the best NPS value, but quite nice for python usage...  

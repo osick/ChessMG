@@ -41,13 +41,13 @@ namespace cmg{
             std::int64_t perft_b(unsigned int depth);
             Color turn();
             bool is_legal();
-            CMG_POSITION_STATE b_state();
-            CMG_POSITION_STATE w_state();
+            CMG_POSITION_STATE btm_state();
+            CMG_POSITION_STATE wtm_state();
         private:
             Position _position;
             bool _king_contact();
             bool _illegal_pawn();
-            void _state();
+            void _set_states();
             CMG_POSITION_STATE _w_state; //position state when it is white's turn
             CMG_POSITION_STATE _b_state; //position state when it is black's turn
 
