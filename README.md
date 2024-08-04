@@ -11,51 +11,39 @@ The installation requires the following components
   - The cython libary (https://github.com/cython/cython). It can simply been installed by `pip install cython`
   - A quite decent version of the GCC C++ compiler (https://gcc.gnu.org) which supports std=c++20 and higher. This is the standard comiling environment on main Linux/Unix Platforms and also available for Windows, for more see https://gcc.gnu.org. 
 
-### Download it and build it
+### Istallation
+get it from github and install it from the source directory via pip
+
 ```bash
 > git clone https://github.com/osick/pycmg.git
 > cd pycmg
-> make pycmg
-```
-### install
-```bash
 > pip install .
 ```
 
-Now a first test:  `python test.py `. The test looks for correct comuptation of nodes and the result should look like
+Now a first test:  
+
+```bash
+cd tests
+python test_perft_start_fen.py 
+```
+
+The test looks for correct comuptation of nodes and the result should look like
 
 ```
-SUCCESS: depth=1  MUST_nodes=8          IS_nodes=8          remark:black's turn and ...  pos['fen']=r6r/1b2k1bq/8/8/7B/8/8/R3K2R b - - 0 1
-SUCCESS: depth=1  MUST_nodes=19         IS_nodes=19         remark:                      pos['fen']=r1bqkbnr/pppppppp/n7/8/8/P7/1PPPPPPP/RNBQKBNR w KQkq - 2 2
-  ERROR: depth=1  MUST_nodes=8          IS_nodes=7          remark:en passant at d3...   pos['fen']=8/8/8/2k5/2pP4/8/B7/4K3 b - d3 0 3
-SUCCESS: depth=1  MUST_nodes=8          IS_nodes=8          remark:black's turn and ...  pos['fen']=r6r/1b2k1bq/8/8/7B/8/8/R3K2R b - - 0 1
-SUCCESS: depth=1  MUST_nodes=5          IS_nodes=5          remark:                      pos['fen']=r3k2r/p1pp1pb1/bn2Qnp1/2qPN3/1p2P3/2N5/PPPBBPPP/R3K2R b KQkq - 3 2
-SUCCESS: depth=1  MUST_nodes=44         IS_nodes=44         remark:                      pos['fen']=2kr3r/p1ppqpb1/bn2Qnp1/3PN3/1p2P3/2N5/PPPBBPPP/R3K2R b KQ - 3 2
-SUCCESS: depth=1  MUST_nodes=39         IS_nodes=39         remark:                      pos['fen']=rnb2k1r/pp1Pbppp/2p5/q7/2B5/8/PPPQNnPP/RNB1K2R w KQ - 3 9
-SUCCESS: depth=1  MUST_nodes=9          IS_nodes=9          remark:                      pos['fen']=2r5/3pk3/8/2P5/8/2K5/8/8 w - - 5 4
-SUCCESS: depth=3  MUST_nodes=62379      IS_nodes=62379      remark:                      pos['fen']=rnbq1k1r/pp1Pbppp/2p5/8/2B5/8/PPP1NnPP/RNBQK2R w KQ - 1 8
-SUCCESS: depth=3  MUST_nodes=89890      IS_nodes=89890      remark:                      pos['fen']=r4rk1/1pp1qppp/p1np1n2/2b1p1B1/2B1P1b1/P1NP1N2/1PP1QPPP/R4RK1 w - - 0 10
-SUCCESS: depth=6  MUST_nodes=1134888    IS_nodes=1134888    remark:en passant pinnin...  pos['fen']=3k4/3p4/8/K1P4r/8/8/8/8 b - - 0 1
-SUCCESS: depth=6  MUST_nodes=1015133    IS_nodes=1015133    remark:en passant pinnin...  pos['fen']=8/8/4k3/8/2p5/8/B2P2K1/8 w - - 0 1
-  ERROR: depth=6  MUST_nodes=1440467    IS_nodes=1400374    remark:en passant at d3...   pos['fen']=8/8/1k6/2b5/2pP4/8/5K2/8 b - d3 0 1
-SUCCESS: depth=6  MUST_nodes=661072     IS_nodes=661072     remark:                      pos['fen']=5k2/8/8/8/8/8/8/4K2R w K - 0 1
-SUCCESS: depth=6  MUST_nodes=803711     IS_nodes=803711     remark:                      pos['fen']=3k4/8/8/8/8/8/8/R3K3 w Q - 0 1
-SUCCESS: depth=4  MUST_nodes=1274206    IS_nodes=1274206    remark:                      pos['fen']=r3k2r/1b4bq/8/8/8/8/7B/R3K2R w KQkq - 0 1
-SUCCESS: depth=4  MUST_nodes=1720476    IS_nodes=1720476    remark:                      pos['fen']=r3k2r/8/3Q4/8/8/5q2/8/R3K2R b KQkq - 0 1
-SUCCESS: depth=6  MUST_nodes=3821001    IS_nodes=3821001    remark:                      pos['fen']=2K2r2/4P3/8/8/8/8/8/3k4 w - - 0 1
-SUCCESS: depth=5  MUST_nodes=1004658    IS_nodes=1004658    remark:                      pos['fen']=8/8/1P2K3/8/2n5/1q6/8/5k2 b - - 0 1
-SUCCESS: depth=6  MUST_nodes=217342     IS_nodes=217342     remark:                      pos['fen']=4k3/1P6/8/8/8/8/K7/8 w - - 0 1
-SUCCESS: depth=6  MUST_nodes=92683      IS_nodes=92683      remark:                      pos['fen']=8/P1k5/K7/8/8/8/8/8 w - - 0 1
-SUCCESS: depth=6  MUST_nodes=2217       IS_nodes=2217       remark:                      pos['fen']=K1k5/8/P7/8/8/8/8/8 w - - 0 1
-SUCCESS: depth=7  MUST_nodes=567584     IS_nodes=567584     remark:                      pos['fen']=8/k1P5/8/1K6/8/8/8/8 w - - 0 1
-SUCCESS: depth=4  MUST_nodes=23527      IS_nodes=23527      remark:                      pos['fen']=8/8/2k5/5q2/5n2/8/5K2/8 b - - 0 1
-SUCCESS: depth=4  MUST_nodes=0          IS_nodes=0          remark:kings in direct c...  pos['fen']=8/8/8/8/3k4/4K3/8/8 w - - 0 1
-SUCCESS: depth=4  MUST_nodes=0          IS_nodes=0          remark:wP on 1st rank        pos['fen']=8/8/8/8/3k4/8/4K3/6P1 b - - 0 1
-SUCCESS: depth=4  MUST_nodes=0          IS_nodes=0          remark:wP on 8th rank        pos['fen']=6P1/8/8/8/3k4/8/4K3/8 b - - 0 1
-SUCCESS: depth=1  MUST_nodes=6          IS_nodes=6          remark:check by white        pos['fen']=8/4k3/8/8/7B/8/8/4K3 b - - 0 1
+
+ perft results for chess starting position up to depth 7
+=========================================================
+passed: result=20              | perft(1)=20              | 586,616 NPS      | 0.0 seconds
+passed: result=400             | perft(2)=400             | 30,504,029 NPS   | 0.0 seconds
+passed: result=8,902           | perft(3)=8,902           | 111,789,504 NPS  | 0.0 seconds
+passed: result=197,281         | perft(4)=197,281         | 130,308,108 NPS  | 0.0 seconds
+passed: result=4,865,609       | perft(5)=4,865,609       | 156,898,926 NPS  | 0.0 seconds
+passed: result=119,060,324     | perft(6)=119,060,324     | 201,272,989 NPS  | 0.6 seconds
+passed: result=3,195,901,860   | perft(7)=3,195,901,860   | 228,546,291 NPS  | 14.0 seconds
+
+TEST PASSED
 
 ```
-**Note**: The two "ERROR" messages indicate a bug with en passant in the fen description.... will be fixed....
 
 ### Simple usage of pycmg
 
@@ -63,13 +51,15 @@ It all starts with the **Pos** class in the module pycmg. If you want to get the
 ```python
   from pycmg import Pos
   position = Pos("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
-  print(position.get_w_moves(as_string=True))
+  result = position.get_w_moves(as_string=True)
 ```
 
-and you get the list of the possible 20 moves 
-```
-['b1-a3', 'b1-c3', 'g1-f3', 'g1-h3', 'a2-a3', 'b2-b3', 'c2-c3', 'd2-d3', 'e2-e3', 'f2-f3', 
+and as a result you get the possible 20 moves as a list 
+```python
+
+result = ['b1-a3', 'b1-c3', 'g1-f3', 'g1-h3', 'a2-a3', 'b2-b3', 'c2-c3', 'd2-d3', 'e2-e3', 'f2-f3', 
  'g2-g3', 'h2-h3', 'a2-a4', 'b2-b4', 'c2-c4', 'd2-d4', 'e2-e4', 'f2-f4', 'g2-g4', 'h2-h4']
+
 ```
 
 You can also make a perft test (see https://www.chessprogramming.org/Perft_Results)
