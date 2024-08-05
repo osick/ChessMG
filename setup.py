@@ -15,8 +15,8 @@ lib_dir             = path.join(working_directory, libcmg_dir)
 
 long_description    = open(path.join(working_directory, 'README.md'), encoding='utf-8').read()
 
-environ["CC"]       = "g++-13"
-environ["CXX"]      = "g++-13"
+environ["CC"]       = "g++"
+environ["CXX"]      = "g++"
 
 # ---------------------------------------------------------------------------------------------------------------------------
 # Function to build C++ libraries using a Makefile
