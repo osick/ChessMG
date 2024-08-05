@@ -1,17 +1,13 @@
 from timeit import timeit
-
 from pycmg import moves
 
-
-
 def test_average(data):
-    rounds=100_000
-    for i,fen in enumerate(data):
-        w=(fen.split(" ")[1])
-        testmoves=moves(fen,w=="w")
+    rounds=1_000_000
+    for fen in data:
+        testmoves=moves(fen, fen.split(" ")[1]=="w")
         movenumber=len(testmoves)//3
-        result = timeit(stmt=f"p.get_{w}_moves()", setup=f'from pycmg import Pos; p=Pos("{fen}")', number=rounds)
-        print(f"SUCCESS: NPS={rounds*movenumber//result:_} ({rounds*movenumber:_} moves) {fen=}, turn={w}")
+        result = timeit(stmt=f"p.moves()", setup=f'from pycmg import Pos; p=Pos("{fen}")', number=rounds)
+        print(f"SUCCESS: NPS={rounds*movenumber//result:_} ({rounds*movenumber:_} moves) {fen=}")
 
 if __name__=='__main__':
     data =[

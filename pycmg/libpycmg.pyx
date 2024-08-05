@@ -8,6 +8,13 @@ from libcpp.vector cimport vector
 import numpy as np
 from libc.stdint cimport int64_t, uint64_t, uint8_t
 
+
+from enum import Enum
+class Color(Enum):
+    WHITE = 0
+    BLACK = 0
+
+
 cdef extern from "libcmg.h" namespace "cmg":
 
     cdef cppclass CPosition:
@@ -18,86 +25,72 @@ cdef extern from "libcmg.h" namespace "cmg":
         void print()
         int turn()
         bool is_legal()
-        uint8_t wtm_state()
-        uint8_t btm_state()
-        vector[int] get_w_moves()           
-        vector[int] get_b_moves()           
         vector[uint64_t] all_pieces()           
+        uint8_t state(int color)
+        vector[int] moves(int color)              
+        int64_t perft(int depth)        
         void move_piece(int _from, int to)
-        int64_t perft_w(int depth)
-        int64_t perft_b(int depth)   
     cdef string sqstr(int idx)
-
 
 cdef class Pos:
     cdef CPosition* _pos
-
     def __init__(self,str fen): 
         self._pos = new CPosition(fen)
 
     def fen(self): 
         return self._pos.fen()
 
+
     def set_fen(self, string fen): 
         self._pos.set_fen(fen)
+
 
     def print(self): 
         return self._pos.print()
 
-    def get_w_moves(self,as_string=False): 
-        moves=self._pos.get_w_moves()
-        if as_string:
-            sq_moves=[]
-            for m in range(0,len(moves)-1,3):
-                sq_moves.append(f"{sqstr(moves[m])}-{sqstr(moves[m+1])}")
-            return sq_moves
-        else:
-            return self._pos.get_b_moves()
 
-    def get_b_moves(self, as_string=False): 
-        moves=self._pos.get_b_moves()
+    def moves(self, as_string=False, color=None):
+        if color is None: 
+            color = self._pos.turn() 
+        moves=self._pos.moves(color)
         if as_string:
-            sq_moves=[]
-            for m in range(0,len(moves)-1,3):
-                sq_moves.append(f"{sqstr(moves[m])}-{sqstr(moves[m+1])}")
-            return sq_moves
+            return [f"{sqstr(moves[m])}-{sqstr(moves[m+1])}" for m in range(0,len(moves)-1,3)]
         else:
-            return self._pos.get_b_moves()
-    
+            return moves
+
+
     def turn(self): 
         return self._pos.turn()
-    
+
+
     def all_pieces(self):
         return self._pos.all_pieces()
+
 
     def move_piece(self,int _from, int to): 
         self._pos.move_piece(_from, to)
 
-    def perft_w(self,int depth):
+
+    def perft(self,int depth):
         cdef int64_t nodes
-        nodes = self._pos.perft_w(depth)
+        nodes = self._pos.perft(depth)
         return nodes
+
 
     def is_legal(self):
         return self._pos.is_legal()
 
-    def wtm_state(self):
-        return self._pos.wtm_state()
 
-    def btm_state(self):
-        return self._pos.btm_state()
+    def state(self, color):
+        return self._pos.state(color)
 
 
-    def perft_b(self,int depth):
-        cdef int64_t nodes
-        nodes = self._pos.perft_b(depth)
-        return nodes
-        
+
 def moves(str fen, bool w):
     position = Pos(fen) 
-    if w: return position.get_w_moves()
-    else: return position.get_b_moves()
-
+    return position.moves(color=(0 if w==True else 1))
+    
 def perft(fen,depth):
     position = Pos(fen)
-    return position.perft_w(depth) if position.turn()==0 else position.perft_b(depth)
+    return position.perft(depth)
+    

@@ -65,6 +65,11 @@ namespace cmg {
 		_position.move_piece(Square(from),Square(to)); 
 	};
 	
+	std::vector<std::int32_t> CPosition::moves(int Us){
+		if (Us == 0){ return get_w_moves(); }
+		else { return get_b_moves(); }
+	}
+	
 	std::vector<std::int32_t> CPosition::get_w_moves(){
 		vector<i32> arr;
 		if (_w_state < CMG_ILLEGAL_POSITION){
@@ -89,6 +94,11 @@ namespace cmg {
 		return arr;
 	};		
 
+	std::int64_t CPosition::perft(unsigned int depth){
+		if (turn() == WHITE){ return perft_w(depth); }
+		else { return perft_b(depth); }
+	}
+
 	std::int64_t CPosition::perft_w(unsigned int depth) {
 		std::int64_t nodes = 0;
 		if (not is_legal()) return 0;
@@ -102,7 +112,6 @@ namespace cmg {
 					_position.undo<WHITE>(move);
 				}
 			}
-
 		return nodes;
 	}
 
@@ -150,13 +159,10 @@ namespace cmg {
 		return (startstring.find("P") != string::npos or startstring.find("p") != string::npos);
 	};
 
-    CMG_POSITION_STATE CPosition::btm_state(){
-		return _b_state;
+	CMG_POSITION_STATE CPosition::state(int Us){
+		if (Us == 0){ return _w_state; }
+		else { return _w_state; }
 	}
-
-    CMG_POSITION_STATE CPosition::wtm_state(){
-		return _w_state;
-	};
 
 	void CPosition::_set_states() {
 		bool w_check  = _position.in_check<WHITE>();
@@ -177,7 +183,6 @@ namespace cmg {
 			}else{
 				_w_state = CMG_OPEN_STATE;
 			}
-
 			MoveList<BLACK> b_list(_position);
 			if (b_check){
 				_w_state = CMG_ILLEGAL_POSITION; // black is in check and it is white's turn
