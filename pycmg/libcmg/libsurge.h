@@ -87,11 +87,12 @@ extern const Bitboard k2;
 extern const Bitboard k4;
 extern const Bitboard kf;
 extern inline int pop_count(Bitboard x);
-extern int sparse_pop_count(Bitboard x);
-extern Square pop_lsb(Bitboard* b);
-//extern const int DEBRUIJN64[64];
+extern inline int sparse_pop_count(Bitboard x);
+extern inline Square pop_lsb(Bitboard* b);
+//extern const int DEBRUIJN64[64]; //OSI
 extern const Bitboard MAGIC;
 extern constexpr Square bsf(Bitboard b);
+
 
 
 constexpr int DEBRUIJN64[64] = {
@@ -105,13 +106,36 @@ constexpr int DEBRUIJN64[64] = {
    13, 18,  8, 12,  7,  6,  5, 63
 };
 
+//Returns number of set bits in the bitboard
+inline int pop_count(Bitboard x) {
+	x = x - ((x >> 1) & k1);
+	x = (x & k2) + ((x >> 2) & k2);
+	x = (x + (x >> 4)) & k4;
+	x = (x * kf) >> 56;
+	return int(x);
+}
+
+//Returns number of set bits in the bitboard. Faster than pop_count(x) when the bitboard has few set bits
+inline int sparse_pop_count(Bitboard x) {
+	int count = 0;
+	while (x) {
+		count++;
+		x &= x - 1;
+	}
+	return count;
+}
+
+//Returns the index of the least significant bit in the bitboard, and removes the bit from the bitboard
+inline Square pop_lsb(Bitboard* b) {
+	int lsb = bsf(*b);
+	*b &= *b - 1;
+	return Square(lsb);
+}
 
 //Returns the index of the least significant bit in the bitboard
 constexpr Square bsf(Bitboard b) {
 	return Square(DEBRUIJN64[MAGIC * (b ^ (b - 1)) >> 58]);
 }
-
-
 
 constexpr Rank rank_of(Square s) { return Rank(s >> 3); }
 constexpr File file_of(Square s) { return File(s & 0b111); }
@@ -241,15 +265,15 @@ extern Bitboard ROOK_ATTACK_MASKS[NSQUARES];
 extern int ROOK_ATTACK_SHIFTS[NSQUARES];
 extern Bitboard ROOK_ATTACKS[NSQUARES][4096];
 extern void initialise_rook_attacks();
-extern Bitboard get_rook_attacks(Square square, Bitboard occ);
+extern /*constexpr*/ inline Bitboard get_rook_attacks(Square square, Bitboard occ);
 extern Bitboard get_xray_rook_attacks(Square square, Bitboard occ, Bitboard blockers);
 extern Bitboard get_bishop_attacks_for_init(Square square, Bitboard occ);
 extern const Bitboard BISHOP_MAGICS[NSQUARES];
 extern Bitboard BISHOP_ATTACK_MASKS[NSQUARES];
-extern int BISHOP_ATTACK_SHIFTS[NSQUARES]; 
+extern int BISHOP_ATTACK_SHIFTS[NSQUARES];
 extern Bitboard BISHOP_ATTACKS[NSQUARES][512];
-extern void initialise_bishop_attacks();
-extern Bitboard get_bishop_attacks(Square square, Bitboard occ);
+extern void initialise_bishopf_attacks();
+extern /*constexpr*/ inline Bitboard get_bishop_attacks(Square square, Bitboard occ);
 extern Bitboard get_xray_bishop_attacks(Square square, Bitboard occ, Bitboard blockers);
 extern Bitboard SQUARES_BETWEEN_BB[NSQUARES][NSQUARES];
 extern Bitboard LINE[NSQUARES][NSQUARES];
@@ -259,6 +283,12 @@ extern void initialise_squares_between();
 extern void initialise_line();
 extern void initialise_pseudo_legal();
 extern void initialise_all_databases();
+
+
+//Returns the attacks bitboard for a bishop at a given square, using the magic lookup table
+/*constexpr*/ inline Bitboard get_bishop_attacks(Square square, Bitboard occ) { return BISHOP_ATTACKS[square][((occ & BISHOP_ATTACK_MASKS[square]) * BISHOP_MAGICS[square]) >> BISHOP_ATTACK_SHIFTS[square]];}
+//Returns the attacks bitboard for a rook at a given square, using the magic lookup table
+/*constexpr*/ inline Bitboard get_rook_attacks(Square square, Bitboard occ) { return ROOK_ATTACKS[square][((occ & ROOK_ATTACK_MASKS[square]) * ROOK_MAGICS[square]) >> ROOK_ATTACK_SHIFTS[square]];}
 
 //Returns a bitboard containing all squares that a piece on a square can move to, in the given position
 template<PieceType P>
@@ -592,11 +622,11 @@ template<Color Us> Move* Position::generate_legals(Move* list) {
 	//Checkers of each piece type are identified by:
 	//1. Projecting attacks FROM the king square
 	//2. Intersecting this bitboard with the enemy bitboard of that piece type
-	checkers = attacks<KNIGHT>(our_king, all) & bitboard_of(Them, KNIGHT) | pawn_attacks<Us>(our_king) & bitboard_of(Them, PAWN); 
+	checkers = (attacks<KNIGHT>(our_king, all) & bitboard_of(Them, KNIGHT)) | (pawn_attacks<Us>(our_king) & bitboard_of(Them, PAWN)); 
 	//checkers = attacks<KING>(our_king, all) & bitboard_of(Them, KING) | attacks<KNIGHT>(our_king, all) & bitboard_of(Them, KNIGHT) | pawn_attacks<Us>(our_king) & bitboard_of(Them, PAWN);   //OSI
 	//Here, we identify slider checkers and pinners simultaneously, and candidates for such pinners 
 	//and checkers are represented by the bitboard <candidates>
-	Bitboard candidates = attacks<ROOK>(our_king, them_bb) & their_orth_sliders	| attacks<BISHOP>(our_king, them_bb) & their_diag_sliders;
+	Bitboard candidates = (attacks<ROOK>(our_king, them_bb) & their_orth_sliders) | (attacks<BISHOP>(our_king, them_bb) & their_diag_sliders) ;
 	pinned = 0;
 	while (candidates) {
 		s = pop_lsb(&candidates);
@@ -605,7 +635,7 @@ template<Color Us> Move* Position::generate_legals(Move* list) {
 		//If not, add the slider to the checker bitboard
 		if (b1 == 0) checkers ^= SQUARE_BB[s];
 		//If there is only one of our pieces between them, add our piece to the pinned bitboard 
-		else if ((b1 & b1 - 1) == 0) pinned ^= b1;
+		else if ((b1 & (b1 - 1)) == 0) pinned ^= b1;
 	}
 
 	//This makes it easier to mask pieces

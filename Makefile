@@ -1,4 +1,6 @@
-all: install
+SHELL       := /bin/bash
+
+all: pipeine
 
 install:
 	pip install .

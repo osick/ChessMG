@@ -116,26 +116,6 @@ const Bitboard kf = 0x0101010101010101;
 
 const Bitboard MAGIC = 0x03f79d71b4cb0a89;
 
-///OSI
-//Returns number of set bits in the bitboard. Faster than pop_count(x) when the bitboard has few set bits
-int sparse_pop_count(Bitboard x) {
-	int count = 0;
-	while (x) {
-		count++;
-		x &= x - 1;
-	}
-	return count;
-}
-
-
-//Returns the index of the least significant bit in the bitboard, and removes the bit from the bitboard
-Square pop_lsb(Bitboard* b) {
-	int lsb = bsf(*b);
-	*b &= *b - 1;
-	return Square(lsb);
-}
-///OSI
-
 
 //Returns the representation of the move type in algebraic chess notation. (capture) is used for debugging
 const char* MOVE_TYPESTR[16] = {
@@ -149,19 +129,6 @@ std::ostream& operator<<(std::ostream& os, const Move& m) {
 	os << SQSTR[m.from()] << SQSTR[m.to()] << MOVE_TYPESTR[m.flags()];
 	return os;
 }
-
-
-//Returns number of set bits in the bitboard
-inline int pop_count(Bitboard x) {
-	x = x - ((x >> 1) & k1);
-	x = (x & k2) + ((x >> 2) & k2);
-	x = (x + (x >> 4)) & k4;
-	x = (x * kf) >> 56;
-	return int(x);
-}
-
-
-
 
 //All piece tables are generated from a program written in Java
 
@@ -247,10 +214,10 @@ const Bitboard BLACK_PAWN_ATTACKS[64] = {
 
 //Reverses a bitboard                        
 Bitboard reverse(Bitboard b) {
-	b = (b & 0x5555555555555555) << 1 | (b >> 1) & 0x5555555555555555;
-	b = (b & 0x3333333333333333) << 2 | (b >> 2) & 0x3333333333333333;
-	b = (b & 0x0f0f0f0f0f0f0f0f) << 4 | (b >> 4) & 0x0f0f0f0f0f0f0f0f;
-	b = (b & 0x00ff00ff00ff00ff) << 8 | (b >> 8) & 0x00ff00ff00ff00ff;
+	b = ((b & 0x5555555555555555) << 1) | ((b >> 1) & 0x5555555555555555);
+	b = ((b & 0x3333333333333333) << 2) | ((b >> 2) & 0x3333333333333333);
+	b = ((b & 0x0f0f0f0f0f0f0f0f) << 4) | ((b >> 4) & 0x0f0f0f0f0f0f0f0f);
+	b = ((b & 0x00ff00ff00ff00ff) << 8) | ((b >> 8) & 0x00ff00ff00ff00ff);
 
 	return (b << 48) | ((b & 0xffff0000) << 16) |
 		((b >> 16) & 0xffff0000) | (b >> 48);
@@ -372,12 +339,6 @@ void initialise_bishop_attacks() {
 	}
 }
 
-//Returns the attacks bitboard for a bishop at a given square, using the magic lookup table
-Bitboard get_bishop_attacks(Square square, Bitboard occ) { return BISHOP_ATTACKS[square][((occ & BISHOP_ATTACK_MASKS[square]) * BISHOP_MAGICS[square]) >> BISHOP_ATTACK_SHIFTS[square]];}
-//Returns the attacks bitboard for a rook at a given square, using the magic lookup table
-Bitboard get_rook_attacks(Square square, Bitboard occ) { return ROOK_ATTACKS[square][((occ & ROOK_ATTACK_MASKS[square]) * ROOK_MAGICS[square]) >> ROOK_ATTACK_SHIFTS[square]];}
-
-
 //Returns the 'x-ray attacks' for a bishop at a given square. X-ray attacks cover squares that are not immediately
 //accessible by the rook, but become available when the immediate blockers are removed from the board 
 Bitboard get_xray_bishop_attacks(Square square, Bitboard occ, Bitboard blockers) {
@@ -413,12 +374,10 @@ void initialise_line() {
 		for (Square sq2 = a1; sq2 <= h8; ++sq2) {
 			if (file_of(sq1) == file_of(sq2) || rank_of(sq1) == rank_of(sq2))
 				LINE[sq1][sq2] =
-				get_rook_attacks_for_init(sq1, 0) & get_rook_attacks_for_init(sq2, 0)
-				| SQUARE_BB[sq1] | SQUARE_BB[sq2];
+				(get_rook_attacks_for_init(sq1, 0) & get_rook_attacks_for_init(sq2, 0)) | SQUARE_BB[sq1] | SQUARE_BB[sq2];
 			else if (diagonal_of(sq1) == diagonal_of(sq2) || anti_diagonal_of(sq1) == anti_diagonal_of(sq2))
 				LINE[sq1][sq2] =
-				get_bishop_attacks_for_init(sq1, 0) & get_bishop_attacks_for_init(sq2, 0)
-				| SQUARE_BB[sq1] | SQUARE_BB[sq2];
+				(get_bishop_attacks_for_init(sq1, 0) & get_bishop_attacks_for_init(sq2, 0)) | SQUARE_BB[sq1] | SQUARE_BB[sq2];
 		}
 }
 
@@ -568,5 +527,4 @@ void Position::move_piece_quiet(Square from, Square to) {
 	board[to] = board[from];
 	board[from] = NO_PIECE;
 }
-
 
