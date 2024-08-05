@@ -16,3 +16,4 @@ pycmg/libpycmg.cpp
 pycmg.egg-info/
 build/
 Makefile_private
+tests/*.result

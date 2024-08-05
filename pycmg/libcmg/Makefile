@@ -1,5 +1,5 @@
 SHELL       := /bin/bash
-CXXFLAGS    := -O2  -fPIC  -march=native  -I.  
+CXXFLAGS    := -O2  -fPIC  -march=native  -I. -Wall
 CXX         := g++-13
 
 all: libcmg
