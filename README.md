@@ -1,8 +1,11 @@
 # PYCMG
 
-**pycmg** is a python library which generates chess moves in a given FEN position quite fast.
-Technically it uses the very fast Chess Move Generator libary "surge" (see https://github.com/nkarve/surge) written in C++, which is embedded in the python module via cython. It is quite fast and can reach more than 200.000.000 NPS (nodes per second) in the perft test. 
-For more details see below.   
+**pycmg** (**Py**thon **C**hess **M**ove **G**enerator) is a python library which generates chess moves in a given FEN position quite fast.
+
+Technically it relies on the very fast Chess Move Generator libary "surge" (see https://github.com/nkarve/surge) written in C++,
+Surge is embedded in the python module via cython. 
+**pycmg** is quite fast and can reach more than 210.000.000 NPS (nodes per second). 
+For more details see the [PERFT](#PERFT) section
 
 ## Start it!
 
@@ -21,6 +24,8 @@ get it from github and install it from the source directory via pip
 > cd pycmg
 > pip install .
 ```
+
+### PERFT
 
 Now a first test:  
 
@@ -122,7 +127,8 @@ nodes = perft(fen="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",7)
 
 ```
 
-It gives the correct number `Perft(7) = nodes = 3_195_901_860`  and takes about 15 seconds (** more than 210.000.000 NPS**). Not the best NPS value, but quite nice for python usage...  
+It gives the correct number `Perft(7) = nodes = 3_195_901_860`  and takes about 15 seconds (** more than 210.000.000 NPS**). Not the best NPS value, because the original surge lib is about twice as fast. 
+But it is quite nice for python usag: With Python-chess perft.py (see https://github.com/niklasf/python-chess/blob/master/examples/perft/perft.py) I get around 3.500.000 NPS, this is a performance win of around factor 60. 
 
 
 ## Next steps
