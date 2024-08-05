@@ -46,6 +46,30 @@ TEST PASSED
 
 ```
 
+The performance of course depends on the underlying hardware, In this case the Server is as OpenSuse Server given as below:
+
+```bash
+System:
+  arch: x86_64 
+  bits: 64 
+  compiler: gcc v: 13.3.0
+  Distro: openSUSE Leap 15.5
+
+...
+
+CPU:
+  Info: 8-core model: AMD Ryzen 7 3700X bits: 64 type: MT MCP arch: Zen 2 rev: 0 cache:
+    L1: 512 KiB L2: 4 MiB L3: 32 MiB
+  Speed (MHz): avg: 4051 high: 4069 min/max: 2200/4979 boost: enabled cores: 1: 4050 2: 4069
+    3: 4049 4: 4050 5: 4046 6: 4047 7: 4048 8: 4053 9: 4049 10: 4051 11: 4047 12: 4047 13: 4057
+    14: 4045 15: 4051 16: 4061 bogomips: 129592
+  Flags: avx avx2 ht lm nx pae sse sse2 sse3 sse4_1 sse4_2 sse4a ssse3
+
+...
+```
+
+
+
 ### Simple usage of pycmg
 
 It all starts with the **Pos** class in the module pycmg. If you want to get the white moves in the starting position 
