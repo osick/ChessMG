@@ -18,3 +18,4 @@ build/
 Makefile_private
 tests/*.result
 pycmg/libcmg/make.txt
+.vscode/
