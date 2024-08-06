@@ -16,7 +16,8 @@ pycmg/libpycmg.cpp
 pycmg.egg-info/
 build/
 Makefile_private
-tests/*.result
+*/*.result
+*.result
 pycmg/libcmg/make.txt
 .vscode/
 *.egg-info/

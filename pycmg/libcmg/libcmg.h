@@ -15,6 +15,8 @@ enum CMG_POSITION_STATE : uint8_t {
 	CMG_ILLEGAL_KING_CONTACT= 0b10010000, //144
 };
 
+
+
 #undef  _surge_init__attribute__
 #ifndef _surge_init__attribute__
     // The two methods must be called to init the shared library libsurge and so libcmg

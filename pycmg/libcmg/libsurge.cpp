@@ -508,7 +508,6 @@ void Position::set(const std::string& fen, Position& p) {
 		}
 		count++;
 	}
-	
 	//OSI END
 
 	p.history[p.game_ply].entry = ALL_CASTLING_MASK;
