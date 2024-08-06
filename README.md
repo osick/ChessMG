@@ -69,11 +69,11 @@ CPU:    Info: 8-core model: AMD Ryzen 7 3700X Speed (MHz): avg: 4051 high: 4069 
 
 ### Simple usage of pycmg
 
-It all starts with the **Pos** class in the module pycmg. If you want to get the white moves in the starting position 
+It all starts with the **ChessMoveGenerator** class in the module pycmg. If you want to get the white moves in the starting position 
 ```python
-  from pycmg import Pos
-  position = Pos("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
-  result = position.get_w_moves(as_string=True)
+  from pycmg import ChessMoveGenerator
+  position = ChessMoveGenerator("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
+  result = position.moves(as_string=True)
 ```
 
 and as a result you get the possible 20 moves as a list 
@@ -87,7 +87,7 @@ result = ['b1-a3', 'b1-c3', 'g1-f3', 'g1-h3', 'a2-a3', 'b2-b3', 'c2-c3', 'd2-d3'
 or if you want it as an integer list (represented by the numbering of the squares a1=0, b1=1, ... h8=63)
 
 ```python
-  result = position.get_w_moves(as_string=False)
+  result = position.moves(as_string=False)
   >>> result = 
   [[57 40  0]
     [57 42  0]

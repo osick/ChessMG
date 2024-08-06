@@ -32,7 +32,7 @@ cdef extern from "libcmg.h" namespace "cmg":
         void move_piece(int _from, int to)
     cdef string sqstr(int idx)
 
-cdef class Pos:
+cdef class ChessMoveGenerator:
     cdef CPosition* _pos
     def __init__(self,str fen): 
         self._pos = new CPosition(fen)
@@ -87,10 +87,10 @@ cdef class Pos:
 
 
 def moves(str fen, bool w):
-    position = Pos(fen) 
+    position = ChessMoveGenerator(fen) 
     return position.moves(color=(0 if w==True else 1))
     
 def perft(fen,depth):
-    position = Pos(fen)
+    position = ChessMoveGenerator(fen)
     return position.perft(depth)
     

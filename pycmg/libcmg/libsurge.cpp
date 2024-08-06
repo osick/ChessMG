@@ -501,14 +501,10 @@ void Position::set(const std::string& fen, Position& p) {
 			if (fentoken !="-"){
 				int counter=0;
 				for (std::string idx : SQSTR){
-					if (idx == fentoken){
-						sq = Square(counter);
-						break;
-					} 
-					counter++;
+					if (idx == fentoken){sq = Square(counter); break; } counter++;
 				}
 			}
-			p.history[p.game_ply].epsq = sq;
+			p.history[p.game_ply].epsq = sq; 
 		}
 		count++;
 	}

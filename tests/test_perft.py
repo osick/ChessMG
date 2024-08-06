@@ -1,8 +1,6 @@
 from time import time
 import json
 from datetime import datetime
-
-
 from pycmg import perft
 
 def test_perft(data,depth):
