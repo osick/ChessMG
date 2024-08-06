@@ -4,13 +4,27 @@ from datetime import datetime
 from pycmg import perft
 
 # from https://www.chessprogramming.org/Perft_Results
-perft_result=[1,20,400,8902,197281, 4865609, 119060324, 3195901860, 84998978956, 2439530234167]
+perft_result=[
+    1,
+    20,
+    400,
+    8902,
+    197281, 
+    4865609, 
+    119060324, 
+    3195901860, 
+    84998978956, 
+    2439530234167]
 
 
 def perft_time(fen,depth):
-    start=time();  nodes = perft(fen,depth); duration=time()-start
-    result="error :" if nodes != perft_result[depth] else "passed:"
-    result_txt=f"{result} result={nodes:<15,} | perft({depth})={nodes:<15,} | {f'{int(round(nodes/duration,0)):,}'+' NPS':16} | {duration:.1f} seconds"
+
+    start=time();  
+    nodes = perft(fen,depth); 
+    duration=time()-start
+    
+    result= ("error :" if nodes != perft_result[depth] else "passed:")
+    result_txt=f"{result} result={nodes:<15,} | perft({depth})={perft_result[depth]:<15,} | {f'{int(round(nodes/duration,0)):,}'+' NPS':16} | {duration:.1f} seconds"
     print(result_txt)
     return (nodes == perft_result[depth]),result_txt
 

@@ -14,6 +14,15 @@ using u64 = std::uint64_t;
 using i32 = std::int32_t;
 
 
+#ifdef _surge_init__attribute__
+	void surge_init(){
+		initialise_all_databases(); 
+		zobrist::initialise_zobrist_keys(); 
+		return;
+	};
+#endif
+
+
 namespace cmg {
 	CPosition::CPosition () {
 	};

@@ -164,15 +164,23 @@ template<Color C>
 constexpr Direction relative_dir(Direction d) {return Direction(C == WHITE ? d : -d);}
 //The type of the move
 enum MoveFlags : int {
-	QUIET = 0b0000, DOUBLE_PUSH = 0b0001,
-	OO = 0b0010, OOO = 0b0011,
+	QUIET = 0b0000, 
+	DOUBLE_PUSH = 0b0001,
+	OO = 0b0010, 
+	OOO = 0b0011,
 	CAPTURE = 0b1000,
 	CAPTURES = 0b1111,
 	EN_PASSANT = 0b1010,
 	PROMOTIONS = 0b0111,
 	PROMOTION_CAPTURES = 0b1100,
-	PR_KNIGHT = 0b0100, PR_BISHOP = 0b0101, PR_ROOK = 0b0110, PR_QUEEN = 0b0111,
-	PC_KNIGHT = 0b1100, PC_BISHOP = 0b1101, PC_ROOK = 0b1110, PC_QUEEN = 0b1111,
+	PR_KNIGHT = 0b0100, 
+	PR_BISHOP = 0b0101, 
+	PR_ROOK = 0b0110, 
+	PR_QUEEN = 0b0111,
+	PC_KNIGHT = 0b1100, 
+	PC_BISHOP = 0b1101, 
+	PC_ROOK = 0b1110, 
+	PC_QUEEN = 0b1111,
 };
 
 

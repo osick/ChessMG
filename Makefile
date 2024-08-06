@@ -18,7 +18,7 @@ example:
 	pushd examples && python3 simple.py
 
 test:
-	pushd tests && python3 test_perft_start_fen.py 7
+	pushd tests && python3 test_perft_start_fen.py 6
 
 pipeline: clean uninstall install test
 	

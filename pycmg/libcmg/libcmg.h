@@ -15,12 +15,18 @@ enum CMG_POSITION_STATE : uint8_t {
 	CMG_ILLEGAL_KING_CONTACT= 0b10010000, //144
 };
 
-// The two methods must be caled to init the shared library libsurge and so libcmg
-static bool surge_init =[](){
-    initialise_all_databases(); 
-    zobrist::initialise_zobrist_keys(); 
-    return true;
-}();
+#define _surge_init__attribute__
+#ifndef _surge_init__attribute__
+    // The two methods must be called to init the shared library libsurge and so libcmg
+        static bool surge_init =[](){
+            initialise_all_databases(); 
+            zobrist::initialise_zobrist_keys(); 
+            return true;
+    }();
+#else
+    // Alternativ method to init shared libsurge. Perhaps useful in platform independent setups....
+    void surge_init() __attribute__((constructor));
+#endif
 
 namespace cmg{
     class CPosition {

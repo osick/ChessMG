@@ -113,7 +113,6 @@ const Bitboard kf = 0x0101010101010101;
 
 
 
-
 const Bitboard MAGIC = 0x03f79d71b4cb0a89;
 
 
@@ -489,6 +488,32 @@ void Position::set(const std::string& fen, Position& p) {
 
 	ss >> token;
 	p.side_to_play = token == 'w' ? WHITE : BLACK;
+
+	//OSI START
+	//en passant square 
+	//fen  = '8/8/8/2k5/2pP4/8/B7/4K3 b - d3 0 3' -> 6 fentoken, index=3 is ep token
+	std::string fentoken;
+	std::istringstream ifen(fen);
+	int count=0;
+	while(std::getline(ifen, fentoken, ' ')) {
+		if (count==3){
+			Square sq = NO_SQUARE;
+			if (fentoken !="-"){
+				int counter=0;
+				for (std::string idx : SQSTR){
+					if (idx == fentoken){
+						sq = Square(counter);
+						break;
+					} 
+					counter++;
+				}
+			}
+			p.history[p.game_ply].epsq = sq;
+		}
+		count++;
+	}
+	
+	//OSI END
 
 	p.history[p.game_ply].entry = ALL_CASTLING_MASK;
 	while (ss >> token && !isspace(token)) {
