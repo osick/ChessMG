@@ -8,20 +8,18 @@ from libcpp.vector cimport vector
 import numpy as np
 from libc.stdint cimport int64_t, uint64_t, uint8_t
 
-
 from enum import Enum
 class Color(Enum):
     WHITE = 0
     BLACK = 0
 
-
 cdef extern from "libcmg.h" namespace "cmg":
 
-    cdef cppclass CPosition:
-        CPosition()
-        CPosition(string fen) except +
+    cdef cppclass CMGPosition:
+        CMGPosition()
+        CMGPosition(string fen) except +
         string fen()
-        void set_fen(string fen)
+        #void set_fen(string fen) #TODO
         void print()
         int turn()
         bool is_legal()
@@ -33,21 +31,18 @@ cdef extern from "libcmg.h" namespace "cmg":
     cdef string sqstr(int idx)
 
 cdef class ChessMoveGenerator:
-    cdef CPosition* _pos
+    cdef CMGPosition* _pos
     def __init__(self,str fen): 
-        self._pos = new CPosition(fen)
+        self._pos = new CMGPosition(fen)
 
     def fen(self): 
         return self._pos.fen()
 
-
-    def set_fen(self, string fen): 
-        self._pos.set_fen(fen)
-
+    # def set_fen(self, string fen): #TODO
+    #     self._pos.set_fen(fen) #TODO
 
     def print(self): 
         return self._pos.print()
-
 
     def moves(self, as_string=False, color=None):
         if color is None: 
@@ -58,33 +53,23 @@ cdef class ChessMoveGenerator:
         else:
             return moves
 
-
     def turn(self): 
         return self._pos.turn()
-
 
     def all_pieces(self):
         return self._pos.all_pieces()
 
-
     def move_piece(self,int _from, int to): 
         self._pos.move_piece(_from, to)
 
-
     def perft(self,int depth):
-        cdef int64_t nodes
-        nodes = self._pos.perft(depth)
-        return nodes
-
+        return self._pos.perft(depth)
 
     def is_legal(self):
         return self._pos.is_legal()
 
-
     def state(self, color):
         return self._pos.state(color)
-
-
 
 def moves(str fen, bool w):
     position = ChessMoveGenerator(fen) 

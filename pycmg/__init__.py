@@ -1,1 +1,1 @@
-from . import pycmg
+from pycmglib import *

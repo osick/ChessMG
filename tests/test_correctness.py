@@ -1,6 +1,6 @@
 import json
 
-from pycmg import perft
+from pycmg import perft, ChessMoveGenerator
 
 def test_correctness():
     with open("testdata.json","r") as fh: testdata=json.load(fh)

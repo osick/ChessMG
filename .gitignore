@@ -19,3 +19,4 @@ Makefile_private
 tests/*.result
 pycmg/libcmg/make.txt
 .vscode/
+*.egg-info/

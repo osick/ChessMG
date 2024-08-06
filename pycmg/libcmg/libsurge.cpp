@@ -413,7 +413,7 @@ uint64_t zobrist::zobrist_table[NPIECES][NSQUARES];
 
 //Initializes the zobrist table with random 64-bit numbers
 void zobrist::initialise_zobrist_keys() {
-	PRNG rng(70026072);
+	PRNG rng(70026077756745674561);
 	for (int i = 0; i < NPIECES; i++)
 		for (int j = 0; j < NSQUARES; j++)
 			zobrist::zobrist_table[i][j] = rng.rand<uint64_t>();

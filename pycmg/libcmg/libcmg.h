@@ -15,7 +15,7 @@ enum CMG_POSITION_STATE : uint8_t {
 	CMG_ILLEGAL_KING_CONTACT= 0b10010000, //144
 };
 
-#define _surge_init__attribute__
+#undef  _surge_init__attribute__
 #ifndef _surge_init__attribute__
     // The two methods must be called to init the shared library libsurge and so libcmg
         static bool surge_init =[](){
@@ -29,32 +29,45 @@ enum CMG_POSITION_STATE : uint8_t {
 #endif
 
 namespace cmg{
-    class CPosition {
+    class CMGMove {
         public:
-            CPosition();
-            CPosition(std::string fen);
-            ~CPosition();
+            
+            CMGMove(int from, int to, int flags);
+            ~CMGMove();
+            Move m();
+            void load(Move m);
+
+        private:
+            Move _move;
+    };
+
+    class CMGPosition {
+        public:
+            CMGPosition();
+            CMGPosition(std::string fen);
+            ~CMGPosition();
             std::string fen();
-            void set_fen(std::string fen);
             std::vector<std::uint64_t> all_pieces();
             void print();
-            template<Color Us> void play(Move &move);
-            template<Color Us> void undo(Move &move);
+            template<Color Us> void play(CMGMove &move);
+            template<Color Us> void undo(CMGMove &move);
             void move_piece(std::int32_t from, std::int32_t to);
             std::int64_t perft(unsigned int depth);
             Color turn();
             bool is_legal();
             std::vector<std::int32_t> moves(int us);
             CMG_POSITION_STATE state(int us);
+
         private:
             Position _position;
+            void set_fen(std::string fen);
             bool _king_contact();
             bool _illegal_pawn();
             void _set_states();
-            std::int64_t perft_w(unsigned int depth);
-            std::int64_t perft_b(unsigned int depth);
-            std::vector<std::int32_t> get_w_moves(); 
-            std::vector<std::int32_t> get_b_moves(); 
+            std::int64_t _perft_w(unsigned int depth);
+            std::int64_t _perft_b(unsigned int depth);
+            std::vector<std::int32_t> _w_moves(); 
+            std::vector<std::int32_t> _b_moves(); 
             CMG_POSITION_STATE _w_state; //position state when it is white's turn
             CMG_POSITION_STATE _b_state; //position state when it is black's turn
     };

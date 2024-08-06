@@ -27,7 +27,7 @@ build_cpp_libraries(lib_dir)
 
 extensions = [
     Extension(
-        'pycmg',
+        'pycmglib',
         sources=[path.join(pycmg_dir, 'libpycmg.pyx'),],
         include_dirs=[libcmg_dir],
         libraries=['cmg', 'surge'],
@@ -58,7 +58,7 @@ setup(
     'Topic :: Software Development :: Libraries :: Python Modules',
     ],
 
-    packages                            = [], #find_packages(), #
+    packages                            = find_packages(), #
     ext_modules                         = cythonize(extensions),
     package_data                        = {'pycmg': ['LICENCE','README.md',path.join(pycmg_dir,'test.py')],},
     include_package_data                = True,
