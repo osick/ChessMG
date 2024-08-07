@@ -19,6 +19,7 @@ example:
 
 test:
 	pushd tests && python3 test_perft_start_fen.py 6
+	pushd tests && python3 test_correctness.py
 
 pipeline: clean uninstall install test
 	

@@ -395,6 +395,11 @@ public:
 	void move_piece_quiet(Square from, Square to);
 	friend std::ostream& operator<<(std::ostream& os, const Position& p);
 	static void set(const std::string& fen, Position& p);
+	//OSI start
+	//setup a position with a deserialized chess position (not by fen)
+	static void set_position(const std::vector<std::pair<Piece,Square>> piecelist, const Color c, const std::string castlings, const Square epsq, Position& p);
+	//OSI end
+
 	std::string fen() const;
 	Position& operator=(const Position&) = delete;
 	inline bool operator==(const Position& other) const { return hash == other.hash; }

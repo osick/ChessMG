@@ -471,6 +471,30 @@ std::string Position::fen() const {
 	return fen.str();
 }
 
+// OSI start
+void Position::set_position(const std::vector<std::pair<Piece,Square>> piecelist, const Color c, const std::string castlings, const Square epsq, Position& p){
+	//pieces
+	for (auto pc : piecelist){p.put_piece(pc.first, pc.second);};
+	//turn
+	p.side_to_play = c;
+	//en passant
+	p.history[p.game_ply].epsq = epsq;
+	//castling
+	std::istringstream ss(castlings);
+	unsigned char token;	
+	p.history[p.game_ply].entry = ALL_CASTLING_MASK;
+	while (ss >> token) {
+		switch (token) {
+		case 'K': p.history[p.game_ply].entry &= ~WHITE_OO_MASK;  break;
+		case 'Q': p.history[p.game_ply].entry &= ~WHITE_OOO_MASK; break;
+		case 'k': p.history[p.game_ply].entry &= ~BLACK_OO_MASK;  break;
+		case 'q': p.history[p.game_ply].entry &= ~BLACK_OOO_MASK; break;
+		}
+	}
+};
+// OSI end
+
+
 //Updates a position according to an FEN string
 void Position::set(const std::string& fen, Position& p) {
 	int square = a8;
@@ -487,7 +511,7 @@ void Position::set(const std::string& fen, Position& p) {
 	unsigned char token;
 
 	ss >> token;
-	p.side_to_play = token == 'w' ? WHITE : BLACK;
+	p.side_to_play = (token == 'w' ? WHITE : BLACK);
 
 	//OSI START
 	//en passant square 
@@ -500,9 +524,7 @@ void Position::set(const std::string& fen, Position& p) {
 			Square sq = NO_SQUARE;
 			if (fentoken !="-"){
 				int counter=0;
-				for (std::string idx : SQSTR){
-					if (idx == fentoken){sq = Square(counter); break; } counter++;
-				}
+				for (std::string idx : SQSTR){if (idx == fentoken){sq = Square(counter); break; } counter++;}
 			}
 			p.history[p.game_ply].epsq = sq; 
 		}
@@ -511,20 +533,12 @@ void Position::set(const std::string& fen, Position& p) {
 	//OSI END
 
 	p.history[p.game_ply].entry = ALL_CASTLING_MASK;
-	while (ss >> token && !isspace(token)) {
+	while (ss >> token) {
 		switch (token) {
-		case 'K':
-			p.history[p.game_ply].entry &= ~WHITE_OO_MASK;
-			break;
-		case 'Q':
-			p.history[p.game_ply].entry &= ~WHITE_OOO_MASK;
-			break;
-		case 'k':
-			p.history[p.game_ply].entry &= ~BLACK_OO_MASK;
-			break;
-		case 'q':
-			p.history[p.game_ply].entry &= ~BLACK_OOO_MASK;
-			break;
+		case 'K': p.history[p.game_ply].entry &= ~WHITE_OO_MASK;  break;
+		case 'Q': p.history[p.game_ply].entry &= ~WHITE_OOO_MASK; break;
+		case 'k': p.history[p.game_ply].entry &= ~BLACK_OO_MASK;  break;
+		case 'q': p.history[p.game_ply].entry &= ~BLACK_OOO_MASK; break;
 		}
 	}
 }
