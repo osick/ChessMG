@@ -1,6 +1,7 @@
 SHELL       := /bin/bash
 
 all: pipeine
+	
 
 install:
 	pip install .
@@ -22,4 +23,3 @@ test:
 	pushd tests && python3 test_correctness.py
 
 pipeline: clean uninstall install test
-	

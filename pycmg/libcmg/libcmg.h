@@ -15,8 +15,6 @@ enum CMG_POSITION_STATE : uint8_t {
 	CMG_ILLEGAL_KING_CONTACT= 0b10010000, //144
 };
 
-
-
 #undef  _surge_init__attribute__
 #ifndef _surge_init__attribute__
     // The two methods must be called to init the shared library libsurge and so libcmg
@@ -33,7 +31,6 @@ enum CMG_POSITION_STATE : uint8_t {
 namespace cmg{
     class CMGMove {
         public:
-            
             CMGMove(int from, int to, int flags);
             ~CMGMove();
             Move m();
@@ -47,9 +44,9 @@ namespace cmg{
         public:
             CMGPosition();
             CMGPosition(std::string fen);
+            CMGPosition(std::vector<std::pair<int, int>> piecelist, bool turn, int epsq,  std::string castling);
             ~CMGPosition();
             std::string fen();
-            std::vector<std::uint64_t> all_pieces();
             void print();
             template<Color Us> void play(CMGMove &move);
             template<Color Us> void undo(CMGMove &move);

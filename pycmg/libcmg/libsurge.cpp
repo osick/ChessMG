@@ -494,7 +494,6 @@ void Position::set_position(const std::vector<std::pair<Piece,Square>> piecelist
 };
 // OSI end
 
-
 //Updates a position according to an FEN string
 void Position::set(const std::string& fen, Position& p) {
 	int square = a8;

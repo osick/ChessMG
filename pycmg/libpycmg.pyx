@@ -17,12 +17,11 @@ cdef extern from "libcmg.h" namespace "cmg":
         CMGPosition()
         CMGPosition(string fen) except +
         string fen()
-        #void set_fen(string fen) #TODO
+        void set_fen(string fen) #TODO
         void print()
         int turn()
         bool is_legal()
-        vector[uint64_t] all_pieces()           
-        uint8_t state(int color)
+        uint8_t state(int c)
         vector[int] moves(int color)              
         int64_t perft(int depth)        
         void move_piece(int _from, int _to)
@@ -34,7 +33,6 @@ cdef class ChessMoveGenerator:
     def fen(self): return self._pos.fen()
     def print(self): return self._pos.print()
     def turn(self): return self._pos.turn()
-    def all_pieces(self): return self._pos.all_pieces()
     def move_piece(self,int _from, int to):  self._pos.move_piece(_from, to)
     def perft(self,int depth): return self._pos.perft(depth)
     def is_legal(self): return self._pos.is_legal()
@@ -44,8 +42,8 @@ cdef class ChessMoveGenerator:
         moves=self._pos.moves(color)
         return [f"{sqstr(moves[m])}-{sqstr(moves[m+1])}" for m in range(0,len(moves)-1,3)] if as_string else moves
 
-    # def set_fen(self, string fen): #TODO
-    #     self._pos.set_fen(fen) #TODO
+    def set_fen(self, string fen): #TODO
+        self._pos.set_fen(fen) #TODO
 
 def moves(str fen, bool w):
     position = ChessMoveGenerator(fen) 
