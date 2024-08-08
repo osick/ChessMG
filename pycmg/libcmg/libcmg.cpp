@@ -56,38 +56,33 @@ namespace cmg {
 
 	Color CMGPosition::turn(){ return _position.turn(); };
 	
-	template<Color Us> 
-	void CMGPosition::play(CMGMove &move){ return _position.play<Us>(move.m());};
+	template<Color Us> void CMGPosition::play(CMGMove &move){ return _position.play<Us>(move.m());};
 
-	template<Color Us> 
-	void CMGPosition::undo(CMGMove &move){ return _position.undo<Us>(move.m());};
+	template<Color Us> void CMGPosition::undo(CMGMove &move){ return _position.undo<Us>(move.m());};
 
 	void CMGPosition::move_piece(std::int32_t from, std::int32_t to) { _position.move_piece(Square(from),Square(to));};
 	
-	std::vector<std::int32_t> CMGPosition::moves(int Us){return (Us == 0 ? _w_moves() : _b_moves()); };
+	std::vector<std::int32_t> CMGPosition::moves(int Us){return (Us == 0 ? this->_w_move_list : this->_b_move_list); };
 	
-	std::vector<std::int32_t> CMGPosition::_w_moves(){
-		vector<i32> arr;
+	void CMGPosition::_w_moves(){
+
 		if (_w_state < CMG_ILLEGAL_POSITION){
 			MoveList<WHITE> move_list(_position);
 			for (Move move : move_list) {
-				arr.push_back(move.from()); 
-				arr.push_back(move.to()); 
-				arr.push_back(move.flags());}
+				this->_w_move_list.push_back(move.from()); 
+				this->_w_move_list.push_back(move.to()); 
+				this->_w_move_list.push_back(move.flags());}
 		}
-		return arr;
-	};		
+	};
 	
-	std::vector<std::int32_t> CMGPosition::_b_moves(){
-		vector<i32> arr;
+	void CMGPosition::_b_moves(){
 		if (_b_state < CMG_ILLEGAL_POSITION){
 			MoveList<BLACK> move_list(_position);
 			for (Move move : move_list) {
-				arr.push_back(move.from()); 
-				arr.push_back(move.to()); 
-				arr.push_back(move.flags());}
+				this->_b_move_list.push_back(move.from()); 
+				this->_b_move_list.push_back(move.to()); 
+				this->_b_move_list.push_back(move.flags());}
 		}
-		return arr;
 	};		
 
 	std::int64_t CMGPosition::perft(unsigned int depth){
@@ -152,24 +147,25 @@ namespace cmg {
 			_b_state = CMG_ILLEGAL_POSITION;
 		}
 		else{
-			MoveList<WHITE> w_list(_position);
+			_w_moves();
 			if (w_check){
 				_b_state = CMG_ILLEGAL_POSITION; // white is in check and it is blacks's turn
-				if (w_list.size()==0){
+				if (this->_w_move_list.size()==0){
 					_w_state = CMG_CHECKMATE; //white has no move and white is in check
 				}
-			}else if (w_list.size()==0) {
+			}else if (this->_w_move_list.size()==0) {
 				_w_state = CMG_STALEMATE; //no white move and white is not in check 
+			
 			}else{
 				_w_state = CMG_OPEN_STATE; // no special position
 			}
-			MoveList<BLACK> b_list(_position);
+			_b_moves();
 			if (b_check){
 				_w_state = CMG_ILLEGAL_POSITION; // black is in check and it is white's turn
-				if (b_list.size()==0){
+				if (this->_b_move_list.size()==0){
 					_b_state = CMG_CHECKMATE; //black has no move and black is in check
 				} 
-			}else if (b_list.size()==0) {
+			}else if (this->_b_move_list.size()==0) {
 				_b_state = CMG_STALEMATE; //no black move and black is not in check 
 			}else{
 				_b_state = CMG_OPEN_STATE; // no special position

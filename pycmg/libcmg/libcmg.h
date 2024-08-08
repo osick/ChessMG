@@ -56,7 +56,6 @@ namespace cmg{
             bool is_legal();
             std::vector<std::int32_t> moves(int us);
             CMG_POSITION_STATE state(int us);
-
         private:
             Position _position;
             void set_fen(std::string fen);
@@ -65,8 +64,10 @@ namespace cmg{
             void _set_states();
             std::int64_t _perft_w(unsigned int depth);
             std::int64_t _perft_b(unsigned int depth);
-            std::vector<std::int32_t> _w_moves(); 
-            std::vector<std::int32_t> _b_moves(); 
+            void _w_moves(); 
+            void _b_moves(); 
+            std::vector<std::int32_t> _w_move_list;
+            std::vector<std::int32_t> _b_move_list;
             CMG_POSITION_STATE _w_state; //position state when it is white's turn
             CMG_POSITION_STATE _b_state; //position state when it is black's turn
     };
