@@ -1,8 +1,8 @@
 # chessmg
 
-**chessmg** (**C**hess **M**ove **G**enerator) is a python library which generates chess moves in a given FEN position quite fast.
+**chessmg** (**Chess** **M**ove **G**enerator) is a python library which generates chess moves in a given FEN position quite fast.
 
-Technically it relies on the very fast Chess Move Generator libary "surge" (https://github.com/nkarve/surge) written in C++, Surge is embedded in the python module via cython. 
+Technically it relies on the very fast Chess Move Generator libary "surge" (https://github.com/nkarve/surge) written in C++, which is embedded via cython. 
 
 **chessmg** is quite fast and can reach 250.000.000 NPS (nodes per second). For more details see the [PERFT](#PERFT) section
 
@@ -26,14 +26,14 @@ get it from github and install it from the source directory via pip
 
 ### PERFT
 
-Now a first test and we do perft test (see https://www.chessprogramming.org/Perft_Results)
+Now we do perft test (see https://www.chessprogramming.org/Perft_Results)
 
 ```bash
 > cd tests
 > python test_perft_start_fen.py 
 ```
 
-The test looks for correct comuptation of nodes and the result should look like
+The test looks for correct computation of nodes and the result should look like
 
 ```
  perft results for chess starting position up to depth 7
@@ -51,13 +51,10 @@ TEST PASSED
 
 ```
 
-It gives the correct number `Perft(7) = nodes = 3_195_901_860`  and takes about 15 seconds (** more than 220.000.000 NPS**). 
-Not the best NPS value compard to the original surge libraray (which is twice as fast) or other Libs as Gigantua etc..
+It gives the correct number `Perft(7) = nodes = 3,195,901,860`  and takes about 13 seconds (** about 250.000.000 NPS**). 
+Not the best NPS value compard to the original surge libraray (which is twice as fast) or other Libs as Gigantua etc.. But it is quite nice for Python.
 
-But it is quite nice for Python usage: 
-With Python-chess perft.py (see https://github.com/niklasf/python-chess/blob/master/examples/perft/perft.py) I get around 3.500.000 NPS, this is a performance win of around factor 60. 
-
-
+Applying perft.py (see https://github.com/niklasf/python-chess/blob/master/examples/perft/perft.py) of the very good native python chess library, *Python-chess* we get around 3.500.000 NPS. this is a performance win of around factor 70. 
 
 The performance of course depends on the underlying hardware, In this case the Server is as OpenSuse Server given as below:
 
@@ -66,15 +63,15 @@ System: arch: x86_64  bits: 64 compiler: gcc v: 13.3.0 Distro: openSUSE Leap 15.
 CPU:    Info: 8-core model: AMD Ryzen 7 3700X Speed (MHz): avg: 4051 high: 4069 min/max: 2200/4979 boost: enabled 
 ```
 
-
-
 ### Simple usage of chessmg
 
 It all starts with the **ChessMoveGenerator** class in the module chessmg. If you want to get the white moves in the starting position 
 ```python
+
   from chessmg import ChessMoveGenerator
   position = ChessMoveGenerator("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
   result = position.moves(as_string=True)
+
 ```
 
 and as a result you get the possible 20 moves as a list 
@@ -88,6 +85,7 @@ result = ['b1-a3', 'b1-c3', 'g1-f3', 'g1-h3', 'a2-a3', 'b2-b3', 'c2-c3', 'd2-d3'
 or if you want it as an integer list (represented by the numbering of the squares a1=0, b1=1, ... h8=63)
 
 ```python
+
   result = position.moves(as_string=False)
   >>> result = 
   [[57 40  0]
@@ -110,6 +108,7 @@ or if you want it as an integer list (represented by the numbering of the square
     [53 37  1]
     [54 38  1]
   ]
+
 ````
 
 For each move the last entry is the move flag, inhereted from the surge lib. "0" is for ordinary move, "1" is for a double step of a pawn etc. For more see the libsurge.h file.
@@ -120,7 +119,7 @@ For each move the last entry is the move flag, inhereted from the surge lib. "0"
 
 This project uses code from the following open-source projects:
 
-- "surge" project (https://github.com/nkarve/surge) - Licensed under the MIT License
+- "Surge" Library from https://github.com/nkarve/surge - Licensed under the MIT License
 
 
 

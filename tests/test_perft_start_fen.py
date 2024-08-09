@@ -1,4 +1,5 @@
 import sys
+import os
 from time import time
 from datetime import datetime
 from chessmg import perft
@@ -53,7 +54,7 @@ if __name__ =="__main__":
     now = datetime.now()
     dt_string = ("-"*20)+now.strftime("%d/%m/%Y %H:%M:%S")+("-"*20)
 
-    with open("test_perft_start_fen.result","a") as fh:
+    with open(os.path.join(os.path.dirname(os.path.realpath(__file__)),"test_perft_start_fen.result"),"a") as fh:
         fh.write("\n"+dt_string+"\n\n"+alltext+"\n\n"+dt_string+"\n\n")
 
     if total==True: print ("TEST PASSED"); exit(0)

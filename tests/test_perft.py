@@ -1,5 +1,6 @@
 from time import time
 import json
+import os
 from datetime import datetime
 from chessmg import perft
 
@@ -37,5 +38,5 @@ if __name__ =="__main__":
         now = datetime.now()
         dt_string = ("-"*20)+now.strftime("%d/%m/%Y %H:%M:%S")+("-"*20)
         
-        with open("test_perft.result","a") as fh:
+        with open(os.path.join(os.path.dirname(os.path.realpath(__file__)),"test_perft.result"),"a") as fh:
              fh.write(dt_string+"\n"+alltext+"\n"+dt_string+"\n\n")
