@@ -18,7 +18,7 @@ perft_result=[
     ]  
 
 
-def perft_time(fen,depth):
+def perft_time(fen,depth,verbose=False):
 
     start=time();  
     nodes = perft(fen,depth); 
@@ -26,7 +26,7 @@ def perft_time(fen,depth):
     
     result= ("error :" if nodes != perft_result[depth] else "passed:")
     result_txt=f"{result} result={nodes:<15,} | perft({depth})={perft_result[depth]:<15,} | {f'{int(round(nodes/duration,0)):,}'+' NPS':16} | {duration:.1f} seconds"
-    #print(result_txt)
+    if verbose: print(result_txt)
     return (nodes == perft_result[depth]),result_txt
 
 if __name__ =="__main__":
@@ -36,14 +36,16 @@ if __name__ =="__main__":
         if maxdepth>=len(perft_result):
             print(f"perft results only up to depth {len(perft_result)-1}. Abort!")
             exit()
+    verbose = (len(sys.argv)>=3 and sys.argv[2]=="verbose")
+    
     fen="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 
     title="perft results for chess starting position up to depth "+str(maxdepth)
     alltext="\n"+title+"\n"+"="*(len(title)+2)+"\n"
-    #print(alltext)
+    if verbose: print(alltext)
     total = True
     for depth in range(1,maxdepth+1):
-        _total, text = perft_time(fen=fen , depth=depth)
+        _total, text = perft_time(fen=fen , depth=depth,verbose=verbose)
         total = total & _total
         alltext+= text+"\n"
     
