@@ -20,16 +20,17 @@ def test_fen(depth=3):
     return fen_total
 
 def test_correctness(depth=3):
-    
+    inp_nodes , fen_nodes = 0 , 0
+
     start = time(); 
     inp_nodes=test_inp(depth); 
     t=time()-start; 
-    #print(f"inp: Time:{t:.2f}, NPS={int(round(inp_nodes/t,0)):_}")
-    
+    print(f"inp: Time:{t:.2f}, NPS={int(round(inp_nodes/t,0)):_}")
+
     start = time(); 
     fen_nodes=test_fen(depth); 
     t=time()-start; 
-    #print(f"fen: Time:{t:.2f}, NPS={int(round(fen_nodes/t,0)):_}")
+    print(f"fen: Time:{t:.2f}, NPS={int(round(fen_nodes/t,0)):_}")
     
     return inp_nodes, fen_nodes
 
