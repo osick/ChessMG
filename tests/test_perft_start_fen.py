@@ -5,16 +5,17 @@ from pycmg import perft
 
 # from https://www.chessprogramming.org/Perft_Results
 perft_result=[
-    1,
-    20,
-    400,
-    8902,
-    197281, 
-    4865609, 
-    119060324, 
-    3195901860, 
-    84998978956, 
-    2439530234167]
+    1,    #depth 0
+    20,    #depth 1
+    400,    #depth 2
+    8902,    #depth 3
+    197281,   #depth 4
+    4865609,   #depth 5
+    119060324,  #depth 6
+    3195901860,  #depth 7
+    84998978956,  #depth 8
+    2439530234167, #depth 9
+    ]  
 
 
 def perft_time(fen,depth):
