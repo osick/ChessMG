@@ -1,1 +1,1 @@
-from pycmglib import *
+from chessmglib import *

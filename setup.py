@@ -9,8 +9,8 @@ from Cython.Build import cythonize
 
 
 working_directory   = path.abspath(path.dirname(__file__))
-pycmg_dir           = "pycmg"
-libcmg_dir          = path.join(pycmg_dir,'libcmg')
+chessmg_dir           = "chessmg"
+libcmg_dir          = path.join(chessmg_dir,'libcmg')
 lib_dir             = path.join(working_directory, libcmg_dir)
 
 long_description    = open(path.join(working_directory, 'README.md'), encoding='utf-8').read()
@@ -27,8 +27,8 @@ build_cpp_libraries(lib_dir)
 
 extensions = [
     Extension(
-        'pycmglib',
-        sources=[path.join(pycmg_dir, 'libpycmg.pyx'),],
+        'chessmglib',
+        sources=[path.join(chessmg_dir, 'libchessmg.pyx'),],
         include_dirs=[libcmg_dir],
         libraries=['cmg', 'surge'],
         library_dirs=[libcmg_dir],
@@ -39,10 +39,10 @@ extensions = [
 ]
 
 setup(
-    name                                = "pycmg",
+    name                                = "chessmg",
     version                             = open('Version.txt').read(),
     install_requires                    = open('requirements.txt').read().splitlines(),
-    url                                 = 'https://github.com/osick/pycmg',
+    url                                 = 'https://github.com/osick/chessmg',
     author                              = 'Oliver Sick',
     author_email                        = 'oliver.sick@gmail.com',
     description                         = 'Fast chess move generator library for python',
@@ -60,6 +60,6 @@ setup(
 
     packages                            = find_packages(), #
     ext_modules                         = cythonize(extensions),
-    package_data                        = {'pycmg': ['LICENCE','README.md',path.join(pycmg_dir,'test.py')],},
+    package_data                        = {'chessmg': ['LICENCE','README.md',path.join(chessmg_dir,'test.py')],},
     include_package_data                = True,
 )

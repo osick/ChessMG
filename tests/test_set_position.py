@@ -1,4 +1,4 @@
-from pycmg import ChessMoveGenerator
+from chessmg import ChessMoveGenerator
 from time import time
 import sys
 

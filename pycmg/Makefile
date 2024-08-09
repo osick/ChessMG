@@ -16,5 +16,5 @@ libcmg: libsurge
 
 clean:
 	rm -rf *.so *.o *.a a.out
-	rm -f libpycmg.cpp 
+	rm -f libchessmg.cpp 
 	pushd libcmg && make clean

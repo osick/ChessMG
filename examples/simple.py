@@ -1,4 +1,4 @@
-from pycmg import ChessMoveGenerator
+from chessmg import ChessMoveGenerator
 import numpy as np
 position = ChessMoveGenerator("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
 

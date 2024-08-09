@@ -1,10 +1,10 @@
-# PYCMG
+# chessmg
 
-**pycmg** (**Py**thon **C**hess **M**ove **G**enerator) is a python library which generates chess moves in a given FEN position quite fast.
+**chessmg** (**C**hess **M**ove **G**enerator) is a python library which generates chess moves in a given FEN position quite fast.
 
 Technically it relies on the very fast Chess Move Generator libary "surge" (https://github.com/nkarve/surge) written in C++, Surge is embedded in the python module via cython. 
 
-**pycmg** is quite fast and can reach more than 210.000.000 NPS (nodes per second). For more details see the [PERFT](#PERFT) section
+**chessmg** is quite fast and can reach more than 210.000.000 NPS (nodes per second). For more details see the [PERFT](#PERFT) section
 
 ## Start it!
 
@@ -19,8 +19,8 @@ The installation requires the following components
 get it from github and install it from the source directory via pip
 
 ```bash
-> git clone https://github.com/osick/pycmg.git
-> cd pycmg
+> git clone https://github.com/osick/chessmg.git
+> cd chessmg
 > pip install .
 ```
 
@@ -67,11 +67,11 @@ CPU:    Info: 8-core model: AMD Ryzen 7 3700X Speed (MHz): avg: 4051 high: 4069 
 
 
 
-### Simple usage of pycmg
+### Simple usage of chessmg
 
-It all starts with the **ChessMoveGenerator** class in the module pycmg. If you want to get the white moves in the starting position 
+It all starts with the **ChessMoveGenerator** class in the module chessmg. If you want to get the white moves in the starting position 
 ```python
-  from pycmg import ChessMoveGenerator
+  from chessmg import ChessMoveGenerator
   position = ChessMoveGenerator("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
   result = position.moves(as_string=True)
 ```

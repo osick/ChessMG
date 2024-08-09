@@ -1,7 +1,7 @@
 import sys
 from time import time
 from datetime import datetime
-from pycmg import perft
+from chessmg import perft
 
 # from https://www.chessprogramming.org/Perft_Results
 perft_result=[

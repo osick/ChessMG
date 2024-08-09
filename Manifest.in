@@ -1,6 +1,6 @@
 include README.md
 include LICENCE
 include requirements.txt
-include pycmg/*.so
-recursive-include pycmg/ *.a
-recursive-include pycmg/ *.py
+include chessmg/*.so
+recursive-include chessmg/ *.a
+recursive-include chessmg/ *.py

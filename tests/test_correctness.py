@@ -2,7 +2,7 @@ import json
 import os
 import sys
 
-from pycmg import perft
+from chessmg import perft
 
 def test_correctness():
     verbose = (len(sys.argv)>=2 and sys.argv[1]=="verbose")

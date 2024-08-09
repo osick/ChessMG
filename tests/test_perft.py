@@ -1,7 +1,7 @@
 from time import time
 import json
 from datetime import datetime
-from pycmg import perft
+from chessmg import perft
 
 def test_perft(data,depth):
     

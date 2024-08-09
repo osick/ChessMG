@@ -11,13 +11,13 @@ install:
 	pip install .
 
 uninstall:
-	pip uninstall -y pycmg
+	pip uninstall -y chessmg
 
 clean:
 	rm -rf build
 	rm -rf *.egg-info
 	rm -rf *.so *.o *.a a.out
-	pushd pycmg && make clean
+	pushd chessmg && make clean
 
 example:
 	pushd examples && python3 simple.py

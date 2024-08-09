@@ -1,23 +1,23 @@
-pycmg/*.so
-pycmg/*.o
-pycmg/*/*.a
+chessmg/*.so
+chessmg/*.o
+chessmg/*/*.a
 *.o
 
-pycmg/*/*.so
-pycmg/*/*.o
-pycmg/*/*.a
+chessmg/*/*.so
+chessmg/*/*.o
+chessmg/*/*.a
 *.so
 *.o
 *.a
-pycmg/a.out
+chessmg/a.out
 
 
-pycmg/libpycmg.cpp
-pycmg.egg-info/
+chessmg/libchessmg.cpp
+chessmg.egg-info/
 build/
 Makefile_private
 */*.result
 *.result
-pycmg/libcmg/make.txt
+chessmg/libcmg/make.txt
 .vscode/
 *.egg-info/
