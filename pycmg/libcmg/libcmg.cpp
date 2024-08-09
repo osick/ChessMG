@@ -42,7 +42,10 @@ namespace cmg {
 	
     CMGPosition::CMGPosition(std::vector<std::pair<int, int>> piecelist, bool turn, int epsq,  std::string castling){
 		std::vector<std::pair<Piece,Square>> surge_pc_list;
-		for (std::pair<int,int> i: piecelist){ std::pair<Piece,Square> _item(Piece(i.first), Square(i.second)); surge_pc_list.push_back(_item); };
+		for (std::pair<int,int> i: piecelist){ 
+			std::pair<Piece,Square> _item(Piece(i.first), Square(i.second)); 
+			surge_pc_list.push_back(_item); 
+		};
 		Position::set_position(surge_pc_list, (turn ? WHITE : BLACK ), castling, Square(epsq), _position);
 	};
 

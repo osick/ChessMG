@@ -11,7 +11,7 @@ uninstall:
 
 clean:
 	rm -rf build
-	rm -rf pycmg.egg-info
+	rm -rf *.egg-info
 	rm -rf *.so *.o *.a a.out
 	pushd pycmg && make clean
 

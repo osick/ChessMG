@@ -31,7 +31,7 @@ int main() {
 	// zobrist::initialise_zobrist_keys();	
 	//perftdiv<WHITE>(DEFAULT_FEN,5);
 
-	int depth = 6;
+	int depth = 7;
 	std::cout << "Position: " << DEFAULT_FEN << std::endl << "Depth:" << depth << std::endl; 
     test_perft(depth);
 }
