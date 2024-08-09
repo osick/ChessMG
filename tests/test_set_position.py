@@ -20,18 +20,23 @@ def test_fen(depth=3):
     return fen_total
 
 def test_correctness(depth=3):
-    start = time(); inp_nodes=test_inp(depth); t=time()-start; print(f"inp: Time:{t:.2f}, NPS={int(round(inp_nodes/t,0)):_}")
-    start = time(); fen_nodes=test_fen(depth); t=time()-start; print(f"fen: Time:{t:.2f}, NPS={int(round(fen_nodes/t,0)):_}")
+    
+    start = time(); 
+    inp_nodes=test_inp(depth); 
+    t=time()-start; 
+    #print(f"inp: Time:{t:.2f}, NPS={int(round(inp_nodes/t,0)):_}")
+    
+    start = time(); 
+    fen_nodes=test_fen(depth); 
+    t=time()-start; 
+    #print(f"fen: Time:{t:.2f}, NPS={int(round(fen_nodes/t,0)):_}")
+    
     return inp_nodes, fen_nodes
 
 if __name__ =="__main__":
     depth = 6 if len(sys.argv)<2 else (6 if (not sys.argv[1].isdigit()) else int(sys.argv[1]))
     inp_res, fen_res = test_correctness(depth)
-    
     success = (inp_res == fen_res)
-    if success:
-        print ("TEST PASSED", inp_res, fen_res)
-        exit(0)
-    else:
-        print ("TEST FAILED", inp_res, fen_res)
-        exit(1)
+
+    print("\n",__file__)
+    {print ("TEST PASSED", inp_res, fen_res) and exit(0)} if success else {print ("TEST FAILED", inp_res, fen_res) and exit(1)}

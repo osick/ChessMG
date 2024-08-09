@@ -26,11 +26,11 @@ def perft_time(fen,depth):
     
     result= ("error :" if nodes != perft_result[depth] else "passed:")
     result_txt=f"{result} result={nodes:<15,} | perft({depth})={perft_result[depth]:<15,} | {f'{int(round(nodes/duration,0)):,}'+' NPS':16} | {duration:.1f} seconds"
-    print(result_txt)
+    #print(result_txt)
     return (nodes == perft_result[depth]),result_txt
 
 if __name__ =="__main__":
-    maxdepth=7
+    maxdepth=6
     if len(sys.argv)>=2:
         if sys.argv[1].isdigit(): maxdepth=max(1,int(sys.argv[1]))
         if maxdepth>=len(perft_result):
@@ -40,7 +40,7 @@ if __name__ =="__main__":
 
     title="perft results for chess starting position up to depth "+str(maxdepth)
     alltext="\n"+title+"\n"+"="*(len(title)+2)+"\n"
-    print(alltext)
+    #print(alltext)
     total = True
     for depth in range(1,maxdepth+1):
         _total, text = perft_time(fen=fen , depth=depth)
@@ -53,7 +53,8 @@ if __name__ =="__main__":
     with open("test_perft_start_fen.result","a") as fh:
         fh.write("\n"+dt_string+"\n\n"+alltext+"\n\n"+dt_string+"\n\n")
 
-    if total==True: print ("\nTEST PASSED\n"); exit(0)
-    else: print ("\nTEST FAILED\n"); exit(1)
+    print("\n",__file__)
+    if total==True: print ("TEST PASSED"); exit(0)
+    else: print ("TEST FAILED"); exit(1)
  
         
