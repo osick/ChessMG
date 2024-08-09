@@ -21,3 +21,4 @@ Makefile_private
 chessmg/libcmg/make.txt
 .vscode/
 *.egg-info/
+examples/stats.txt

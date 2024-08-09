@@ -47,6 +47,8 @@ namespace cmg{
             CMGPosition(std::vector<std::pair<int, int>> piecelist, bool turn, int epsq,  std::string castling);
             ~CMGPosition();
             std::string fen();
+            void del_piece(Square sq);
+            void add_piece(Piece pc, Square sq);
             void print();
             template<Color Us> void play(CMGMove &move);
             template<Color Us> void undo(CMGMove &move);

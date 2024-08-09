@@ -3,7 +3,7 @@ from time import time
 import sys
 
 def test_inp(depth=3):
-    inp = {"position":[(13,2), (5,18) , (4,40), (12,53)], "turn":True, "epsq":64, "castling":""}
+    inp = {"raw":[(13,2), (5,18) , (4,40), (12,53)], "turn":True, "epsq":64, "castling":""}
     c_inp = ChessMoveGenerator(inp)
     inp_total=0
     for i in range(1,depth+1):

@@ -11,14 +11,15 @@ from enum import Enum, auto
 from libcpp.pair cimport pair as cpair
 ctypedef cpair[int, int] ipair
 
-class Color(Enum):
+class COLOR(Enum):
     WHITE = 0
     BLACK = 1
 
-class Pc(Enum):
-    P=0; N=1; B=2; R=3; Q=4; K=5; p=8; n=9; b=10; r=11; q=12; k=13; NO_PIECE=14
+class PC(Enum):
+    P=0; N=1; B=2; R=3; Q=4; K=5; p=8; n=9; b=10; r=11; q=12; k=13
+    #NO_PIECE=14
 
-class Sq(Enum): 
+class SQ(Enum): 
     a1=auto(); b1=auto(); c1=auto(); d1=auto(); e1=auto(); f1=auto(); g1=auto(); h1=auto()
     a2=auto(); b2=auto(); c2=auto(); d2=auto(); e2=auto(); f2=auto(); g2=auto(); h2=auto()
     a3=auto(); b3=auto(); c3=auto(); d3=auto(); e3=auto(); f3=auto(); g3=auto(); h3=auto()
@@ -27,7 +28,7 @@ class Sq(Enum):
     a6=auto(); b6=auto(); c6=auto(); d6=auto(); e6=auto(); f6=auto(); g6=auto(); h6=auto()
     a7=auto(); b7=auto(); c7=auto(); d7=auto(); e7=auto(); f7=auto(); g7=auto(); h7=auto()
     a8=auto(); b8=auto(); c8=auto(); d8=auto(); e8=auto(); f8=auto(); g8=auto(); h8=auto()
-    NO_SQUARE=auto()
+    #NO_SQUARE=auto()
 
 cdef extern from "libcmg.h" namespace "cmg":
     cdef cppclass CMGPosition:
@@ -44,24 +45,22 @@ cdef extern from "libcmg.h" namespace "cmg":
         void move_piece(int _from, int _to)
     cdef string sqstr(int idx)
 
-
-
 cdef class ChessMoveGenerator:
     cdef CMGPosition* _pos
     
     def __init__(self, input):
         if type(input) is str:
-            self._pos = new CMGPosition(input)
+            #self._pos = new CMGPosition(input)
+            CMGPosition self._pos(input)
         elif type(input) is dict:
             # eg input ={"raw":[(1,1),(2,63),...], "turn":bool, eqsq:1, castling:"KQkq"}
-            if  "raw" in input:
-                pos = input["raw"]
+            # or 
             # eg input ={"position":[("k","b1"),("K","b8"),...], "turn":bool, eqsq:1, castling:"KQkq"}
-            elif "position" in input:
-                pos =[( Pc(it(0)) , Sq(it(1)) ) for it in input["position"]]
-            self._pos = new CMGPosition(input["raw"], input["turn"], input["epsq"],  input["castling"])
+            if  "raw" in input:         pos = input["raw"]
+            elif "position" in input:   pos =[( PC(it[0]) , SQ(it[1]) ) for it in input["position"]]
             
-
+            #self._pos = new CMGPosition(pos, input["turn"], input["epsq"],  input["castling"])
+            CMGPosition self._pos(pos, input["turn"], input["epsq"],  input["castling"])
 
     def fen(self): 
         return self._pos.fen()

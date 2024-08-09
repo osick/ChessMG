@@ -65,6 +65,15 @@ namespace cmg {
 
 	void CMGPosition::move_piece(std::int32_t from, std::int32_t to) { _position.move_piece(Square(from),Square(to));};
 	
+	void CMGPosition::del_piece(Square sq){
+
+	};
+	
+	void CMGPosition::add_piece(Piece pc, Square sq){
+
+	};
+
+
 	std::vector<std::int32_t> CMGPosition::moves(int Us){return (Us == 0 ? this->_w_move_list : this->_b_move_list); };
 	
 	void CMGPosition::_w_moves(){
