@@ -4,7 +4,7 @@
 
 Technically it relies on the very fast Chess Move Generator libary "surge" (https://github.com/nkarve/surge) written in C++, Surge is embedded in the python module via cython. 
 
-**chessmg** is quite fast and can reach more than 210.000.000 NPS (nodes per second). For more details see the [PERFT](#PERFT) section
+**chessmg** is quite fast and can reach 250.000.000 NPS (nodes per second). For more details see the [PERFT](#PERFT) section
 
 ## Start it!
 
@@ -38,13 +38,14 @@ The test looks for correct comuptation of nodes and the result should look like
 ```
  perft results for chess starting position up to depth 7
 =========================================================
-passed: result=20              | perft(1)=20              | 586,616 NPS      | 0.0 seconds
-passed: result=400             | perft(2)=400             | 30,504,029 NPS   | 0.0 seconds
-passed: result=8,902           | perft(3)=8,902           | 111,789,504 NPS  | 0.0 seconds
-passed: result=197,281         | perft(4)=197,281         | 130,308,108 NPS  | 0.0 seconds
-passed: result=4,865,609       | perft(5)=4,865,609       | 156,898,926 NPS  | 0.0 seconds
-passed: result=119,060,324     | perft(6)=119,060,324     | 201,272,989 NPS  | 0.6 seconds
-passed: result=3,195,901,860   | perft(7)=3,195,901,860   | 228,546,291 NPS  | 14.0 seconds
+
+passed: result=20              | perft(1)=20              | 1,061,849 NPS    | 0.0 seconds
+passed: result=400             | perft(2)=400             | 44,150,568 NPS   | 0.0 seconds
+passed: result=8,902           | perft(3)=8,902           | 196,514,180 NPS  | 0.0 seconds
+passed: result=197,281         | perft(4)=197,281         | 220,185,335 NPS  | 0.0 seconds
+passed: result=4,865,609       | perft(5)=4,865,609       | 245,139,259 NPS  | 0.0 seconds
+passed: result=119,060,324     | perft(6)=119,060,324     | 233,346,570 NPS  | 0.5 seconds
+passed: result=3,195,901,860   | perft(7)=3,195,901,860   | 249,988,283 NPS  | 12.8 seconds
 
 TEST PASSED
 
