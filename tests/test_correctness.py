@@ -12,7 +12,7 @@ def test_correctness():
         #print(f"{'  ERROR: ' if nodes != pos['nodes'] else 'SUCCESS: '}depth={pos['depth']:<2} Expected={pos['nodes']:<8} Result={nodes:<8} remark:{pos['remark'][:17]+('...' if len(pos['remark'])>15 else''):<21} pos['fen']={pos['fen']:<15}")
     return success
 if __name__ =="__main__":
+    print("\nTest Case ",__file__,sep="")
     success = test_correctness()
 
-    print("\n",__file__)
     {print ("TEST PASSED") and exit(0)} if success else {print ("TEST FAILED") and exit(1)}

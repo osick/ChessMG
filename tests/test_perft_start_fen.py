@@ -30,6 +30,7 @@ def perft_time(fen,depth,verbose=False):
     return (nodes == perft_result[depth]),result_txt
 
 if __name__ =="__main__":
+    print("\nTest Case ",__file__,sep="")
     maxdepth=6
     if len(sys.argv)>=2:
         if sys.argv[1].isdigit(): maxdepth=max(1,int(sys.argv[1]))
@@ -55,7 +56,6 @@ if __name__ =="__main__":
     with open("test_perft_start_fen.result","a") as fh:
         fh.write("\n"+dt_string+"\n\n"+alltext+"\n\n"+dt_string+"\n\n")
 
-    print("\n",__file__)
     if total==True: print ("TEST PASSED"); exit(0)
     else: print ("TEST FAILED"); exit(1)
  

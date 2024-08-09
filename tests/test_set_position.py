@@ -35,9 +35,9 @@ def test_correctness(depth=3):
     return inp_nodes, fen_nodes
 
 if __name__ =="__main__":
+    print("\nTest Case ",__file__,sep="")
     depth = 6 if len(sys.argv)<2 else (6 if (not sys.argv[1].isdigit()) else int(sys.argv[1]))
     inp_res, fen_res = test_correctness(depth)
     success = (inp_res == fen_res)
 
-    print("\n",__file__)
     {print ("TEST PASSED", inp_res, fen_res) and exit(0)} if success else {print ("TEST FAILED", inp_res, fen_res) and exit(1)}

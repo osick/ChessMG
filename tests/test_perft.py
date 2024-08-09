@@ -4,6 +4,7 @@ from datetime import datetime
 from pycmg import perft
 
 def test_perft(data,depth):
+    
     allnodes=0
     text=""
     for fen in data:
@@ -16,6 +17,7 @@ def test_perft(data,depth):
     return allnodes, text
 
 if __name__ =="__main__":
+        print("\nTest Case ",__file__,sep="")
         print("\ntest_performance...\n")
         with open("testdata.json","r") as fh: testdata=json.load(fh)
         alldata =[d['fen'] for d in testdata]
