@@ -17,7 +17,7 @@ class COLOR(Enum):
 
 class PC(Enum):
     P=0; N=1; B=2; R=3; Q=4; K=5; p=8; n=9; b=10; r=11; q=12; k=13
-    #NO_PIECE=14
+    NO_PIECE=14
 
 class SQ(Enum): 
     a1=auto(); b1=auto(); c1=auto(); d1=auto(); e1=auto(); f1=auto(); g1=auto(); h1=auto()
@@ -28,7 +28,7 @@ class SQ(Enum):
     a6=auto(); b6=auto(); c6=auto(); d6=auto(); e6=auto(); f6=auto(); g6=auto(); h6=auto()
     a7=auto(); b7=auto(); c7=auto(); d7=auto(); e7=auto(); f7=auto(); g7=auto(); h7=auto()
     a8=auto(); b8=auto(); c8=auto(); d8=auto(); e8=auto(); f8=auto(); g8=auto(); h8=auto()
-    #NO_SQUARE=auto()
+    NO_SQUARE=auto()
 
 cdef extern from "libcmg.h" namespace "cmg":
     cdef cppclass CMGPosition:
@@ -50,17 +50,19 @@ cdef class ChessMoveGenerator:
     
     def __init__(self, input):
         if type(input) is str:
-            #self._pos = new CMGPosition(input)
-            CMGPosition self._pos(input)
+            # input is FEN string
+            self._pos = new CMGPosition(input)
         elif type(input) is dict:
             # eg input ={"raw":[(1,1),(2,63),...], "turn":bool, eqsq:1, castling:"KQkq"}
             # or 
             # eg input ={"position":[("k","b1"),("K","b8"),...], "turn":bool, eqsq:1, castling:"KQkq"}
+            pos = []
+            turn = input.get("turn",True)
+            epsq = int(input.get("epsq",64))
+            castling = str(input.get("castling",""))
             if  "raw" in input:         pos = input["raw"]
-            elif "position" in input:   pos =[( PC(it[0]) , SQ(it[1]) ) for it in input["position"]]
-            
-            #self._pos = new CMGPosition(pos, input["turn"], input["epsq"],  input["castling"])
-            CMGPosition self._pos(pos, input["turn"], input["epsq"],  input["castling"])
+            elif "position" in input:   pos = [( PC(it[0]).value , SQ(it[1]).value ) for it in input["position"]]
+            self._pos = new CMGPosition(pos, turn, epsq,  castling)
 
     def fen(self): 
         return self._pos.fen()

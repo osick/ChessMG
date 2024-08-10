@@ -472,7 +472,7 @@ std::string Position::fen() const {
 }
 
 // OSI start
-void Position::set_position(const std::vector<std::pair<Piece,Square>> piecelist, const Color c, const std::string castlings, const Square epsq, Position& p){
+void Position::set_position(const std::vector<std::pair<Piece,Square>> piecelist, const Color c, const std::string castlings, const Square epsq, Position &p){
 	//pieces
 	for (auto pc : piecelist){p.put_piece(pc.first, pc.second);};
 	//turn

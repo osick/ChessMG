@@ -23,8 +23,8 @@ example:
 	pushd examples && python3 simple.py
 
 test:
-	@python3 tests/test_perft_start_fen.py 
-	@python3 tests/test_correctness.py
-	@python3 tests/test_set_position.py
+	@python3 tests/test_perft_start_fen.py 7 verbose
+	@python3 tests/test_correctness.py 
+	@python3 tests/test_set_position.py verbose
 
 pipeline: clean uninstall install test
