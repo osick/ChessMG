@@ -2,6 +2,7 @@
 # cython: c_string_type=unicode, c_string_encoding=utf8
 # distutils: language=c++
 
+import sys
 from libcpp cimport bool
 from libcpp.string cimport string
 from libcpp.vector cimport vector
@@ -20,7 +21,7 @@ class PC(Enum):
     NO_PIECE=14
 
 class SQ(Enum): 
-    a1=auto(); b1=auto(); c1=auto(); d1=auto(); e1=auto(); f1=auto(); g1=auto(); h1=auto()
+    a1=0; b1=auto(); c1=auto(); d1=auto(); e1=auto(); f1=auto(); g1=auto(); h1=auto()
     a2=auto(); b2=auto(); c2=auto(); d2=auto(); e2=auto(); f2=auto(); g2=auto(); h2=auto()
     a3=auto(); b3=auto(); c3=auto(); d3=auto(); e3=auto(); f3=auto(); g3=auto(); h3=auto()
     a4=auto(); b4=auto(); c4=auto(); d4=auto(); e4=auto(); f4=auto(); g4=auto(); h4=auto()
@@ -36,6 +37,7 @@ cdef extern from "libcmg.h" namespace "cmg":
         CMGPosition(string fen) except +
         CMGPosition(vector[ipair] piecelist, bool turn, int epsq,  string castling) except +
         string fen()
+        void set_fen(string fen)
         void print()
         int turn()
         bool is_legal()
@@ -48,8 +50,10 @@ cdef extern from "libcmg.h" namespace "cmg":
 cdef class ChessMoveGenerator:
     cdef CMGPosition* _pos
     
-    def __init__(self, input):
-        if type(input) is str:
+    def __init__(self, input=None):
+        if input is None:
+            self._pos = new CMGPosition()
+        elif type(input) is str:
             # input is FEN string
             self._pos = new CMGPosition(input)
         elif type(input) is dict:
@@ -64,6 +68,12 @@ cdef class ChessMoveGenerator:
             elif "position" in input:   pos = [( PC(it[0]).value , SQ(it[1]).value ) for it in input["position"]]
             self._pos = new CMGPosition(pos, turn, epsq,  castling)
 
+    def set_fen(self,fen):
+        self._pos.set_fen(fen)
+
+    def __dealloc__(self):
+        del self._pos
+
     def fen(self): 
         return self._pos.fen()
     
@@ -73,8 +83,8 @@ cdef class ChessMoveGenerator:
     def turn(self): 
         return self._pos.turn()
     
-    def move_piece(self,int _from, int to):  
-        self._pos.move_piece(_from, to)
+    def move_piece(self,int _from, int _to):  
+        self._pos.move_piece(_from, _to)
     
     def perft(self,int depth): 
         return self._pos.perft(depth)

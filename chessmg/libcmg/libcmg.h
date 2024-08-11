@@ -47,6 +47,7 @@ namespace cmg{
             CMGPosition(std::vector<std::pair<int, int>> piecelist, bool turn, int epsq,  std::string castling);
             ~CMGPosition();
             std::string fen();
+            void set_fen(std::string fen);
             void del_piece(Square sq);
             void add_piece(Piece pc, Square sq);
             void print();
@@ -60,7 +61,6 @@ namespace cmg{
             CMG_POSITION_STATE state(int us);
         private:
             Position _position;
-            void set_fen(std::string fen);
             bool _king_contact();
             bool _illegal_pawn();
             void _set_states();

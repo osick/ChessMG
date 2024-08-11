@@ -59,18 +59,16 @@ namespace cmg {
 
 	Color CMGPosition::turn(){ return _position.turn(); };
 	
-	template<Color Us> void CMGPosition::play(CMGMove &move){ return _position.play<Us>(move.m());};
+	template<Color Us> void CMGPosition::play(CMGMove &move){ _position.play<Us>(move.m());};
 
-	template<Color Us> void CMGPosition::undo(CMGMove &move){ return _position.undo<Us>(move.m());};
+	template<Color Us> void CMGPosition::undo(CMGMove &move){ _position.undo<Us>(move.m());};
 
-	void CMGPosition::move_piece(std::int32_t from, std::int32_t to) { _position.move_piece(Square(from),Square(to));};
+	void CMGPosition::move_piece(std::int32_t from, std::int32_t to) { _position.move_piece(Square(from),Square(to)); _set_states(); };
 	
 	void CMGPosition::del_piece(Square sq){
-
 	};
 	
 	void CMGPosition::add_piece(Piece pc, Square sq){
-
 	};
 
 

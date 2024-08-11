@@ -432,10 +432,8 @@ std::ostream& operator<< (std::ostream& os, const Position& p) {
 	}
 	os << s;
 	os << t << "\n";
-
 	os << "FEN: " << p.fen() << "\n";
 	os << "Hash: 0x" << std::hex << p.hash << std::dec << "\n";
-
 	return os;
 }
 
@@ -450,16 +448,13 @@ std::string Position::fen() const {
 			Piece p = board[i + j];
 			if (p == NO_PIECE) empty++;
 			else {
-				fen << (empty == 0 ? "" : std::to_string(empty))
-					<< PIECE_STR[p];
+				fen << (empty == 0 ? "" : std::to_string(empty)) << PIECE_STR[p];
 				empty = 0;
 			}
 		}
-
 		if (empty != 0) fen << empty;
 		if (i > 0) fen << '/';
 	}
-
 	fen << (side_to_play == WHITE ? " w " : " b ")
 		<< (history[game_ply].entry & WHITE_OO_MASK ? "" : "K")
 		<< (history[game_ply].entry & WHITE_OOO_MASK ? "" : "Q")
@@ -467,7 +462,6 @@ std::string Position::fen() const {
 		<< (history[game_ply].entry & BLACK_OOO_MASK ? "" : "q")
 		<< (history[game_ply].entry & ALL_CASTLING_MASK ? "- " : "")
 		<< (history[game_ply].epsq == NO_SQUARE ? " -" : SQSTR[history[game_ply].epsq]);
-
 	return fen.str();
 }
 
@@ -496,22 +490,19 @@ void Position::set_position(const std::vector<std::pair<Piece,Square>> piecelist
 
 //Updates a position according to an FEN string
 void Position::set(const std::string& fen, Position& p) {
+	
+	for (Square i = a1; i < NO_SQUARE; i = Square(i + 1)){ p.board[i] = NO_PIECE;}
+
 	int square = a8;
 	for (char ch : fen.substr(0, fen.find(' '))) {
-		if (isdigit(ch))
-			square += (ch - '0') * EAST;
-		else if (ch == '/')
-			square += 2 * SOUTH;
-		else
-			p.put_piece(Piece(PIECE_STR.find(ch)), Square(square++));
+		if    (isdigit(ch)) square += (ch - '0') * EAST;
+		else if (ch == '/')	square += 2 * SOUTH;
+		else				p.put_piece(Piece(PIECE_STR.find(ch)), Square(square++));
 	}
-
 	std::istringstream ss(fen.substr(fen.find(' ')));
 	unsigned char token;
-
 	ss >> token;
 	p.side_to_play = (token == 'w' ? WHITE : BLACK);
-
 	//OSI START
 	//en passant square 
 	//fen  = '8/8/8/2k5/2pP4/8/B7/4K3 b - d3 0 3' -> 6 fentoken, index=3 is ep token
@@ -530,7 +521,6 @@ void Position::set(const std::string& fen, Position& p) {
 		count++;
 	}
 	//OSI END
-
 	p.history[p.game_ply].entry = ALL_CASTLING_MASK;
 	while (ss >> token) {
 		switch (token) {
