@@ -421,19 +421,30 @@ void zobrist::initialise_zobrist_keys() {
 
 //Pretty-prints the position (including FEN and hash key)
 std::ostream& operator<< (std::ostream& os, const Position& p) {
-	const char* s = "   +---+---+---+---+---+---+---+---+\n";
-	const char* t = "     A   B   C   D   E   F   G   H\n";
+	const char* s = " +-+-+-+-+-+-+-+-+\n";
+	const char* t = "  A B C D E F G H\n";
 	os << t;
 	for (int i = 56; i >= 0; i -= 8) {
-		os << s << " " << i / 8 + 1 << " ";
+		os << i / 8 + 1;
 		for (int j = 0; j < 8; j++)
-			os << "| " << PIECE_STR[p.board[i + j]] << " ";
-		os << "| " << i / 8 + 1 << "\n";
+			os << "|" << PIECE_STR[p.board[i + j]];
+		os << "|" << i / 8 + 1 << "\n";
 	}
-	os << s;
+	//os << s;
 	os << t << "\n";
-	os << "FEN: " << p.fen() << "\n";
-	os << "Hash: 0x" << std::hex << p.hash << std::dec << "\n";
+	// const char* s = "   +---+---+---+---+---+---+---+---+\n";
+	// const char* t = "     A   B   C   D   E   F   G   H\n";
+	// os << t;
+	// for (int i = 56; i >= 0; i -= 8) {
+	// 	os << s << " " << i / 8 + 1 << " ";
+	// 	for (int j = 0; j < 8; j++)
+	// 		os << "| " << PIECE_STR[p.board[i + j]] << " ";
+	// 	os << "| " << i / 8 + 1 << "\n";
+	// }
+	// os << s;
+	// os << t << "\n";
+	//OSI os << "FEN: " << p.fen() << "\n";
+	//OSI os << "Hash: 0x" << std::hex << p.hash << std::dec << "\n";
 	return os;
 }
 
@@ -490,8 +501,9 @@ void Position::set_position(const std::vector<std::pair<Piece,Square>> piecelist
 
 //Updates a position according to an FEN string
 void Position::set(const std::string& fen, Position& p) {
-	
+	//OSI Start
 	for (Square i = a1; i < NO_SQUARE; i = Square(i + 1)){ p.board[i] = NO_PIECE;}
+	// OSI end
 
 	int square = a8;
 	for (char ch : fen.substr(0, fen.find(' '))) {

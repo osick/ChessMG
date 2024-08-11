@@ -63,7 +63,14 @@ namespace cmg {
 
 	template<Color Us> void CMGPosition::undo(CMGMove &move){ _position.undo<Us>(move.m());};
 
-	void CMGPosition::move_piece(std::int32_t from, std::int32_t to) { _position.move_piece(Square(from),Square(to)); _set_states(); };
+	void CMGPosition::move_piece(std::int32_t from, std::int32_t to) {
+		//_position.move_piece(Square(from),Square(to)); 
+		Piece pc { _position.at(Square(from)) };
+		_position.remove_piece(Square(from));
+		_position.checkers=0;
+		_position.put_piece(pc, Square(to)); 
+		_set_states();
+	};
 	
 	void CMGPosition::del_piece(Square sq){
 	};
@@ -71,27 +78,27 @@ namespace cmg {
 	void CMGPosition::add_piece(Piece pc, Square sq){
 	};
 
-
-	std::vector<std::int32_t> CMGPosition::moves(int Us){return (Us == 0 ? this->_w_move_list : this->_b_move_list); };
+	std::vector<std::int32_t> CMGPosition::moves(int Us){return (Us == 0 ? _w_move_list : _b_move_list); };
 	
 	void CMGPosition::_w_moves(){
-
 		if (_w_state < CMG_ILLEGAL_POSITION){
+			_w_move_list.clear();
 			MoveList<WHITE> move_list(_position);
 			for (Move move : move_list) {
-				this->_w_move_list.push_back(move.from()); 
-				this->_w_move_list.push_back(move.to()); 
-				this->_w_move_list.push_back(move.flags());}
+				_w_move_list.push_back(move.from()); 
+				_w_move_list.push_back(move.to()); 
+				_w_move_list.push_back(move.flags());}
 		}
 	};
 	
 	void CMGPosition::_b_moves(){
 		if (_b_state < CMG_ILLEGAL_POSITION){
+			_b_move_list.clear();
 			MoveList<BLACK> move_list(_position);
 			for (Move move : move_list) {
-				this->_b_move_list.push_back(move.from()); 
-				this->_b_move_list.push_back(move.to()); 
-				this->_b_move_list.push_back(move.flags());}
+				_b_move_list.push_back(move.from()); 
+				_b_move_list.push_back(move.to()); 
+				_b_move_list.push_back(move.flags());}
 		}
 	};		
 
@@ -126,7 +133,8 @@ namespace cmg {
 		return nodes;
 	}
 
-	bool CMGPosition::is_legal(){ return (turn() == WHITE ? (_w_state < CMG_ILLEGAL_POSITION) : (_b_state < CMG_ILLEGAL_POSITION));}
+	bool CMGPosition::is_legal(){ 
+		return (turn() == WHITE ? (_w_state < CMG_ILLEGAL_POSITION) : (_b_state < CMG_ILLEGAL_POSITION));}
 	
 	bool CMGPosition::_king_contact(){
 		string fen = _position.fen();
@@ -152,6 +160,8 @@ namespace cmg {
 	void CMGPosition::_set_states() {
 		bool w_check  = _position.in_check<WHITE>();
 		bool b_check  = _position.in_check<BLACK>();
+		_w_move_list.clear();
+		_b_move_list.clear();
 		if (_illegal_pawn() or _king_contact() or (w_check and b_check)){
 			_w_state = CMG_ILLEGAL_POSITION;
 			_b_state = CMG_ILLEGAL_POSITION;

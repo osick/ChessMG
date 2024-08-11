@@ -22,7 +22,7 @@ def iter1():
                 #pos.print()
                 nodes = len(pos.moves())//3
                 nodes_total+=nodes
-                #print(f"{i:<5} {item['nodes'] = :<20} {nodes = :<20} {item['fen']}")
+                print(f"{i:<5} {item['nodes'] = :<20} {nodes = :<20} {item['fen']}")
     duration=time()-start
     NPS = int(round(nodes_total/duration,0)) 
     print(f"{NPS=:<20_}{duration:.1f}")
@@ -32,24 +32,26 @@ def iter2():
     input = {"raw":[(13,2), (5,0) , (4,40), (12,53)], "turn":True, "epsq":64, "castling":""} #
     pos = ChessMoveGenerator(fen)
     total= len(pos.moves())//3
-    pos.print()
-    print(f"{total = :<20}")
     start=time()
-    for k in range(50):
+    rounds=10000
+    for k in range(rounds):
         this = 0
         for i in range(0,63):
             next=i+1
             if next not in [2,40,53]:
                 pos.move_piece(this,next)
                 this=next
-                #pos.print()
-                nodes = len(pos.moves())//3
+                mvs= pos.moves()
+                nodes = len(mvs)//3
                 total+=nodes
+                #pos.print()
+                #print(f"K{SQ(next).name}", pos.is_legal(), pos.turn(), pos.state(0), pos.state(1), pos.moves(as_string=True))
+                #print(f"{i:<5} {next=} {nodes = :<20}")
+                #print("-"*140+"\n")
         pos.move_piece(63,0)
-        #print(f"{k:<5} {nodes = :<20}")
     duration=time()-start
     NPS = int(round(total/duration,0)) 
-    print(f"{NPS=:<15_}{total=:<15}{duration:.1f}")
+    print(f"{NPS=:<15_}{total=:<15_}{duration=:.1f}sec {64*rounds/duration:_}")
 
 if __name__ =="__main__":
     iter2()
