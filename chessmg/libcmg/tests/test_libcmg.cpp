@@ -10,28 +10,23 @@ void test_perft(int depth) {
 	auto diff = end - begin;
 
     unsigned long long nodes_correct;
-
 	if (depth == 6) nodes_correct = 119060324; 
 	if (depth == 7) nodes_correct = 3195901860;
-    
 	if (n == nodes_correct){ 
-		std::cout << "NPS: " << int(n * 1000000.0 / std::chrono::duration_cast<std::chrono::microseconds>(diff).count()) << std::endl;
-		std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::microseconds>(diff).count() << " [microseconds]" << std::endl;
-		std::cout << "Nodes:" << n << " is correct" << std::endl;
-		std::cout << "TEST PASSED,"<< std::endl << std::endl;
+		std::cout << "NPS = " << int(n * 1000000.0 / std::chrono::duration_cast<std::chrono::microseconds>(diff).count()) << std::endl;
+		std::cout << "TIME DIFF = " << std::chrono::duration_cast<std::chrono::microseconds>(diff).count() << " [microseconds]" << std::endl;
+		std::cout << "NODES =" << n << " is correct" << std::endl;
+		std::cout << "TEST PASSED"<< std::endl << std::endl;
 	}
 	else{
-		std::cerr << "TEST FAILED " << "expected Nodes:" << nodes_correct << " got Nodes:" << n << std::endl << std::endl;
+		std::cerr << "TEST FAILED" << ", expected Nodes " << nodes_correct << ", got " << n << std::endl << std::endl;
 	}
-
 }
 
 int main() {
-	// initialise_all_databases();
-	// zobrist::initialise_zobrist_keys();	
-	//perftdiv<WHITE>(DEFAULT_FEN,5);
 
 	int depth = 7;
+	std::cout << "test_libcmg\n";
 	std::cout << "Position: " << DEFAULT_FEN << std::endl << "Depth:" << depth << std::endl; 
     test_perft(depth);
 }

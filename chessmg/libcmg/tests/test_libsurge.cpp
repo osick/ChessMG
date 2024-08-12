@@ -38,25 +38,6 @@ template<Color Us> unsigned long long perft(Position& p, unsigned int depth) {
 	return nodes;
 }
 
-template<Color Us> void perftdiv(std::string fen, unsigned int depth) {
-	unsigned long long nodes = 0, pf;
-	Position p;
-	Position::set(fen, p);
-
-	MoveList<Us> list(p);
-
-	for (Move move : list) {
-		std::cout << move <<"|";
-		p.play<Us>(move);
-		pf = perft<~Us>(p, depth - 1);
-		std::cout << ": " << pf << " moves" << std::endl;
-		nodes += pf;
-		p.undo<Us>(move);
-	}
-
-	std::cout << "\nTotal: " << nodes << " moves\n";
-}
-
 void test_perft(int depth) {
 	Position p;
 	Position::set(DEFAULT_FEN, p);
@@ -66,11 +47,15 @@ void test_perft(int depth) {
 	std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
 	auto diff = end - begin;
 
-	unsigned long long nodes_correct = 119060324; /* depth == 6 */
+	unsigned long long nodes_correct; 
+	if (depth == 6) nodes_correct = 119060324; 
+	if (depth == 7) nodes_correct = 3195901860;
+
+
 	if (n == nodes_correct){ 
 		std::cout << "NPS: " << int(n * 1000000.0 / std::chrono::duration_cast<std::chrono::microseconds>(diff).count()) << std::endl;
 		std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::microseconds>(diff).count() << " [microseconds]" << std::endl;
-		std::cout << "Nodes:" << n << " is correct" << std::endl << std::endl;
+		std::cout << "Nodes:" << n << " is correct\n" << std::endl;
 		std::cout << "TEST PASSED,"<< std::endl;
 
 	}
@@ -84,9 +69,8 @@ int main() {
 	initialise_all_databases();
 	zobrist::initialise_zobrist_keys();	
 
-	//perftdiv<WHITE>(DEFAULT_FEN,5);
-
-	int depth =6;
+	int depth = 7;
+	std::cout << "test_libsurge\n";
 	std::cout << "Position: " << DEFAULT_FEN << std::endl << "Depth:" << depth << std::endl; 
     test_perft(depth);
 }
