@@ -22,3 +22,4 @@ chessmg/libcmg/make.txt
 .vscode/
 *.egg-info/
 examples/stats.txt
+chessmg/libcmg/tests/threading

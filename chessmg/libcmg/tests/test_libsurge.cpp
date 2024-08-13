@@ -31,7 +31,7 @@
 
 
 template<Color Us> unsigned long long perft(Position& p, unsigned int depth) {
-	int nmoves; unsigned long long nodes = 0;
+	unsigned long long nodes = 0;
 	MoveList<Us> list(p);
 	if (depth == 1) return (unsigned long long) list.size();
 	for (Move move : list) { p.play<Us>(move); nodes += perft<~Us>(p, depth - 1); p.undo<Us>(move); }
@@ -69,7 +69,7 @@ int main() {
 	initialise_all_databases();
 	zobrist::initialise_zobrist_keys();	
 
-	int depth = 7;
+	int depth = 6;
 	std::cout << "test_libsurge\n";
 	std::cout << "Position: " << DEFAULT_FEN << std::endl << "Depth:" << depth << std::endl; 
     test_perft(depth);

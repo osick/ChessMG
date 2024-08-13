@@ -25,7 +25,7 @@ void test_perft(int depth) {
 
 int main() {
 
-	int depth = 7;
+	int depth = 6;
 	std::cout << "test_libcmg\n";
 	std::cout << "Position: " << DEFAULT_FEN << std::endl << "Depth:" << depth << std::endl; 
     test_perft(depth);

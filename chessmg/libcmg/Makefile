@@ -23,8 +23,11 @@ clean:
 	rm -rf tests/test_libsurge
 	rm -rf tests/test_libcmg
 
-test: clean libcmg
-	$(CXX) $(CXX_MAIN_FLAGS) tests/test_libsurge.cpp -L. -l:libsurge.a  -o tests/test_libsurge
-	$(CXX) $(CXX_MAIN_FLAGS) tests/test_libcmg.cpp   -L. -l:libcmg.a -l:libsurge.a 	-o tests/test_libcmg
+buildtest: libcmg
+	$(CXX) $(CXX_MAIN_FLAGS)  			tests/test_libsurge.cpp -L. -l:libsurge.a  				-o tests/test_libsurge
+	$(CXX) $(CXX_MAIN_FLAGS)  			tests/test_libcmg.cpp   -L. -l:libcmg.a -l:libsurge.a 	-o tests/test_libcmg
+	$(CXX) $(CXX_MAIN_FLAGS) -pthread   tests/threading1.cpp  	-L. -l:libcmg.a -l:libsurge.a 	-o tests/threading
+
+test: buildtest
 	./tests/test_libsurge
 	./tests/test_libcmg
