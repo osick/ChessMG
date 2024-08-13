@@ -13,14 +13,14 @@
 
 template<Color Us> 
 unsigned long long perft_start(std::string fen, unsigned int depth) {
-        std::cout <<"fen=" << fen <<" depth=" <<depth << " started" << std::endl; 
-        std::cout.flush();
+        //std::cout <<"fen=" << fen <<" depth=" <<depth << " started" << std::endl; 
+        //std::cout.flush();
         long long result = 0; 
         Position next_pos; 
         Position::set(fen,next_pos);
         result = perft<Us>(next_pos, depth);
-        std::cout <<"fen=" << fen <<" depth=" <<depth << " DONE! Nodes=" <<result << std::endl; 
-        std::cout.flush();
+        //std::cout <<"fen=" << fen <<" depth=" <<depth << " DONE! Nodes=" <<result << std::endl; 
+        //std::cout.flush();
         return result;
 }
 
@@ -60,8 +60,7 @@ int main(int argc,char* argv[]){
         nodes += future.get(); 
     }
     end = std::chrono::steady_clock::now();
-    auto diff = end - begin;
-    int count = std::chrono::duration_cast<std::chrono::microseconds>(diff).count();
+    int count = std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count();
     std::cout << " Nodes=" << nodes <<std::endl;
     std::cout << " Duration=" << count << " Mikroseconds" << std::endl;
     std::cout << " NPS=" << nodes / count * 1'000'000 << std::endl;
