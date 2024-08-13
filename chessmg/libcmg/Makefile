@@ -26,8 +26,9 @@ clean:
 buildtest: libcmg
 	$(CXX) $(CXX_MAIN_FLAGS)  			tests/test_libsurge.cpp -L. -l:libsurge.a  				-o tests/test_libsurge
 	$(CXX) $(CXX_MAIN_FLAGS)  			tests/test_libcmg.cpp   -L. -l:libcmg.a -l:libsurge.a 	-o tests/test_libcmg
-	$(CXX) $(CXX_MAIN_FLAGS) -pthread   tests/threading1.cpp  	-L. -l:libcmg.a -l:libsurge.a 	-o tests/threading
+	$(CXX) $(CXX_MAIN_FLAGS) -pthread   tests/test_threading.cpp  	-L. -l:libcmg.a -l:libsurge.a 	-o tests/test_threading
 
 test: buildtest
 	./tests/test_libsurge
 	./tests/test_libcmg
+	./tests/test_threading 6
