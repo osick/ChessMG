@@ -1,26 +1,18 @@
-// Example from https://www.diehlpk.de/blog/modern-cpp/
-// g++-10 -O3 -pthread  -o thread_test threading1.cpp 
-// ./thread_test 10000000 2
-
-#include <cmath>
 #include <cstdlib>
 #include <future>
 #include <vector>
 #include <iostream>
 #include <chrono>
-#include "libsurge.h"
 #include <locale>
 
+#include "libsurge.h"
+
 template<Color Us> 
-unsigned long long perft_start(std::string fen, unsigned int depth) {
-        //std::cout <<"fen=" << fen <<" depth=" <<depth << " started" << std::endl; 
-        //std::cout.flush();
+unsigned long long perft_thread(std::string fen, unsigned int depth) {
         long long result = 0; 
         Position next_pos; 
         Position::set(fen,next_pos);
         result = perft<Us>(next_pos, depth);
-        //std::cout <<"fen=" << fen <<" depth=" <<depth << " DONE! Nodes=" <<result << std::endl; 
-        //std::cout.flush();
         return result;
 }
 
@@ -38,31 +30,45 @@ unsigned long long perft(Position& p, unsigned int depth) {
 };
 
 int main(int argc,char* argv[]){
+
+    //maxdepth from cli
     int maxdepth = argc>=2 ? atoi(argv[1]) : 6;
-    std::cout.imbue(std::locale(""));
+
+    //init libsurge
     initialise_all_databases();
 	zobrist::initialise_zobrist_keys();	
+
+    //start generating
+    std::chrono::steady_clock::time_point begin {};
+    std::chrono::steady_clock::time_point end {};
+ 	begin = std::chrono::steady_clock::now();
     Position p;
     Position::set(DEFAULT_FEN, p);
 	MoveList<WHITE> list(p);
     unsigned long long nodes = 0;
     std::vector<std::future<unsigned long long>> futures {};
-    std::chrono::steady_clock::time_point begin {};
-    std::chrono::steady_clock::time_point end {};
-	begin = std::chrono::steady_clock::now();
 
+    //first step: split into different threads along the movelist in the starting position.
     for (Move move : list) {
         p.play<WHITE>(move);
-        futures.emplace_back(std::async(perft_start<BLACK>,p.fen(), maxdepth-1) );
+        futures.emplace_back(std::async(perft_thread<BLACK>,p.fen(), maxdepth-1) );
         p.undo<WHITE>(move);
     }
+    
+    //second step: Collect the result from all futures.
     for (std::future<unsigned long long>& future: futures){ 
         nodes += future.get(); 
     }
+    
+    //Done.
     end = std::chrono::steady_clock::now();
+
+    //Output of the result
     int count = std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count();
-    std::cout << " Nodes=" << nodes <<std::endl;
-    std::cout << " Duration=" << count << " Mikroseconds" << std::endl;
-    std::cout << " NPS=" << nodes / count * 1'000'000 << std::endl;
+    std::cout.imbue(std::locale(""));
+    std::cout << "Nodes=" << nodes <<std::endl;
+    std::cout << "Duration=" << count << " Mikroseconds" << std::endl;
+    std::cout << "NPS=" << nodes / count * 1'000'000 << std::endl;
+    
     return 0;
 };
