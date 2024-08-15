@@ -414,12 +414,10 @@ uint64_t zobrist::zobrist_table[NPIECES][NSQUARES];
 //Initializes the zobrist table with random 64-bit numbers
 void zobrist::initialise_zobrist_keys() {
 	PRNG rng(70026077756745674561);
-	for (int i = 0; i < NPIECES; i++)
-		for (int j = 0; j < NSQUARES; j++)
-			zobrist::zobrist_table[i][j] = rng.rand<uint64_t>();
+	for (int i = 0; i < NPIECES; i++) for (int j = 0; j < NSQUARES; j++) zobrist::zobrist_table[i][j] = rng.rand<uint64_t>();
 }
 
-//Pretty-prints the position (including FEN and hash key)
+//Pretty-prints the position
 std::ostream& operator<< (std::ostream& os, const Position& p) {
 	const char* s = " +-+-+-+-+-+-+-+-+\n";
 	const char* t = "  A B C D E F G H\n";
@@ -430,21 +428,7 @@ std::ostream& operator<< (std::ostream& os, const Position& p) {
 			os << "|" << PIECE_STR[p.board[i + j]];
 		os << "|" << i / 8 + 1 << "\n";
 	}
-	//os << s;
 	os << t << "\n";
-	// const char* s = "   +---+---+---+---+---+---+---+---+\n";
-	// const char* t = "     A   B   C   D   E   F   G   H\n";
-	// os << t;
-	// for (int i = 56; i >= 0; i -= 8) {
-	// 	os << s << " " << i / 8 + 1 << " ";
-	// 	for (int j = 0; j < 8; j++)
-	// 		os << "| " << PIECE_STR[p.board[i + j]] << " ";
-	// 	os << "| " << i / 8 + 1 << "\n";
-	// }
-	// os << s;
-	// os << t << "\n";
-	//OSI os << "FEN: " << p.fen() << "\n";
-	//OSI os << "Hash: 0x" << std::hex << p.hash << std::dec << "\n";
 	return os;
 }
 
@@ -546,8 +530,7 @@ void Position::set(const std::string& fen, Position& p) {
 	
 //Moves a piece to a (possibly empty) square on the board and updates the hash
 void Position::move_piece(Square from, Square to) {
-	hash ^= zobrist::zobrist_table[board[from]][from] ^ zobrist::zobrist_table[board[from]][to]
-		^ zobrist::zobrist_table[board[to]][to];
+	hash ^= zobrist::zobrist_table[board[from]][from] ^ zobrist::zobrist_table[board[from]][to] ^ zobrist::zobrist_table[board[to]][to];
 	Bitboard mask = SQUARE_BB[from] | SQUARE_BB[to];
 	piece_bb[board[from]] ^= mask;
 	piece_bb[board[to]] &= ~mask;
@@ -562,4 +545,3 @@ void Position::move_piece_quiet(Square from, Square to) {
 	board[to] = board[from];
 	board[from] = NO_PIECE;
 }
-

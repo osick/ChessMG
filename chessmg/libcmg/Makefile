@@ -28,6 +28,10 @@ buildtest: libcmg
 	$(CXX) $(CXX_MAIN_FLAGS)  			tests/test_libcmg.cpp   -L. -l:libcmg.a -l:libsurge.a 	-o tests/test_libcmg
 	$(CXX) $(CXX_MAIN_FLAGS) -pthread   tests/test_threading.cpp  	-L. -l:libcmg.a -l:libsurge.a 	-o tests/test_threading
 
+iter: libcmg
+	$(CXX) $(CXX_MAIN_FLAGS) -pthread   tests/test_iterator.cpp  	-L. -l:libcmg.a -l:libsurge.a 	-o tests/test_iterator
+	./tests/test_iterator
+
 test: buildtest
 	./tests/test_libsurge
 	./tests/test_libcmg

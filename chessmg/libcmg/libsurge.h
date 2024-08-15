@@ -169,7 +169,7 @@ enum MoveFlags : int {
 	OO = 0b0010, 
 	OOO = 0b0011,
 	CAPTURE = 0b1000,
-	CAPTURES = 0b1111,
+	//CAPTURES = 0b1111,
 	EN_PASSANT = 0b1010,
 	PROMOTIONS = 0b0111,
 	PROMOTION_CAPTURES = 0b1100,
@@ -199,7 +199,7 @@ public:
 	inline Square from() const { return Square((move >> 6) & 0x3f); }
 	inline int to_from() const { return move & 0xffff; }
 	inline MoveFlags flags() const { return MoveFlags((move >> 12) & 0xf); }
-	inline bool is_capture() const {return (move >> 12) & CAPTURES;}
+	inline bool is_capture() const {return (move >> 12) & 0b1111 ;} //OSI CAPTURES;}
 	void operator=(Move m) { move = m.move; }
 	bool operator==(Move a) const { return to_from() == a.to_from(); }
 	bool operator!=(Move a) const { return to_from() != a.to_from(); }

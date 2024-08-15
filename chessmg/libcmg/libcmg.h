@@ -68,6 +68,8 @@ namespace cmg{
             //takes the move back
             template<Color Us> void undo(CMGMove &move);
 
+	        void put_piece(int pc, std::int32_t to);
+
             //move a piece from - to
             void move_piece(std::int32_t from, std::int32_t to);
 

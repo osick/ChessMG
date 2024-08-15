@@ -75,6 +75,7 @@ namespace cmg {
 	};
 	
 	void CMGPosition::_init(){ 
+		_position.checkers=0;
 		turn()==WHITE ? _states<WHITE>() : _states<BLACK>(); 
 	};
 
@@ -100,10 +101,15 @@ namespace cmg {
 		Piece pc { _position.at(Square(from)) };
 		_position.remove_piece(Square(from));
 		_position.put_piece(pc, Square(to)); 
-		_position.checkers=0;
 		_init();
 	};
-	
+
+	void CMGPosition::put_piece(int pc, std::int32_t to) {
+		_position.put_piece(Piece(pc), Square(to)); 
+		_init();
+	};
+
+
 	std::vector<std::int32_t> CMGPosition::moves(int Us){
 		if (Us == 0) return _moves<WHITE>() ;
 		else return _moves<BLACK>(); 
@@ -138,23 +144,6 @@ namespace cmg {
 		}
 		return nodes;
 	}
-
-	// template<Color Us>
-    // std::vector<std::int64_t> CMGPosition::_perft_moves(unsigned int depth){
-	// 	std::vector<std::int64_t> node_list {};	
-	// 	if (_state >= CMG_ILLEGAL_POSITION) {
-	// 		return node_list;
-	// 	} // Us in illegal position, no legal moves
-	// 	MoveList<Us> list(_position);
-	// 	if (depth == 1) return (std::int64_t) list.size();
-	// 	for (Move move : list) {
-	// 			_position.play<Us>(move);
-	// 			nodes += (std::int64_t) _perft<~Us>(depth - 1);
-	// 			_position.undo<Us>(move);
-	// 	}
-	// 	return nodes;
-	// }
-
 
 	bool CMGPosition::is_legal(){
 		return (_state  < CMG_ILLEGAL_POSITION);

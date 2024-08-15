@@ -26,3 +26,4 @@ chessmg/libcmg/tests/test_libcmg
 chessmg/libcmg/tests/test_libsurge
 chessmg/libcmg/tests/test_threading
 chessmg/libcmg/tests/threading
+chessmg/libcmg/tests/test_iterator
