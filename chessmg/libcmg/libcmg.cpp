@@ -110,6 +110,13 @@ namespace cmg {
 	};
 
 
+
+    void CMGPosition::remove_piece(int sq){
+		_position.remove_piece(Square(sq)); 
+		_init();
+	};
+
+
 	std::vector<std::int32_t> CMGPosition::moves(int Us){
 		if (Us == 0) return _moves<WHITE>() ;
 		else return _moves<BLACK>(); 
@@ -153,10 +160,21 @@ namespace cmg {
 		string fen = _position.fen();
 		int wksq = a8;
 		int bksq = a8;
-		for (char ch : fen.substr(0, fen.find('K'))) { if (isdigit(ch)) wksq += (ch - '0') * EAST; else if (ch == '/') wksq += 2 * SOUTH; else wksq += 1;}
-		for (char ch : fen.substr(0, fen.find('k'))) { if (isdigit(ch)) bksq += (ch - '0') * EAST; else if (ch == '/') bksq += 2 * SOUTH; else bksq += 1;}
-		int result=abs(wksq-bksq);
-		return (result ==1 or result ==7 or result ==8 or result ==9);
+		for (char ch : fen.substr(0, fen.find('K'))) {
+			if (isdigit(ch)) wksq += (ch - '0') * EAST; 
+			else if (ch == '/') wksq += 2 * SOUTH; 
+			else wksq += 1;
+		}
+		int wksq_x = wksq%8;
+		int wksq_y = wksq/8;
+		for (char ch : fen.substr(0, fen.find('k'))) {
+			if (isdigit(ch)) bksq += (ch - '0') * EAST; 
+			else if (ch == '/') bksq += 2 * SOUTH; 
+			else bksq += 1;
+		}
+		int bksq_x = bksq%8;
+		int bksq_y = bksq/8;
+		return ((bksq_x -wksq_x)*(bksq_x -wksq_x) + (bksq_y -wksq_y)*(bksq_y -wksq_y)<=2);
 	};
 
 	bool CMGPosition::_illegal_pawn(){

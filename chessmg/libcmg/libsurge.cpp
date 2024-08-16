@@ -428,7 +428,7 @@ std::ostream& operator<< (std::ostream& os, const Position& p) {
 			os << "|" << PIECE_STR[p.board[i + j]];
 		os << "|" << i / 8 + 1 << "\n";
 	}
-	os << t << "\n";
+	os << t;
 	return os;
 }
 
