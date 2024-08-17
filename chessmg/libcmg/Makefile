@@ -1,7 +1,10 @@
-SHELL       := /bin/bash
-CXXFLAGS    := -O2  -fPIC  -march=native  -I. -Wall
-CXX         := g++
-CXX_MAIN_FLAGS 	:= -O2 -std=c++20 -march=native -I. -Wall
+SHELL                     := /bin/bash
+CXXFLAGS                  := -O2  -fPIC     -march=native  -I. -Wall 
+CXX                       := g++
+CXX_MAIN_FLAGS            := -O2 -std=c++20 -march=native -I. -Wall 
+CXX_MULTITHREADING_FLAGS  := -pthread
+
+
 
 all: libcmg
 
@@ -20,19 +23,18 @@ deploy:
 
 clean: 
 	rm -rf *.so *.o *.a a.out
-	rm -rf tests/test_libsurge
-	rm -rf tests/test_libcmg
+	rm -rf tests/exec_*
 
-buildtest: libcmg
-	$(CXX) $(CXX_MAIN_FLAGS)  			tests/test_libsurge.cpp -L. -l:libsurge.a  				-o tests/test_libsurge
-	$(CXX) $(CXX_MAIN_FLAGS)  			tests/test_libcmg.cpp   -L. -l:libcmg.a -l:libsurge.a 	-o tests/test_libcmg
-	$(CXX) $(CXX_MAIN_FLAGS) -pthread   tests/test_threading.cpp  	-L. -l:libcmg.a -l:libsurge.a 	-o tests/test_threading
-
-iter: libcmg
-	$(CXX) $(CXX_MAIN_FLAGS) -pthread   tests/test_iterator.cpp  	-L. -l:libcmg.a -l:libsurge.a 	-o tests/test_iterator
-	./tests/test_iterator
+buildtest:
+	$(CXX) $(CXX_MAIN_FLAGS) tests/test_libsurge.cpp  -L. -l:libsurge.a              -o tests/exec_test_libsurge
+	$(CXX) $(CXX_MAIN_FLAGS) tests/test_libcmg.cpp    -L. -l:libcmg.a -l:libsurge.a  -o tests/exec_test_libcmg
+	$(CXX) $(CXX_MAIN_FLAGS) $(CXX_MULTITHREADING_FLAGS)   tests/test_libsurge_multithreading.cpp  -L. -l:libcmg.a -l:libsurge.a 	-o tests/exec_test_libsurge_multithreading
 
 test: buildtest
-	./tests/test_libsurge
-	./tests/test_libcmg
-	./tests/test_threading 6
+	./tests/exec_test_libsurge
+	./tests/exec_test_libcmg
+	./tests/exec_test_libsurge_multithreading 7
+
+iter: libcmg
+	$(CXX) $(CXX_MAIN_FLAGS) $(CXX_MULTITHREADING_FLAGS) tests/test_iterator.cpp  	-L. -l:libcmg.a -l:libsurge.a 	-o tests/exec_test_iterator
+	./tests/exec_test_iterator

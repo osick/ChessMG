@@ -19,8 +19,13 @@ int main(int argc, char* argv[]){
     std::vector<Piece> piecelist {WHITE_KING, BLACK_KING, WHITE_BISHOP,  BLACK_KNIGHT};
     std::uint64_t duplicates {0} ;
     std::vector<std::uint8_t> a;    
-    int maxsize {2};
-    std::uint64_t max {64*64};
+    int maxsize {3};
+    int i = 0;
+    std::uint64_t max {1};
+    while (i<maxsize){
+        max*=64;
+        i++;
+    }
 
 
     cmg::CMGPosition position("8/8/8/8/8/8/8/8 w - - 0 1");
