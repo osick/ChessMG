@@ -9,7 +9,6 @@
 #include <chrono>
 
 #include "libcmg.h"
-
     
 int main(int argc, char* argv[]){
     std::cout.imbue(std::locale(""));
@@ -19,14 +18,13 @@ int main(int argc, char* argv[]){
     std::vector<Piece> piecelist {WHITE_KING, BLACK_KING, WHITE_BISHOP,  BLACK_KNIGHT};
     std::uint64_t duplicates {0} ;
     std::vector<std::uint8_t> a;    
-    int maxsize {3};
+    int maxsize {4};
     int i = 0;
     std::uint64_t max {1};
     while (i<maxsize){
         max*=64;
         i++;
     }
-
 
     cmg::CMGPosition position("8/8/8/8/8/8/8/8 w - - 0 1");
 
@@ -38,15 +36,15 @@ int main(int argc, char* argv[]){
         for (int elem = 0; elem < maxsize; elem++){ 
             a.emplace_back(std::uint8_t((v >> (6*elem)) & 0b00111111)); 
         }
-        std::set<std::uint8_t> s(a.begin(),a.end());
-        if (s.size() != maxsize) {
-            duplicates++;
-        }
-        else{
-            for (int p=0; p<maxsize; p++){ position.put_piece(piecelist[p],a[p]);}
-            allmoves += position.moves(0).size()/3;
-            for (int p=0; p<maxsize; p++){ position.remove_piece(a[p]);}
-        }
+        //std::set<std::uint8_t> s(a.begin(),a.end());
+        // if (s.size() != maxsize) {
+        //     duplicates++;
+        // }
+        // else{
+        //     //for (int p=0; p<maxsize; p++){ position.put_piece(piecelist[p],a[p]);}
+        //     //allmoves += position.moves(0).size()/3;
+        //     //for (int p=0; p<maxsize; p++){ position.remove_piece(a[p]);}
+        // }
         a.clear(); 
 
     }
@@ -56,7 +54,7 @@ int main(int argc, char* argv[]){
     int count = std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count();
 
     //RESULT    
-    std::cout << "Duration=" << count << "\nDuplicates=" << duplicates << "\nAllmoves="<< allmoves << "\n" <<std::endl;
+    std::cout << "Duration=" << count << "\nDuplicates=" << duplicates << "\nAllmoves="<< allmoves << "\nIPS=" << max/(count+1)*1000000 <<std::endl;
 
 };
 
