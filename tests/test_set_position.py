@@ -5,11 +5,9 @@ import sys
 def test(input, depth,verbose=False):
     start = time(); 
     c_inp = ChessMoveGenerator(input)
-    c_inp.print()
     nodes = sum([c_inp.perft(i) for i in range(1,depth+1)])
     final = time()-start; 
     if verbose: print(f"inp: Time:{final:.2f}, NPS={int(round(nodes/final,0)):_}, {nodes=}")
-    print(nodes)
     return nodes
 
 if __name__ =="__main__":
