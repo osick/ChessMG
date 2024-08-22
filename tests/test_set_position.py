@@ -19,6 +19,6 @@ if __name__ =="__main__":
         {"raw":[(13,2), (5,18) , (4,40), (12,53)], "turn":True, "epsq":64, "castling":""},
         "8/5q2/Q7/8/8/2K5/8/2k5 w - - 0 1"
         ]:
-        result.append(test(input,1,verbose))
+        result.append(test(input,6,verbose))
 
     {print("TEST PASSED") and exit(0)} if (len(set(result))==1) else {print("TEST FAILED") and exit(1)}
