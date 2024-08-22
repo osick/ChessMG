@@ -59,6 +59,7 @@ namespace cmg {
 			surge_pc_list.push_back(_item); 
 		};
 		Position::set_position(surge_pc_list, (turn ? WHITE : BLACK ), castling, Square(epsq), _position);
+		_init();
 	};
 
 	CMGPosition::~CMGPosition () { 

@@ -51,7 +51,7 @@ int main(int argc,char* argv[]){
     //first step: split into different threads along the movelist in the starting position.
     for (Move move : list) {
         p.play<WHITE>(move);
-        futures.emplace_back(std::async(perft_thread<BLACK>,p.fen(), maxdepth-1) );
+            futures.emplace_back(std::async(perft_thread<BLACK>,p.fen(), maxdepth-1) );
         p.undo<WHITE>(move);
     }
     
@@ -59,7 +59,7 @@ int main(int argc,char* argv[]){
     for (std::future<unsigned long long>& future: futures){ 
         nodes += future.get(); 
     }
-    
+
     //Done.
     end = std::chrono::steady_clock::now();
 
