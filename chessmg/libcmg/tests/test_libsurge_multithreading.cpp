@@ -9,11 +9,11 @@
 
 template<Color Us> 
 unsigned long long perft_thread(std::string fen, unsigned int depth) {
-        long long result = 0; 
-        Position next_pos; 
-        Position::set(fen,next_pos);
-        result = perft<Us>(next_pos, depth);
-        return result;
+    long long result = 0; 
+    Position next_pos; 
+    Position::set(fen,next_pos);
+    result = perft<Us>(next_pos, depth);
+    return result;
 }
 
 template<Color Us> 
