@@ -4,7 +4,8 @@
 
 Technically it relies on the very fast Chess Move Generator libary "surge" (https://github.com/nkarve/surge) written in C++, which is embedded via cython. 
 
-**chessmg** is quite fast and can reach 250.000.000 NPS (nodes per second). For more details see the [PERFT](#PERFT) section
+**chessmg** is quite fast and single threaded it reaches about 250.000.000 NPS (nodes per second). 
+Multithreaded we can reach about 2 Billion moves per second. For more details see the [PERFT](#PERFT) section
 
 ## Start it!
 
@@ -26,14 +27,14 @@ get it from github and install it from the source directory via pip
 
 ### PERFT
 
-Now we do perft test (see https://www.chessprogramming.org/Perft_Results)
+There is a standardtest for chess move generators, namely the so callled perft (aka performanca test, for more see https://www.chessprogramming.org/Perft_Results ). 
+The single threaded mode can be sinmply tested as follows:
 
 ```bash
 > cd tests
 > python test_perft_start_fen.py 
 ```
-
-The test looks for correct computation of nodes and the result should look like
+The test looks for correct computation of nodes (different move sequences from a given starting position) and the result should look like
 
 ```
  perft results for chess starting position up to depth 7
@@ -51,17 +52,12 @@ TEST PASSED
 
 ```
 
-It gives the correct number `Perft(7) = nodes = 3,195,901,860`  and takes about 13 seconds (** about 250.000.000 NPS**). 
+It gives the correct number `Perft(7) = nodes = 3,195,901,860`  and here it takes about 13 seconds (** about 250.000.000 NPS**). 
 Not the best NPS value compard to the original surge libraray (which is twice as fast) or other Libs as Gigantua etc.. But it is quite nice for Python.
 
-Applying perft.py (see https://github.com/niklasf/python-chess/blob/master/examples/perft/perft.py) of the very good native python chess library, *Python-chess* we get around 3.500.000 NPS. this is a performance win of around factor 70. 
+Applying perft.py (see https://github.com/niklasf/python-chess/blob/master/examples/perft/perft.py) of the very good native python chess library, *Python-chess* we get around 3.500.000 NPS. this is a performance win of around factor 70. The performance of course depends on the underlying hardware. 
 
-The performance of course depends on the underlying hardware, In this case the Server is as OpenSuse Server given as below:
-
-```bash
-System: arch: x86_64  bits: 64 compiler: gcc v: 13.3.0 Distro: openSUSE Leap 15.5
-CPU:    Info: 8-core model: AMD Ryzen 7 3700X Speed (MHz): avg: 4051 high: 4069 min/max: 2200/4979 boost: enabled 
-```
+As said before there is a protytypical **multithreaded implementation which can reach more than 2 Billion NPS** (only in C++ up to now, but it can simply be extended to python....). 
 
 ### Simple usage of chessmg
 
