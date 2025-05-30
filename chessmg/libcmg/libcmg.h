@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <vector>
 #include <string>
+#include <stdexcept>
 #include "libsurge.h"
 
 enum CMG_POSITION_STATE : uint8_t {
@@ -24,7 +25,7 @@ enum CMG_POSITION_STATE : uint8_t {
             return true;
     }();
 #else
-    // Alternativ method to init shared libsurge. Perhaps useful in platform independent setups....
+    // Alternative method to init shared libsurge. Perhaps useful in platform independent setups....
     void surge_init() __attribute__((constructor));
 #endif
 
@@ -42,14 +43,14 @@ namespace cmg{
 
     class CMGPosition {
         public:
-            //loads emoty Position
+            //loads empty Position
             CMGPosition();
 
             //loads Position by fen string
             CMGPosition(std::string fen);
             
             //load position by position informations
-            CMGPosition(std::vector<std::pair<int, int>> piecelist, bool turn, int epsq,  std::string castling);
+            CMGPosition(std::vector<std::pair<int, int>> piecelist, bool turn, int epsq, std::string castling);
             //unload position 
             ~CMGPosition();
             
@@ -68,26 +69,25 @@ namespace cmg{
             //takes the move back
             template<Color Us> void undo(CMGMove &move);
 
-            //put a piece at square  and init
+            //put a piece at square and init
 	        void put_piece(int pc, std::int32_t to);
 
             //remove the piece at square and init
             void remove_piece(int sq);
 
-            //move a piece from - to
+            //move a piece from - to with bounds checking
             void move_piece(std::int32_t from, std::int32_t to);
 
-            //perft test fro convinience
+            //perft test for convenience
             std::int64_t perft(unsigned int depth);
 
-            //perft test fro convinience
+            //perft test for convenience
             std::vector<std::int64_t> perft_moves(unsigned int depth);
-
 
             //returns the color of the moving party
             Color turn();
 
-            //position legel in the current posttion ans current moving party
+            //position legal in the current position and current moving party
             bool is_legal();
 
             //returns all moves in the setup
@@ -98,7 +98,7 @@ namespace cmg{
         private:
             Position _position;
             bool _king_contact();
-            bool _illegal_pawn();
+            bool _illegal_pawn();  // Improved implementation
             bool _illegal_check();
             void _init();
             template<Color> void _states();
