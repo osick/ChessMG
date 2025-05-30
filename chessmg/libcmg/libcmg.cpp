@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <cstdlib>
 #include <sstream>
+#include <stdexcept>
 #include "iostream"
 #include "libsurge.h"
 #include "libcmg.h"
@@ -49,17 +50,34 @@ namespace cmg {
 	};
 	
 	CMGPosition::CMGPosition (std::string fen){
-		set_fen(fen);
+		try {
+			set_fen(fen);
+		} catch (const std::exception& e) {
+			throw std::invalid_argument("Failed to initialize position from FEN: " + std::string(e.what()));
+		}
 	};
 	
-    CMGPosition::CMGPosition(std::vector<std::pair<int, int>> piecelist, bool turn, int epsq,  std::string castling){
+    CMGPosition::CMGPosition(std::vector<std::pair<int, int>> piecelist, bool turn, int epsq, std::string castling){
+		// Validate input
+		if (epsq < 0 || (epsq > 63 && epsq != 64)) {
+			throw std::invalid_argument("Invalid en passant square: " + std::to_string(epsq));
+		}
+		
 		std::vector<std::pair<Piece,Square>> surge_pc_list;
-		for (std::pair<int,int> i: piecelist){ 
+		for (const auto& i : piecelist){ 
+			if (i.first < 0 || i.first >= 15 || i.second < 0 || i.second >= 64) {
+				throw std::invalid_argument("Invalid piece or square in piece list");
+			}
 			std::pair<Piece,Square> _item(Piece(i.first), Square(i.second)); 
 			surge_pc_list.push_back(_item); 
 		};
-		Position::set_position(surge_pc_list, (turn ? WHITE : BLACK ), castling, Square(epsq), _position);
-		_init();
+		
+		try {
+			Position::set_position(surge_pc_list, (turn ? WHITE : BLACK), castling, Square(epsq), _position);
+			_init();
+		} catch (const std::exception& e) {
+			throw std::invalid_argument("Failed to set position: " + std::string(e.what()));
+		}
 	};
 
 	CMGPosition::~CMGPosition () { 
@@ -71,13 +89,17 @@ namespace cmg {
 	};
 	
 	void CMGPosition::set_fen(std::string fen) {
-		Position::set(fen,_position); 
-		_init();
+		try {
+			Position::set(fen, _position); 
+			_init();
+		} catch (const std::exception& e) {
+			throw std::invalid_argument("Invalid FEN string: " + fen);
+		}
 	};
 	
 	void CMGPosition::_init(){ 
-		_position.checkers=0;
-		turn()==WHITE ? _states<WHITE>() : _states<BLACK>(); 
+		_position.checkers = 0;
+		turn() == WHITE ? _states<WHITE>() : _states<BLACK>(); 
 	};
 
 	void CMGPosition::print(){ 
@@ -99,6 +121,17 @@ namespace cmg {
 	};
 
 	void CMGPosition::move_piece(std::int32_t from, std::int32_t to) {
+		// Bounds checking
+		if (from < 0 || from >= 64 || to < 0 || to >= 64) {
+			throw std::out_of_range("Square index out of bounds. Must be 0-63, got from=" + 
+									std::to_string(from) + ", to=" + std::to_string(to));
+		}
+		
+		// Check if there's a piece at the source square
+		if (_position.at(Square(from)) == NO_PIECE) {
+			throw std::invalid_argument("No piece at source square " + std::to_string(from));
+		}
+		
 		Piece pc { _position.at(Square(from)) };
 		_position.remove_piece(Square(from));
 		_position.put_piece(pc, Square(to)); 
@@ -106,31 +139,41 @@ namespace cmg {
 	};
 
 	void CMGPosition::put_piece(int pc, std::int32_t to) {
+		if (to < 0 || to >= 64) {
+			throw std::out_of_range("Square index out of bounds: " + std::to_string(to));
+		}
+		if (pc < 0 || pc >= 15) {
+			throw std::invalid_argument("Invalid piece type: " + std::to_string(pc));
+		}
+		
 		_position.put_piece(Piece(pc), Square(to)); 
 		_init();
 	};
 
-
-
     void CMGPosition::remove_piece(int sq){
+		if (sq < 0 || sq >= 64) {
+			throw std::out_of_range("Square index out of bounds: " + std::to_string(sq));
+		}
+		
 		_position.remove_piece(Square(sq)); 
 		_init();
 	};
 
-
 	std::vector<std::int32_t> CMGPosition::moves(int Us){
-		if (Us == 0) return _moves<WHITE>() ;
-		else return _moves<BLACK>(); 
+		if (Us == 0) return _moves<WHITE>();
+		else if (Us == 1) return _moves<BLACK>();
+		else throw std::invalid_argument("Color must be 0 (WHITE) or 1 (BLACK)");
 	};
 	
-	template<Color Us> std::vector<std::int32_t>  CMGPosition::_moves(){
-			std::vector<std::int32_t> movelist {};
-			if (_state < CMG_ILLEGAL_POSITION){
+	template<Color Us> std::vector<std::int32_t> CMGPosition::_moves(){
+		std::vector<std::int32_t> movelist {};
+		if (_state < CMG_ILLEGAL_POSITION){
 			MoveList<Us> move_list(_position);
 			for (Move move : move_list) {
 				movelist.push_back(move.from()); 
 				movelist.push_back(move.to()); 
-				movelist.push_back(move.flags());}
+				movelist.push_back(move.flags());
+			}
 		}
 		return movelist;
 	};
@@ -146,71 +189,81 @@ namespace cmg {
 		MoveList<Us> list(_position);
 		if (depth == 1) return (std::int64_t) list.size();
 		for (Move move : list) {
-				_position.play<Us>(move);
-				nodes += (std::int64_t) _perft<~Us>(depth - 1);
-				_position.undo<Us>(move);
+			_position.play<Us>(move);
+			nodes += (std::int64_t) _perft<~Us>(depth - 1);
+			_position.undo<Us>(move);
 		}
 		return nodes;
 	}
 
 	bool CMGPosition::is_legal(){
-		return (_state  < CMG_ILLEGAL_POSITION);
+		return (_state < CMG_ILLEGAL_POSITION);
 	}
 	
 	bool CMGPosition::_king_contact(){
-		string fen = _position.fen();
-		int wksq = a8;
-		int bksq = a8;
-		for (char ch : fen.substr(0, fen.find('K'))) {
-			if (isdigit(ch)) wksq += (ch - '0') * EAST; 
-			else if (ch == '/') wksq += 2 * SOUTH; 
-			else wksq += 1;
-		}
-		int wksq_x = wksq%8;
-		int wksq_y = wksq/8;
-		for (char ch : fen.substr(0, fen.find('k'))) {
-			if (isdigit(ch)) bksq += (ch - '0') * EAST; 
-			else if (ch == '/') bksq += 2 * SOUTH; 
-			else bksq += 1;
-		}
-		int bksq_x = bksq%8;
-		int bksq_y = bksq/8;
-		return ((bksq_x -wksq_x)*(bksq_x -wksq_x) + (bksq_y -wksq_y)*(bksq_y -wksq_y)<=2);
+		// Get king positions directly from bitboards for efficiency
+		Square wk_sq = bsf(_position.bitboard_of(WHITE, KING));
+		Square bk_sq = bsf(_position.bitboard_of(BLACK, KING));
+		
+		// Check if kings are adjacent (including diagonally)
+		int file_diff = abs(file_of(wk_sq) - file_of(bk_sq));
+		int rank_diff = abs(rank_of(wk_sq) - rank_of(bk_sq));
+		
+		return (file_diff <= 1 && rank_diff <= 1);
 	};
 
 	bool CMGPosition::_illegal_pawn(){
-		string fen = _position.fen();
-		std::string startstring;
-		std::stringstream s;
-		s << fen.substr(0, fen.find('/')) << fen.substr(fen.find_last_of('/'), fen.find(' ')); //first and last row string
-		startstring = s.str(); 
-		return (startstring.find("P") != string::npos or startstring.find("p") != string::npos);
+		// Optimized: Direct bitboard check instead of string parsing
+		Bitboard white_pawns = _position.bitboard_of(WHITE, PAWN);
+		Bitboard black_pawns = _position.bitboard_of(BLACK, PAWN);
+		
+		// Check if any pawns are on 1st or 8th rank
+		return (white_pawns & (MASK_RANK[RANK1] | MASK_RANK[RANK8])) ||
+		       (black_pawns & (MASK_RANK[RANK1] | MASK_RANK[RANK8]));
 	};
 
 	CMG_POSITION_STATE CMGPosition::state(int Us){ 
+		if (Us != 0 && Us != 1) {
+			throw std::invalid_argument("Color must be 0 (WHITE) or 1 (BLACK)");
+		}
 		return _state;
 	}
 
 	template<Color Us> void CMGPosition::_states() {
-		bool us_check   = _position.in_check<Us>();
+		bool us_check = _position.in_check<Us>();
 		bool them_check = _position.in_check<~Us>();
-		if (_illegal_pawn() or _king_contact() or them_check){
-			_state  = CMG_ILLEGAL_POSITION;
+		
+		if (_illegal_pawn() || _king_contact() || them_check){
+			_state = CMG_ILLEGAL_POSITION;
 		}
 		else{
-			std::vector<std::int32_t>move_list;
+			std::vector<std::int32_t> move_list;
 			move_list = _moves<Us>();
-			if (move_list.size()==0){
-				_state = us_check? CMG_CHECKMATE : CMG_STALEMATE;
+			if (move_list.size() == 0){
+				_state = us_check ? CMG_CHECKMATE : CMG_STALEMATE;
 			}
 			else{
-				_state = CMG_OPEN_STATE;
-			} // no special position
+				_state = us_check ? CMG_CHECK : CMG_OPEN_STATE;
+			}
 		}
-		
 	}
 
 	std::string sqstr(int idx){
-		return  SQSTR[idx];
+		if (idx < 0 || idx > 64) {
+			throw std::out_of_range("Square index must be 0-64, got " + std::to_string(idx));
+		}
+		return SQSTR[idx];
 	}
+	
+	// Explicit template instantiations
+	template void CMGPosition::play<WHITE>(CMGMove &move);
+	template void CMGPosition::play<BLACK>(CMGMove &move);
+	template void CMGPosition::undo<WHITE>(CMGMove &move);
+	template void CMGPosition::undo<BLACK>(CMGMove &move);
+	template std::vector<std::int32_t> CMGPosition::_moves<WHITE>();
+	template std::vector<std::int32_t> CMGPosition::_moves<BLACK>();
+	template std::int64_t CMGPosition::_perft<WHITE>(unsigned int depth);
+	template std::int64_t CMGPosition::_perft<BLACK>(unsigned int depth);
+	template void CMGPosition::_states<WHITE>();
+	template void CMGPosition::_states<BLACK>();
 };
