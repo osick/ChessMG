@@ -294,9 +294,12 @@ cdef class ChessMoveGenerator:
             
         if color is None:
             color = self._pos.turn()
-            
+
         cdef vector[int] raw_moves = self._pos.moves(color)
-        
+        cdef int n_moves
+        cdef int i
+        cdef np.ndarray[np.int32_t, ndim=2] moves_array
+
         # Return empty result if no moves
         if raw_moves.size() == 0:
             if return_objects:
@@ -323,14 +326,14 @@ cdef class ChessMoveGenerator:
         # Improved array API: Return properly shaped numpy array
         else:
             # Convert to numpy array and reshape
-            cdef int n_moves = raw_moves.size() // 3
-            cdef np.ndarray[np.int32_t, ndim=2] moves_array = np.empty((n_moves, 3), dtype=np.int32)
-            
+            n_moves = raw_moves.size() // 3
+            moves_array = np.empty((n_moves, 3), dtype=np.int32)
+
             for i in range(n_moves):
                 moves_array[i, 0] = raw_moves[i * 3]
                 moves_array[i, 1] = raw_moves[i * 3 + 1]
                 moves_array[i, 2] = raw_moves[i * 3 + 2]
-            
+
             return moves_array
     
     def legal_moves(self):
