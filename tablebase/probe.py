@@ -14,7 +14,7 @@ from typing import Optional, Dict
 from pathlib import Path
 import threading
 
-from ..position import ChessPosition
+from chessmg.position import ChessPosition
 from .indexing import PositionIndexer, MaterialSignature
 from .storage import TablebaseStorage, PositionValue
 
@@ -136,18 +136,13 @@ class TablebaseProbe:
                 return None
 
             try:
-                # Get table size from indexer
-                indexer = self._get_indexer(material)
-                if not indexer:
-                    return None
+                # Open storage (automatically reads material and size from header)
+                storage = TablebaseStorage.open(filepath, mode='r')
 
-                # Open storage
-                storage = TablebaseStorage(
-                    filepath,
-                    material,
-                    indexer.max_index(),
-                    mode='r'
-                )
+                # Verify material matches (safety check)
+                if storage.material != material:
+                    print(f"Warning: Material mismatch in {filepath}: expected {material}, got {storage.material}")
+                    return None
 
                 # Cache
                 self._cache[material_str] = storage
