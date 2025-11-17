@@ -66,26 +66,39 @@ class TablebaseStorage:
     """
 
     MAGIC = b'CMGTB'  # ChessMG TableBase magic number
-    VERSION = 1
+    VERSION = 2  # Incremented to support material in header
     HEADER_SIZE = 128  # Fixed header size in bytes
 
-    def __init__(self, filepath: Path, material: MaterialSignature, table_size: int, mode: str = 'r'):
+    def __init__(self, filepath: Path, material: Optional[MaterialSignature] = None,
+                 table_size: Optional[int] = None, mode: str = 'r'):
         """
         Initialize tablebase storage.
 
         Args:
             filepath: Path to tablebase file
-            material: Material signature for this tablebase
-            table_size: Number of positions in the tablebase
+            material: Material signature (required for 'w' mode, optional for 'r'/'r+')
+            table_size: Number of positions (required for 'w' mode, optional for 'r'/'r+')
             mode: 'r' for read-only, 'w' for write, 'r+' for read-write
         """
         self.filepath = Path(filepath)
-        self.material = material
-        self.table_size = table_size
         self.mode = mode
 
+        # For write mode, require material and table_size
+        if mode == 'w':
+            if material is None or table_size is None:
+                raise ValueError("material and table_size required for write mode")
+            self.material = material
+            self.table_size = table_size
+        else:
+            # For read modes, these will be loaded from header
+            self.material = material  # May be None initially
+            self.table_size = table_size  # May be None initially
+
         # Calculate data size (4 bits per position, rounded up to bytes)
-        self.data_size = (table_size + 1) // 2  # 2 positions per byte
+        if self.table_size is not None:
+            self.data_size = (self.table_size + 1) // 2  # 2 positions per byte
+        else:
+            self.data_size = None  # Will be set after reading header
 
         self._file = None
         self._mmap = None
@@ -134,7 +147,18 @@ class TablebaseStorage:
         self._validate_header()
 
     def _create_header(self) -> bytes:
-        """Create header bytes."""
+        """Create header bytes.
+
+        Header format (128 bytes total):
+        - Bytes 0-4: Magic number "CMGTB" (5 bytes)
+        - Byte 5: Version (1 byte)
+        - Bytes 6-13: Table size (8 bytes, uint64)
+        - Byte 14: Number of white pieces (1 byte)
+        - Bytes 15-30: White piece types (up to 16 pieces)
+        - Byte 31: Number of black pieces (1 byte)
+        - Bytes 32-47: Black piece types (up to 16 pieces)
+        - Bytes 48-127: Reserved/padding (80 bytes)
+        """
         header = bytearray(self.HEADER_SIZE)
 
         # Magic number (5 bytes)
@@ -146,18 +170,29 @@ class TablebaseStorage:
         # Table size (8 bytes, unsigned long long)
         struct.pack_into('<Q', header, 6, self.table_size)
 
-        # Material signature (store as string, up to 32 bytes)
-        material_str = str(self.material).encode('ascii')
-        if len(material_str) > 32:
-            raise ValueError("Material signature too long")
-        header[14:14+len(material_str)] = material_str
+        # Material signature (binary format)
+        # White pieces
+        white_pieces = list(self.material.white_pieces)
+        if len(white_pieces) > 16:
+            raise ValueError("Too many white pieces (max 16)")
+        header[14] = len(white_pieces)
+        for i, piece in enumerate(white_pieces):
+            header[15 + i] = piece
+
+        # Black pieces
+        black_pieces = list(self.material.black_pieces)
+        if len(black_pieces) > 16:
+            raise ValueError("Too many black pieces (max 16)")
+        header[31] = len(black_pieces)
+        for i, piece in enumerate(black_pieces):
+            header[32 + i] = piece
 
         # Rest is reserved/padding
 
         return bytes(header)
 
     def _validate_header(self):
-        """Validate header of existing file."""
+        """Validate header of existing file and read metadata."""
         # Check magic
         magic = self._mmap[0:5]
         if magic != self.MAGIC:
@@ -165,19 +200,77 @@ class TablebaseStorage:
 
         # Check version
         version = self._mmap[5]
-        if version != self.VERSION:
+        if version not in (1, 2):
             raise ValueError(f"Unsupported version: {version}")
 
         # Read table size
         stored_size = struct.unpack_from('<Q', self._mmap, 6)[0]
-        if stored_size != self.table_size:
+        if self.table_size is None:
+            self.table_size = stored_size
+            self.data_size = (self.table_size + 1) // 2
+        elif stored_size != self.table_size:
             raise ValueError(f"Table size mismatch: expected {self.table_size}, got {stored_size}")
 
-        # Read material signature
-        material_bytes = self._mmap[14:46]
-        material_str = material_bytes.rstrip(b'\x00').decode('ascii')
-        if material_str != str(self.material):
-            raise ValueError(f"Material mismatch: expected {self.material}, got {material_str}")
+        # Read material signature based on version
+        if version == 1:
+            # Old format: string-based
+            material_bytes = self._mmap[14:46]
+            material_str = material_bytes.rstrip(b'\x00').decode('ascii')
+            # Parse string format like "KPvK" back to MaterialSignature
+            stored_material = self._parse_material_string(material_str)
+        else:  # version == 2
+            # New format: binary
+            # Read white pieces
+            num_white = self._mmap[14]
+            white_pieces = tuple(self._mmap[15 + i] for i in range(num_white))
+
+            # Read black pieces
+            num_black = self._mmap[31]
+            black_pieces = tuple(self._mmap[32 + i] for i in range(num_black))
+
+            stored_material = MaterialSignature(white_pieces, black_pieces)
+
+        # Set or validate material
+        if self.material is None:
+            self.material = stored_material
+        elif self.material != stored_material:
+            raise ValueError(f"Material mismatch: expected {self.material}, got {stored_material}")
+
+    @staticmethod
+    def _parse_material_string(material_str: str) -> MaterialSignature:
+        """Parse material string like 'KPvK' back to MaterialSignature."""
+        if not material_str or 'v' not in material_str:
+            raise ValueError(f"Invalid material string: {material_str}")
+
+        piece_chars = {'P': 0, 'N': 1, 'B': 2, 'R': 3, 'Q': 4, 'K': 5}
+        white_str, black_str = material_str.split('v')
+
+        white_pieces = [piece_chars[c] for c in white_str if c in piece_chars]
+        black_pieces = [piece_chars[c] for c in black_str if c in piece_chars]
+
+        return MaterialSignature.from_pieces(white_pieces, black_pieces)
+
+    @classmethod
+    def open(cls, filepath: Path, mode: str = 'r') -> 'TablebaseStorage':
+        """
+        Open an existing tablebase file, automatically reading material and size from header.
+
+        Args:
+            filepath: Path to tablebase file
+            mode: 'r' for read-only, 'r+' for read-write
+
+        Returns:
+            TablebaseStorage instance with material and table_size loaded from file
+
+        Example:
+            >>> storage = TablebaseStorage.open("tablebases/KPvK.cmgtb")
+            >>> print(storage.material)  # Automatically loaded
+            >>> print(storage.table_size)  # Automatically loaded
+        """
+        if mode == 'w':
+            raise ValueError("Use __init__ directly for write mode (requires material and table_size)")
+
+        return cls(filepath=filepath, material=None, table_size=None, mode=mode)
 
     def get_value(self, index: int) -> PositionValue:
         """
