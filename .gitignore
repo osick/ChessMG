@@ -23,3 +23,8 @@ chessmg/libcmg/make.txt
 *.egg-info/
 examples/stats.txt
 chessmg/libcmg/tests/exec_*
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo

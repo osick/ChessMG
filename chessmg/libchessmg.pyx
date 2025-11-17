@@ -298,6 +298,7 @@ cdef class ChessMoveGenerator:
         cdef vector[int] raw_moves = self._pos.moves(color)
         cdef int n_moves
         cdef int i
+        cdef np.ndarray[np.int32_t, ndim=2] moves_array
 
         # Return empty result if no moves
         if raw_moves.size() == 0:
