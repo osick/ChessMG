@@ -19,8 +19,8 @@ import argparse
 import sys
 from pathlib import Path
 
-from chessmg.tablebase import TablebaseProbe, MaterialSignature, TablebaseStorage
-from chessmg.tablebase.indexing import PositionIndexer
+from tablebase import TablebaseProbe, MaterialSignature, TablebaseStorage
+from tablebase.indexing import PositionIndexer
 
 
 def main():
@@ -87,7 +87,7 @@ def main():
         try:
             # Parse material from string
             # For now, just open the file and get stats
-            from chessmg.tablebase.generator import TablebaseGenerator
+            from tablebase.generator import TablebaseGenerator
 
             # We need to extract material from the file
             # For simplicity, let's just show file info

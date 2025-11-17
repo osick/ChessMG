@@ -14,7 +14,7 @@ from pathlib import Path
 import tempfile
 import shutil
 
-from chessmg.tablebase import (
+from tablebase import (
     MaterialSignature,
     PositionIndexer,
     TablebaseStorage,
