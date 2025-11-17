@@ -9,7 +9,7 @@ Demonstrates:
 """
 
 from pathlib import Path
-from chessmg.tablebase import (
+from tablebase import (
     MaterialSignature,
     TablebaseGenerator,
     TablebaseProbe,

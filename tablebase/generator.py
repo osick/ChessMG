@@ -57,7 +57,7 @@ class TablebaseGenerator:
 
         Example:
             >>> from pathlib import Path
-            >>> from chessmg.tablebase import MaterialSignature, TablebaseGenerator
+            >>> from tablebase import MaterialSignature, TablebaseGenerator
             >>>
             >>> # Generate KvK tablebase
             >>> material = MaterialSignature.from_pieces([5], [5])

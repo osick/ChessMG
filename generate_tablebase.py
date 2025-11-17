@@ -27,7 +27,7 @@ import argparse
 import sys
 from pathlib import Path
 
-from chessmg.tablebase import MaterialSignature, TablebaseGenerator
+from tablebase import MaterialSignature, TablebaseGenerator
 
 
 def parse_material(material_str: str) -> MaterialSignature:

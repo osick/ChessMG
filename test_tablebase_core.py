@@ -10,8 +10,8 @@ import tempfile
 from pathlib import Path
 
 # Test the core modules that don't depend on ChessMG
-from chessmg.tablebase.indexing import MaterialSignature, PositionIndexer, binomial
-from chessmg.tablebase.storage import TablebaseStorage, PositionValue
+from tablebase.indexing import MaterialSignature, PositionIndexer, binomial
+from tablebase.storage import TablebaseStorage, PositionValue
 
 
 def test_binomial():

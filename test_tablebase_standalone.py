@@ -14,8 +14,8 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 
 # Now import the tablebase modules
-from chessmg.tablebase.indexing import MaterialSignature, PositionIndexer, binomial
-from chessmg.tablebase.storage import TablebaseStorage, PositionValue
+from tablebase.indexing import MaterialSignature, PositionIndexer, binomial
+from tablebase.storage import TablebaseStorage, PositionValue
 
 
 def test_binomial():
