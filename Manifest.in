@@ -4,7 +4,6 @@ include LICENCE
 include requirements.txt
 include setup.py
 include pyproject.toml
-include cmgtb
 
 # Documentation
 recursive-include docs *.md
