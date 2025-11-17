@@ -74,13 +74,10 @@ setup(
     },
     include_package_data                = True,
 
-    # CLI scripts
-    scripts                             = ['cmgtb'],
-
     # Entry points for console scripts
     entry_points                        = {
         'console_scripts': [
-            'cmgtb=cmgtb:main',
+            'cmgtb=tablebase.cli:main',
         ],
     },
 
