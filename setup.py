@@ -28,7 +28,7 @@ build_cpp_libraries(lib_dir)
 
 extensions = [
     Extension(
-        'chessmglib',
+        'chessmg.libchessmg',  # Fixed: was 'chessmglib', should be 'chessmg.libchessmg'
         sources=[path.join(chessmg_dir, 'libchessmg.pyx'),],
         include_dirs=[libcmg_dir, numpy.get_include()],  # Added numpy include
         libraries=['cmg', 'surge'],
