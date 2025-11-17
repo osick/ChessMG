@@ -40,26 +40,56 @@ extensions = [
 
 setup(
     name                                = "chessmg",
-    version                             = open('Version.txt').read(),
+    version                             = open('Version.txt').read().strip(),
     install_requires                    = open('requirements.txt').read().splitlines(),
     url                                 = 'https://github.com/osick/chessmg',
     author                              = 'Oliver Sick',
     author_email                        = 'oliver.sick@gmail.com',
-    description                         = 'Fast chess move generator library for python',
+    description                         = 'High-performance chess move generation and helpmate tablebase system',
     long_description                    = long_description,
     long_description_content_type       = 'text/markdown',
-    python_requires                     = '>=3.6',
+    python_requires                     = '>=3.8',
     classifiers                         = [
-    'Programming Language :: Python :: 3',
-    'Programming Language :: C++',
-    'License :: OSI Approved :: MIT License',
-    'Operating System :: OS Independent',
-    'Topic :: Games/Entertainment :: Board Games',
-    'Topic :: Software Development :: Libraries :: Python Modules',
+        'Development Status :: 4 - Beta',
+        'Intended Audience :: Developers',
+        'Intended Audience :: Science/Research',
+        'Topic :: Games/Entertainment :: Board Games',
+        'Topic :: Software Development :: Libraries :: Python Modules',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
+        'Programming Language :: C++',
+        'License :: OSI Approved :: MIT License',
+        'Operating System :: OS Independent',
     ],
 
-    packages                            = find_packages(), #
+    packages                            = find_packages(),
     ext_modules                         = cythonize(extensions),
-    package_data                        = {'chessmg': ['LICENCE','README.md',path.join(chessmg_dir,'test.py')],},
+    package_data                        = {
+        'chessmg': ['LICENCE', 'README.md'],
+        'tablebase': ['README.md'],
+    },
     include_package_data                = True,
+
+    # CLI scripts
+    scripts                             = ['cmgtb'],
+
+    # Entry points for console scripts
+    entry_points                        = {
+        'console_scripts': [
+            'cmgtb=cmgtb:main',
+        ],
+    },
+
+    # Development dependencies
+    extras_require                      = {
+        'dev': [
+            'pytest>=7.0',
+            'black>=22.0',
+            'mypy>=0.950',
+            'pytest-cov>=3.0',
+        ],
+    },
 )
