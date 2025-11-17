@@ -22,7 +22,7 @@ from typing import List, Set, Tuple, Optional, Callable
 from collections import deque
 import itertools
 
-from ..position import ChessPosition, Move, Color, GameState
+from chessmg.position import ChessPosition, Color, GameState
 from .indexing import PositionIndexer, MaterialSignature
 from .storage import TablebaseStorage, PositionValue
 

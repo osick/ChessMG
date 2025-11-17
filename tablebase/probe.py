@@ -14,7 +14,7 @@ from typing import Optional, Dict
 from pathlib import Path
 import threading
 
-from ..position import ChessPosition
+from chessmg.position import ChessPosition
 from .indexing import PositionIndexer, MaterialSignature
 from .storage import TablebaseStorage, PositionValue
 

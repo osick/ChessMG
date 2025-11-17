@@ -29,10 +29,9 @@ from chessmg.position import ChessPosition
 from .indexing import PositionIndexer, MaterialSignature
 from .storage import TablebaseStorage, PositionValue
 from .fast_helpers import (
-    index_to_position_fast,
-    position_to_index_fast,
-    is_checkmate,
-    is_legal_position
+    create_position_fast,
+    extract_pieces_fast,
+    sort_pieces_by_type
 )
 
 
@@ -190,6 +189,74 @@ class HelpmateRetrogradeAnalyzer:
         storage.flush()
         return stats
 
+    def _index_to_position(self, index: int) -> Optional[ChessPosition]:
+        """Convert index to ChessPosition."""
+        try:
+            white_squares, black_squares, side_to_move, ep_file = self.indexer.decode(index)
+
+            position = create_position_fast(
+                white_pieces=list(self.material.white_pieces),
+                white_squares=list(white_squares),
+                black_pieces=list(self.material.black_pieces),
+                black_squares=list(black_squares),
+                side_to_move=side_to_move,
+                ep_square=ep_file if ep_file < 64 else 64
+            )
+
+            return position
+        except Exception:
+            return None
+
+    def _position_to_index(self, position: ChessPosition) -> Optional[int]:
+        """Convert ChessPosition to index."""
+        try:
+            # Extract pieces from position
+            white_pieces, white_squares, black_pieces, black_squares, side_to_move, ep_file = extract_pieces_fast(position)
+
+            # Sort to match material signature order
+            white_pieces_sorted, white_squares_sorted = sort_pieces_by_type(white_pieces, white_squares)
+            black_pieces_sorted, black_squares_sorted = sort_pieces_by_type(black_pieces, black_squares)
+
+            # Verify material matches
+            if (tuple(white_pieces_sorted) != self.material.white_pieces or
+                tuple(black_pieces_sorted) != self.material.black_pieces):
+                return None  # Material changed (capture/promotion)
+
+            # Encode to index
+            index = self.indexer.encode(
+                white_squares_sorted,
+                black_squares_sorted,
+                side_to_move=side_to_move,
+                ep_file=ep_file if ep_file < 64 else 0
+            )
+
+            return index
+        except Exception:
+            return None
+
+    def _is_checkmate(self, position: ChessPosition) -> bool:
+        """Check if position is checkmate."""
+        try:
+            # Get legal moves for side to move
+            moves = position.legal_moves()
+
+            # If no legal moves and in check, it's checkmate
+            if not moves:
+                state = position.state(position.turn())
+                # Check if in check (state will have check flag)
+                # In ChessMG: state() returns game state including check
+                return state == 0  # CHECKMATE constant
+            return False
+        except Exception:
+            return False
+
+    def _is_legal_position(self, position: ChessPosition) -> bool:
+        """Check if position is legal."""
+        try:
+            return position.is_legal()
+        except Exception:
+            return False
+
     def _find_checkmate_positions(
         self,
         storage: TablebaseStorage,
@@ -210,19 +277,7 @@ class HelpmateRetrogradeAnalyzer:
         # Check all positions for checkmate
         for index in range(self.max_index):
             try:
-                # Decode position (without side-to-move for now)
-                white_squares, black_squares, side_to_move, ep_file = self.indexer.decode(index)
-
-                # Create position - in checkmate, it's the mated side's turn
-                # (they have no legal moves to escape check)
-                position = index_to_position_fast(
-                    white_pieces=list(self.material.white_pieces),
-                    white_squares=list(white_squares),
-                    black_pieces=list(self.material.black_pieces),
-                    black_squares=list(black_squares),
-                    side_to_move=target_color,  # Mated side is to move
-                    ep_square=ep_file
-                )
+                position = self._index_to_position(index)
 
                 if position is None:
                     # Illegal position
@@ -230,10 +285,11 @@ class HelpmateRetrogradeAnalyzer:
                     continue
 
                 # Check if position is checkmate for target_color
-                if is_checkmate(position, target_color):
+                # In checkmate, the mated side is to move
+                if position.turn() == target_color and self._is_checkmate(position):
                     storage.set_value(index, PositionValue.HELPMATE_IN_1)
                     checkmate_positions.add(index)
-                elif is_legal_position(position):
+                elif self._is_legal_position(position):
                     # Legal but not checkmate - leave as UNKNOWN
                     pass
                 else:
@@ -325,6 +381,30 @@ class HelpmateRetrogradeAnalyzer:
 
         return new_positions
 
+    def _apply_move(self, position: ChessPosition, move) -> Optional[ChessPosition]:
+        """
+        Apply a move to a position and return the resulting position.
+
+        Args:
+            position: Current position
+            move: Move object to apply
+
+        Returns:
+            New position after move, or None if move is invalid
+        """
+        try:
+            # Create a new position from current FEN
+            fen = position.fen()
+            new_position = ChessPosition(fen)
+
+            # Apply the move using ChessMG's move_piece method
+            # Note: This is a simplified approach; ideally we'd use make_move
+            new_position.move_piece(move.from_square, move.to_square)
+
+            return new_position
+        except Exception:
+            return None
+
     def _has_move_to_frontier(
         self,
         position: ChessPosition,
@@ -333,6 +413,9 @@ class HelpmateRetrogradeAnalyzer:
     ) -> bool:
         """
         Check if position has ANY legal move that reaches frontier (cooperative).
+
+        CRITICAL: This is COOPERATIVE search!
+        ANY legal move that reaches the frontier makes this position a helpmate position.
 
         Args:
             position: Current position
@@ -349,16 +432,23 @@ class HelpmateRetrogradeAnalyzer:
 
         # Check each move
         for move in moves:
-            # Make the move
-            # TODO: Need to implement move application and get resulting position
-            # For now, this is a placeholder
-            # The actual implementation needs to:
-            # 1. Apply move to position
-            # 2. Convert resulting position to index
-            # 3. Check if index is in frontier
-            pass
+            # Apply the move to get resulting position
+            new_position = self._apply_move(position, move)
+            if new_position is None:
+                continue
 
-        return False  # Placeholder
+            # Convert resulting position to index
+            new_index = self._position_to_index(new_position)
+            if new_index is None:
+                # Material changed (capture/promotion) - skip for now
+                # TODO: Handle multi-tablebase transitions
+                continue
+
+            # Check if this position is in the frontier
+            if new_index in frontier:
+                return True  # Found a move that reaches frontier!
+
+        return False  # No moves reach frontier
 
     def _mark_remaining_draws(self, storage: TablebaseStorage) -> int:
         """
@@ -371,23 +461,16 @@ class HelpmateRetrogradeAnalyzer:
         """
         draw_count = 0
 
+        print(f"  Checking remaining UNKNOWN positions...")
+
         for index in range(self.max_index):
             value = storage.get_value(index)
             if value == PositionValue.UNKNOWN:
                 # Need to check if it's legal
                 try:
-                    white_squares, black_squares, side_to_move, ep_file = self.indexer.decode(index)
+                    position = self._index_to_position(index)
 
-                    position = index_to_position_fast(
-                        white_pieces=list(self.material.white_pieces),
-                        white_squares=list(white_squares),
-                        black_pieces=list(self.material.black_pieces),
-                        black_squares=list(black_squares),
-                        side_to_move=side_to_move,
-                        ep_square=ep_file
-                    )
-
-                    if position and is_legal_position(position):
+                    if position and self._is_legal_position(position):
                         storage.set_value(index, PositionValue.DRAW)
                         draw_count += 1
                     else:
@@ -395,6 +478,10 @@ class HelpmateRetrogradeAnalyzer:
 
                 except Exception:
                     storage.set_value(index, PositionValue.ILLEGAL)
+
+            # Progress reporting
+            if index % 50000 == 0 and index > 0:
+                print(f"    Processed {index:,} / {self.max_index:,} positions...")
 
         return draw_count
 
