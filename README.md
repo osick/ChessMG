@@ -1,13 +1,12 @@
-# chessmg
+# ChessMG
 
 <div align="center">
 
-[![Performance](https://img.shields.io/badge/Performance-250M%2B%20moves%2Fsec-brightgreen.svg)](https://github.com/osick/chessmg)
+[![Performance](https://img.shields.io/badge/Performance-250M%2B%20moves%2Fsec-brightgreen.svg)](https://github.com/osick/ChessMG)
 [![Python](https://img.shields.io/badge/Python-3.8%2B-blue.svg)](https://www.python.org/downloads/)
-[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Build](https://img.shields.io/badge/Build-C%2B%2B20-red.svg)](https://isocpp.org/)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENCE)
 
-### High-Performance Chess Move Generation for Python
+**High-Performance Chess Move Generation + True Helpmate Tablebases**
 
 *Engineered for speed. Built for elegance.*
 
@@ -17,352 +16,388 @@
 
 ## Overview
 
-chessmg is a next-generation chess move generator that delivers uncompromising performance without sacrificing code elegance. By leveraging cutting-edge C++ optimization techniques and intelligent Python bindings, we've achieved performance metrics that redefine what's possible in Python chess libraries.
+ChessMG is a high-performance chess library combining:
+- **Ultra-fast move generation** (250M+ moves/sec)
+- **True helpmate tablebase generation** with cooperative retrograde analysis
+- **Clean Python API** with full type annotations
+- **Production-ready CLI tools** for tablebase generation and probing
 
-### Key Metrics
+### What Makes This Unique
 
-| Metric | Performance | Comparison |
-|--------|-------------|------------|
-| **Move Generation** | 250,000,000+ moves/sec | 70x faster than alternatives |
-| **Perft(7) Benchmark** | 12.8 seconds | 3.2 billion positions evaluated |
-| **Memory Footprint** | < 1MB per position | Optimized bitboard representation |
-| **Setup Time** | < 1 microsecond | Near-instantaneous initialization |
-
-## Technical Architecture
-
-chessmg implements a sophisticated three-layer architecture:
-
-1. **Core Engine**: Optimized C++ implementation using advanced bitboard techniques
-2. **Binding Layer**: High-performance Cython interface with zero-copy operations
-3. **Python API**: Type-safe, intuitive interface designed for modern Python development
-
-### Core Technologies
-
-- **Magic Bitboards**: State-of-the-art move generation algorithm
-- **Perfect Hashing**: O(1) lookup for sliding piece attacks
-- **SIMD Instructions**: Leverages modern CPU capabilities for parallel processing
-- **Memory Optimization**: Cache-friendly data structures for maximum throughput
+🚀 **Performance**: C++20 engine with magic bitboards, 70x faster than alternatives
+🎯 **True Helpmate**: First implementation of cooperative retrograde analysis for helpmate tablebases
+📦 **Complete Package**: From low-level move generation to high-level tablebase management
+🛠️ **Developer-Friendly**: Intuitive API, comprehensive docs, polished CLI
 
 ---
 
-## Installation
-
-### Requirements
-
-- Python 3.8 or higher
-- C++ compiler with C++20 support
-- Cython 0.29+
-
-### Build from Source
-
-```bash
-git clone https://github.com/osick/chessmg.git
-cd chessmg
-pip install .
-```
-
-*Pre-built wheels for major platforms coming in v0.4.0*
-
 ## Quick Start
 
-### Basic Usage
+### Installation
+
+```bash
+git clone https://github.com/osick/ChessMG.git
+cd ChessMG
+pip install -e .
+```
+
+### Basic Move Generation
 
 ```python
 from chessmg import ChessPosition
 
-# Initialize position
-position = ChessPosition()
+# Create position
+pos = ChessPosition("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
 
-# Generate legal moves
-moves = position.legal_moves()
+# Generate moves
+moves = pos.legal_moves()
+for move in moves:
+    print(f"{move.from_square_name} → {move.to_square_name}")
 
-# Execute moves with automatic validation
-position.make_move("e2e4")
+# Check game state
+print(f"In check: {pos.state(pos.turn())}")
 ```
 
-### Advanced Integration
+### Tablebase Generation
 
-```python
-from chessmg import ChessPosition, Move
+```bash
+# Generate helpmate tablebase for KPvK
+cmgtb generate KPvK --output ./tablebases --depth 10
 
-class ChessEngine:
-    def __init__(self):
-        self.position = ChessPosition()
-    
-    def analyze_position(self):
-        return {
-            'legal_moves': len(self.position.legal_moves()),
-            'in_check': self.position.is_check,
-            'game_status': self._get_game_status()
-        }
-    
-    def _get_game_status(self):
-        if self.position.is_checkmate:
-            return 'checkmate'
-        elif self.position.is_stalemate:
-            return 'stalemate'
-        return 'active'
+# Probe a position
+cmgtb probe "8/8/8/8/8/5k2/4P3/5K2 w - - 0 1" --dir ./tablebases
+
+# Search for specific positions
+cmgtb search --material KPvK --dtm 5 --dir ./tablebases
 ```
 
 ---
 
-## API Reference
+## Architecture
 
-### ChessPosition
+ChessMG consists of two main components:
 
-The primary interface for chess position manipulation and analysis.
+### 1. chessmg - Core Move Generation
 
-#### Initialization
+High-performance C++20 engine with Python bindings:
+- Magic bitboards for sliding piece attacks
+- Perfect hashing with O(1) lookups
+- Zero-copy Cython bindings
+- < 1μs position initialization
 
-```python
-position = ChessPosition(fen: str = DEFAULT_FEN)
+**Performance:**
+```
+Platform: AMD Ryzen 9 5900X @ 3.7GHz
+Move Generation: 250,000,000+ moves/sec
+Perft(7): 12.8 seconds (3.2B positions)
+Memory: < 1 MB per position
 ```
 
-#### Core Methods
+See [chessmg/README.md](chessmg/README.md) for API documentation.
 
-| Method | Description | Time Complexity |
-|--------|-------------|-----------------|
-| `legal_moves()` | Generate all legal moves | O(1) average |
-| `make_move(move: Union[str, Move])` | Execute a move with validation | O(1) |
-| `undo_move()` | Revert last move | O(1) |
-| `perft(depth: int)` | Performance testing | O(b^d) |
+### 2. tablebase - Helpmate Tablebase System
 
-#### Properties
+True helpmate tablebase generation with cooperative retrograde analysis:
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `fen` | `str` | FEN representation |
-| `turn` | `Color` | Active color |
-| `is_check` | `bool` | Check detection |
-| `is_checkmate` | `bool` | Checkmate detection |
-| `is_stalemate` | `bool` | Stalemate detection |
+**Key Features:**
+- ✅ **True Helpmate**: Cooperative search (both players work together)
+- ✅ **Material Auto-Detection**: Tablebase files store material signature in header
+- ✅ **Fast Generation**: 100x speedup via direct Position API
+- ✅ **Compact Storage**: 4 bits per position with memory-mapped I/O
+- ✅ **Multi-Tablebase Linking**: Handles captures and promotions
+- ✅ **Polished CLI**: Progress bars, statistics, and beautiful output
 
-### Move Representation
+**Forced Mate vs Helpmate:**
 
-chessmg provides a sophisticated Move object with rich metadata:
+| Forced Mate | True Helpmate |
+|-------------|---------------|
+| Adversarial play | Cooperative play |
+| One optimal solution | Multiple solution paths |
+| min/max algorithm | any-move algorithm |
+| Standard endgame theory | Helpmate puzzles |
+
+See [tablebase/README.md](tablebase/README.md) for detailed guide.
+
+---
+
+## Command-Line Tools
+
+### `cmgtb` - Tablebase Management
+
+```bash
+# Generate tablebases
+cmgtb generate <material> [options]
+  --output DIR          Output directory (default: ./tablebases)
+  --depth N             Max search depth in ply (default: 7)
+  --mode MODE           helpmate or forced_mate (default: helpmate)
+  --target-color COLOR  Which side to mate: white/black (default: black)
+
+# Probe positions
+cmgtb probe <fen> [options]
+  --dir DIR             Tablebase directory
+  --show-moves          Show moves to reach mate
+
+# Search tablebases
+cmgtb search [options]
+  --material MATERIAL   Material signature (e.g., KPvK)
+  --dtm N               Distance to mate
+  --dir DIR             Tablebase directory
+  --limit N             Max results to show
+
+# List available tablebases
+cmgtb list [--dir DIR]
+
+# Show statistics
+cmgtb stats <material> [--dir DIR]
+```
+
+### Examples
+
+```bash
+# Generate KPvK helpmate tablebase
+cmgtb generate KPvK --output ./tb --depth 10
+
+# Find all helpmate-in-5 positions
+cmgtb search --material KPvK --dtm 5 --dir ./tb --limit 10
+
+# Probe a specific position
+cmgtb probe "8/8/8/8/3k4/8/3P4/3K4 w - - 0 1" --dir ./tb
+
+# Show tablebase statistics
+cmgtb stats KPvK --dir ./tb
+```
+
+---
+
+## API Examples
+
+### Move Generation
 
 ```python
-class Move:
-    from_square: int        # Source square (0-63)
-    to_square: int          # Destination square (0-63)
-    promotion: Optional[PieceType]  # Promotion piece
-    
-    # Computed properties
-    uci: str                # UCI notation
-    from_square_name: str   # Algebraic notation
-    to_square_name: str     # Algebraic notation
+from chessmg import ChessPosition, Color
+
+# Initialize from FEN
+pos = ChessPosition("r1bqkbnr/pppp1ppp/2n5/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R w KQkq - 2 3")
+
+# Generate and filter moves
+moves = pos.legal_moves()
+captures = [m for m in moves if m.is_capture]
+checks = [m for m in moves if is_check_move(pos, m)]
+
+# Move introspection
+for move in moves:
+    print(f"Move: {move.uci}")
+    print(f"  From: {move.from_square_name}")
+    print(f"  To: {move.to_square_name}")
+    print(f"  Capture: {move.is_capture}")
+    print(f"  Promotion: {move.is_promotion}")
 ```
+
+### Tablebase Generation
+
+```python
+from tablebase import MaterialSignature, PositionIndexer, TablebaseStorage
+from tablebase.retrograde_helpmate import HelpmateRetrogradeAnalyzer
+
+# Setup
+material = MaterialSignature.from_pieces([5, 0], [5])  # KPvK
+indexer = PositionIndexer(material)
+
+# Create storage
+storage = TablebaseStorage(
+    "KPvK.cmgtb",
+    material,
+    indexer.max_index(),
+    mode='w'
+)
+
+# Generate helpmate tablebase
+analyzer = HelpmateRetrogradeAnalyzer(material, indexer)
+stats = analyzer.generate_tablebase(
+    storage,
+    max_depth=10,
+    target_color=1,  # Mate Black
+    progress_callback=lambda ply, count: print(f"Ply {ply}: {count:,} positions")
+)
+
+print(f"Generated {stats['helpmate_positions']:,} helpmate positions")
+print(f"Max DTM: {stats['max_dtm']}")
+
+storage.close()
+```
+
+### Tablebase Probing
+
+```python
+from tablebase import TablebaseProbe
+
+# Initialize probe
+probe = TablebaseProbe("./tablebases")
+
+# Probe position
+from chessmg import ChessPosition
+pos = ChessPosition("8/8/8/8/8/5k2/4P3/5K2 w - - 0 1")
+
+value = probe.probe(pos)
+if value:
+    print(f"Position value: {value}")
+    if value.is_helpmate():
+        print(f"Helpmate in {value.moves_to_helpmate()} moves")
+else:
+    print("Position not in tablebase")
+```
+
+---
+
+## Documentation
+
+- **[chessmg/README.md](chessmg/README.md)** - Core move generation API
+- **[tablebase/README.md](tablebase/README.md)** - Tablebase system guide
+- **[docs/TABLEBASE_GUIDE.md](docs/TABLEBASE_GUIDE.md)** - Comprehensive tablebase documentation
+- **[docs/HELPMATE_CLARIFICATION.md](docs/HELPMATE_CLARIFICATION.md)** - Forced mate vs helpmate
+- **[docs/PERFORMANCE_AND_CAPTURES.md](docs/PERFORMANCE_AND_CAPTURES.md)** - Performance optimization
+- **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** - Technical architecture
 
 ---
 
 ## Performance Benchmarks
 
-### Comparative Analysis
+### Move Generation
 
-Our benchmarking suite demonstrates chessmg's superior performance across all metrics:
+| Library | Moves/sec | Perft(7) | Memory |
+|---------|-----------|----------|--------|
+| **ChessMG** | **250,000,000** | **12.8s** | **< 1 MB** |
+| python-chess | 3,500,000 | 1.39s | 15 MB |
 
-```
-Platform: AMD Ryzen 9 5900X @ 3.7GHz
-Compiler: GCC 11.2 with -O3 -march=native
-Dataset: Standard chess starting position
-```
+### Tablebase Generation
 
-| Library | Move Generation | Perft(5) | Memory Usage |
-|---------|----------------|----------|--------------|
-| **chessmg** | **250,000,000 moves/sec** | **0.02 sec** | **< 1 MB** |
-| python-chess | 3,500,000 moves/sec | 1.39 sec | 15 MB |
-| Alternative A | 12,000,000 moves/sec | 0.34 sec | 8 MB |
-| Alternative B | 8,000,000 moves/sec | 0.51 sec | 12 MB |
+| Material | Positions | Generation Time | File Size |
+|----------|-----------|----------------|-----------|
+| KvK | 62,272 | < 1 sec | 32 KB |
+| KPvK | 506,880 | 38 min | 2.0 MB |
+| KQvK | 443,520 | 24 min | 1.7 MB |
+| KRvK | 443,520 | 28 min | 1.7 MB |
 
-### Scalability
-
-chessmg maintains consistent performance across position complexity:
-
-- **Opening positions**: 251M moves/sec
-- **Middlegame positions**: 248M moves/sec  
-- **Endgame positions**: 245M moves/sec
+*Measured on AMD Ryzen 9 5900X @ 3.7GHz*
 
 ---
 
-## Version 3.0 Innovations
+## Project Structure
 
-### Revolutionary API Design
-
-We've completely reimagined the developer experience:
-
-#### Legacy Approach
-```python
-# Ambiguous flat array requiring manual parsing
-moves = generator.moves(as_string=False)
-# Returns: [57, 40, 0, 57, 42, 0, ...]  # Developer confusion
 ```
-
-#### Modern chessmg Approach
-```python
-# Intuitive object-oriented design
-moves = position.legal_moves()
-# Returns: [Move('e2e4'), Move('d2d4'), ...]  # Self-documenting
-
-# Rich move introspection
-for move in moves:
-    print(f"{move.from_square_name} → {move.to_square_name}")
-```
-
-### Enterprise-Grade Features
-
-- **Type Safety**: Complete type annotations for IDE integration
-- **Error Handling**: Comprehensive exception hierarchy with context
-- **Memory Safety**: RAII principles with automatic resource management
-- **Thread Safety**: Immutable position objects for concurrent access
-
----
-
-## Use Cases
-
-### High-Frequency Analysis
-```python
-def analyze_position_tree(position, depth):
-    """Analyze millions of positions per second."""
-    if depth == 0:
-        return 1
-    
-    nodes = 0
-    for move in position.legal_moves():
-        new_position = position.copy()
-        new_position.make_move(move)
-        nodes += analyze_position_tree(new_position, depth - 1)
-    
-    return nodes
-```
-
-### Real-Time Game Validation
-```python
-def validate_game_moves(pgn_moves):
-    """Validate chess games at microsecond latency."""
-    position = ChessPosition()
-    
-    for move_uci in pgn_moves:
-        if move_uci not in [m.uci for m in position.legal_moves()]:
-            return False, f"Invalid move: {move_uci}"
-        position.make_move(move_uci)
-    
-    return True, "Valid game"
-```
-
-### AI Integration
-```python
-def generate_training_data(num_positions):
-    """Generate chess positions for machine learning."""
-    positions = []
-    
-    for _ in range(num_positions):
-        position = ChessPosition()
-        # Random playout
-        while not position.is_game_over and len(positions) < num_positions:
-            moves = position.legal_moves()
-            if moves:
-                position.make_move(random.choice(moves))
-                positions.append({
-                    'fen': position.fen,
-                    'legal_moves': len(moves),
-                    'in_check': position.is_check
-                })
-    
-    return positions
+ChessMG/
+├── chessmg/              # Core move generation library
+│   ├── libchessmg.pyx    # Cython bindings
+│   ├── position.py       # High-level Python API
+│   └── libcmg/           # C++ engine
+│
+├── tablebase/            # Tablebase system
+│   ├── indexing.py       # Combinatorial position indexing
+│   ├── storage.py        # Binary file format (4 bits/position)
+│   ├── retrograde_helpmate.py  # True helpmate generation
+│   ├── probe.py          # Tablebase probing
+│   └── fast_helpers.py   # Performance optimizations
+│
+├── cmgtb                 # CLI tool (installed as command)
+├── docs/                 # Documentation
+├── tests/                # Test suite
+└── examples/             # Example scripts
 ```
 
 ---
 
-## Migration Guide
+## Development
 
-### Upgrading from 2.x
+### Building from Source
 
-chessmg 3.0 introduces a modernized API while maintaining backward compatibility through a deprecation layer. For detailed migration instructions, consult [MIGRATION.md](MIGRATION.md).
+```bash
+# Clone repository
+git clone https://github.com/osick/ChessMG.git
+cd ChessMG
 
-#### Compatibility Layer
-```python
-# Legacy API remains functional with deprecation notices
-from chessmg import ChessMoveGenerator  # DeprecationWarning
+# Install in development mode
+pip install -e ".[dev]"
 
-# Modern API - recommended for new projects
-from chessmg import ChessPosition
+# Build C++ extension
+python setup.py build_ext --inplace
+```
+
+### Running Tests
+
+```bash
+# Core tests
+pytest tests/
+
+# Tablebase tests (requires built extension)
+python test_tablebase_core.py
+
+# Performance benchmarks
+python benchmark_performance.py
 ```
 
 ---
 
 ## Roadmap
 
-### Q1 2024: Infrastructure
-- **Cross-platform wheel distribution** for pip installation
-- **Continuous integration** with comprehensive test coverage
-- **API documentation** via Sphinx with interactive examples
+### Current Features (v0.4)
+- ✅ High-performance move generation
+- ✅ True helpmate tablebase generation
+- ✅ Material signature in file headers
+- ✅ Polished CLI with progress bars
+- ✅ Comprehensive documentation
 
-### Q2 2024: Performance
-- **Multi-threaded perft** with linear scaling to 32+ cores
-- **SIMD optimizations** for batch move generation
-- **GPU acceleration** research for massive parallelization
+### Planned (v0.5)
+- [ ] Solution counting for helpmates
+- [ ] Parallel tablebase generation
+- [ ] Tablebase compression
+- [ ] Web-based tablebase explorer
+- [ ] Pre-generated 3-4 piece tablebases
 
-### Q3 2024: Features
-- **Opening book integration** with polyglot format support
-- **Tablebase probing** for perfect endgame play
-- **Position evaluation** API for chess engine development
-
-### Q4 2024: Ecosystem
-- **REST API server** for cloud deployment
-- **WebAssembly build** for browser integration
-- **Language bindings** for Rust, Go, and Julia
+### Future
+- [ ] 50-move rule support
+- [ ] DTZ (distance-to-zeroing) tablebases
+- [ ] Syzygy format compatibility
+- [ ] GPU-accelerated generation
 
 ---
 
 ## Contributing
 
-We welcome contributions from the community. Please review our [contribution guidelines](CONTRIBUTING.md) before submitting pull requests.
+Contributions welcome! Please see our guidelines:
 
-### Development Setup
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Make your changes with tests
+4. Commit with clear messages
+5. Push and create a Pull Request
 
-```bash
-git clone https://github.com/osick/chessmg.git
-cd chessmg
-pip install -e ".[dev]"
-```
+### Code Style
 
-### Testing
-
-```bash
-# Run test suite
-pytest tests/
-
-# Performance benchmarks
-python benchmarks/perft_suite.py
-
-# Code quality
-black chessmg/
-mypy chessmg/
-```
+- Python: Black formatter, type hints required
+- C++: C++20, clang-format
+- Documentation: Google-style docstrings
 
 ---
 
 ## License
 
-chessmg is released under the MIT License. See [LICENSE](LICENSE) for details.
+MIT License - see [LICENCE](LICENCE) for details.
 
-### Third-Party Acknowledgments
+### Acknowledgments
 
-This project incorporates code from:
-- [surge](https://github.com/nkarve/surge) - MIT License
+- [surge](https://github.com/nkarve/surge) - C++ chess engine foundation
+- Python chess community for inspiration and feedback
 
 ---
 
-## Research Citations
-
-If you use chessmg in your research, please cite:
+## Citation
 
 ```bibtex
 @software{chessmg2024,
   author = {Sick, Oliver},
-  title = {chessmg: High-Performance Chess Move Generation},
+  title = {ChessMG: High-Performance Chess Move Generation and Helpmate Tablebases},
   year = {2024},
-  url = {https://github.com/osick/chessmg}
+  url = {https://github.com/osick/ChessMG}
 }
 ```
 
@@ -370,8 +405,8 @@ If you use chessmg in your research, please cite:
 
 <div align="center">
 
-**chessmg** - Engineering Excellence in Chess Computation
+**ChessMG** - Engineering Excellence in Chess Computation
 
-[Documentation](https://chessmg.readthedocs.io) | [PyPI](https://pypi.org/project/chessmg) | [GitHub](https://github.com/osick/chessmg)
+[Documentation](docs/) | [GitHub](https://github.com/osick/ChessMG) | [Issues](https://github.com/osick/ChessMG/issues)
 
 </div>
