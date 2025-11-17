@@ -6,6 +6,7 @@ from setuptools import setup, Extension, find_packages
 from setuptools.command.build_ext import build_ext as _build_ext
 
 from Cython.Build import cythonize
+import numpy
 
 
 working_directory   = path.abspath(path.dirname(__file__))
@@ -29,7 +30,7 @@ extensions = [
     Extension(
         'chessmglib',
         sources=[path.join(chessmg_dir, 'libchessmg.pyx'),],
-        include_dirs=[libcmg_dir],
+        include_dirs=[libcmg_dir, numpy.get_include()],  # Added numpy include
         libraries=['cmg', 'surge'],
         library_dirs=[libcmg_dir],
         extra_objects=[path.join(libcmg_dir,'libsurge.a'),path.join(libcmg_dir,'libcmg.a'),],
