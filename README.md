@@ -3,7 +3,7 @@
 <div align="center">
 
 [![CI](https://github.com/osick/ChessMG/actions/workflows/ci.yml/badge.svg)](https://github.com/osick/ChessMG/actions/workflows/ci.yml)
-[![Version](https://img.shields.io/badge/Version-0.5.0-blue.svg)](https://github.com/osick/ChessMG/releases)
+[![Version](https://img.shields.io/badge/Version-0.5.1-blue.svg)](https://github.com/osick/ChessMG/releases)
 [![Performance](https://img.shields.io/badge/Performance-200M%2B%20moves%2Fsec-brightgreen.svg)](#-performance)
 [![Python](https://img.shields.io/badge/Python-3.8%2B-blue.svg)](https://www.python.org/downloads/)
 [![C++](https://img.shields.io/badge/C%2B%2B-20-00599C.svg)](https://en.cppreference.com/w/cpp/20)
