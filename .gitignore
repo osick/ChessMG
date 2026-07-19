@@ -16,6 +16,7 @@ chessmg/libchessmg.cpp
 chessmg.egg-info/
 build/
 dist/
+announcements/
 Makefile_private
 */*.result
 *.result
