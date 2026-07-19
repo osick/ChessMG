@@ -2,6 +2,7 @@
 
 <div align="center">
 
+[![CI](https://github.com/osick/ChessMG/actions/workflows/ci.yml/badge.svg)](https://github.com/osick/ChessMG/actions/workflows/ci.yml)
 [![Version](https://img.shields.io/badge/Version-0.5.0-blue.svg)](https://github.com/osick/ChessMG/releases)
 [![Performance](https://img.shields.io/badge/Performance-200M%2B%20moves%2Fsec-brightgreen.svg)](#-performance)
 [![Python](https://img.shields.io/badge/Python-3.8%2B-blue.svg)](https://www.python.org/downloads/)
@@ -36,12 +37,20 @@ Typical uses: engine prototyping, puzzle solvers, dataset generation for ML, mov
 ### Install
 
 ```bash
+pip install chessmg
+```
+
+Prebuilt wheels cover Linux (x86_64, aarch64) and macOS (Intel, Apple Silicon) for Python 3.9–3.13. On other platforms pip falls back to building from source.
+
+Or install the latest development version from source:
+
+```bash
 git clone https://github.com/osick/ChessMG.git
 cd ChessMG
 pip install .
 ```
 
-> Requirements: Python ≥ 3.8, a C++20 compiler (g++), `Cython`, `numpy`.
+> Building from source requires a C++20 compiler (g++/clang), `Cython` and `numpy`.
 
 ### Play
 

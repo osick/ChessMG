@@ -1,7 +1,10 @@
 SHELL                     := /bin/bash
-CXXFLAGS                  := -O2  -fPIC     -march=native  -I. -Wall 
+# Set MARCHFLAG= (empty) for portable builds, e.g. redistributable wheels;
+# the default optimizes for the build machine's CPU only.
+MARCHFLAG                 ?= -march=native
+CXXFLAGS                  := -O2  -fPIC     $(MARCHFLAG)  -I. -Wall
 CXX                       := g++
-CXX_MAIN_FLAGS            := -O2 -std=c++20 -march=native -I. -Wall 
+CXX_MAIN_FLAGS            := -O2 -std=c++20 $(MARCHFLAG) -I. -Wall
 CXX_MULTITHREADING_FLAGS  := -pthread
 
 

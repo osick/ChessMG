@@ -1,0 +1,52 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: Test • ${{ matrix.os }} • py${{ matrix.python-version }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        python-version: ["3.9", "3.11", "3.13"]
+        include:
+          - os: macos-latest
+            python-version: "3.12"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install build and test dependencies
+        run: python -m pip install --upgrade pip Cython numpy pytest
+
+      - name: Build extension in place
+        run: python setup.py build_ext --inplace
+        env:
+          MARCHFLAG: ""
+
+      - name: Run test suite
+        run: python -m pytest tests/ -v
+
+      - name: Script-style correctness tests
+        run: |
+          python tests/test_correctness.py verbose
+          python tests/test_set_position.py
+          python tests/test_perft_start_fen.py 5
+
+      - name: Verify pip install
+        run: |
+          pip install .
+          cd "$RUNNER_TEMP"
+          python -c "import chessmg; assert chessmg.ChessPosition().perft(4) == 197281; print('installed package ok:', chessmg.__version__)"
+        env:
+          MARCHFLAG: ""

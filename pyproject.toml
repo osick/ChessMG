@@ -52,6 +52,15 @@ Documentation = "https://github.com/osick/ChessMG/tree/main/docs"
 Repository = "https://github.com/osick/ChessMG"
 "Bug Tracker" = "https://github.com/osick/ChessMG/issues"
 
+[tool.cibuildwheel]
+build = "cp39-* cp310-* cp311-* cp312-* cp313-*"
+skip = "*-musllinux*"
+# Portable binaries: no -march=native in redistributable wheels
+environment = { MARCHFLAG = "" }
+manylinux-x86_64-image = "manylinux_2_28"
+manylinux-aarch64-image = "manylinux_2_28"
+test-command = "python -c \"import chessmg; assert chessmg.ChessPosition().perft(4) == 197281; print('wheel ok:', chessmg.__version__)\""
+
 [tool.black]
 line-length = 100
 target-version = ['py38', 'py39', 'py310', 'py311']
