@@ -22,6 +22,10 @@ SOFTWARE.
 
 ## Third-Party Licenses
 
-This project uses code from the following third-party projects:
+This project incorporates code from the following third-party projects:
 
-- [surge](https://github.com/nkarve/surge) - Licensed under the MIT License
+- surge (https://github.com/nkarve/surge)
+  Copyright (c) 2020 DiehardTheTryhard
+  Licensed under the MIT License (same terms as above).
+  The full license text is also included in the headers of
+  chessmg/libcmg/libsurge.h and chessmg/libcmg/libsurge.cpp.
