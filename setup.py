@@ -46,7 +46,7 @@ setup(
     url                                 = 'https://github.com/osick/chessmg',
     author                              = 'Oliver Sick',
     author_email                        = 'oliver.sick@gmail.com',
-    description                         = 'High-performance chess move generation and helpmate tablebase system',
+    description                         = 'High-performance chess move generation library with Python bindings',
     long_description                    = long_description,
     long_description_content_type       = 'text/markdown',
     python_requires                     = '>=3.8',
@@ -70,16 +70,8 @@ setup(
     ext_modules                         = cythonize(extensions),
     package_data                        = {
         'chessmg': ['LICENCE', 'README.md'],
-        'tablebase': ['README.md'],
     },
     include_package_data                = True,
-
-    # Entry points for console scripts
-    entry_points                        = {
-        'console_scripts': [
-            'cmgtb=tablebase.cli:main',
-        ],
-    },
 
     # Development dependencies
     extras_require                      = {

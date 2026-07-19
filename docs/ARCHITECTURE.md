@@ -210,23 +210,13 @@ template<Color Us> void CMGPosition::_states()
 }
 ```
 
-### Current Limitations - NO HELPMATE SUPPORT
+### Available Game State Detection
 
-**Important Note**: The current codebase has **NO implementation of helpmate stipulations** or other chess problem conditions.
-
-**What's Currently Available**:
 1. Check detection
 2. Checkmate detection (no legal moves + in check)
 3. Stalemate detection (no legal moves + not in check)
 4. Illegal position detection
 5. Basic game termination conditions
-
-**What's NOT Implemented**:
-- Helpmate (cooperation between both sides)
-- Series movers (one side moves multiple times)
-- Retrograde analysis
-- Position requirements (e.g., "mate in N moves")
-- Custom stipulation conditions
 
 ### Python API for Game States (position.py)
 
@@ -539,7 +529,7 @@ python setup.py build_ext  # Build Cython only
 
 ---
 
-## Summary: Ready for Enhancement
+## Summary
 
 The ChessMG codebase provides:
 ✓ Robust position representation (bitboard + mailbox)
@@ -549,16 +539,3 @@ The ChessMG codebase provides:
 ✓ FEN parsing and generation
 ✓ Clean Python API with type hints
 ✓ Extensible Cython binding layer
-
-**NOT Currently Available**:
-✗ Helpmate or problem stipulations
-✗ Condition checking (mate in N, etc.)
-✗ Series movers or retrograde analysis
-✗ Custom game rules
-
-**Recommended Architecture for Helpmate**:
-1. Add `Stipulation` enum to C++ layer
-2. Implement recursive helpmate solver using existing move generation
-3. Add condition evaluator function pointer
-4. Expose via Python API
-5. Leverage existing position state for terminal condition detection

@@ -27,6 +27,7 @@
 #include <ostream>
 #include <cstring>
 #include <sstream>
+#include <stdexcept>
 #include <string>
 #include "libsurge.h"
 
@@ -450,13 +451,15 @@ std::string Position::fen() const {
 		if (empty != 0) fen << empty;
 		if (i > 0) fen << '/';
 	}
+	std::string castling;
+	if (!(history[game_ply].entry & WHITE_OO_MASK))  castling += 'K';
+	if (!(history[game_ply].entry & WHITE_OOO_MASK)) castling += 'Q';
+	if (!(history[game_ply].entry & BLACK_OO_MASK))  castling += 'k';
+	if (!(history[game_ply].entry & BLACK_OOO_MASK)) castling += 'q';
 	fen << (side_to_play == WHITE ? " w " : " b ")
-		<< (history[game_ply].entry & WHITE_OO_MASK ? "" : "K")
-		<< (history[game_ply].entry & WHITE_OOO_MASK ? "" : "Q")
-		<< (history[game_ply].entry & BLACK_OO_MASK ? "" : "k")
-		<< (history[game_ply].entry & BLACK_OOO_MASK ? "" : "q")
-		<< (history[game_ply].entry & ALL_CASTLING_MASK ? "- " : "")
-		<< " " << (history[game_ply].epsq == NO_SQUARE ? "-" : SQSTR[history[game_ply].epsq]);
+		<< (castling.empty() ? "-" : castling)
+		<< " " << (history[game_ply].epsq == NO_SQUARE ? "-" : SQSTR[history[game_ply].epsq])
+		<< " " << halfmove << " " << fullmove;
 	return fen.str();
 }
 
@@ -486,18 +489,46 @@ void Position::set_position(const std::vector<std::pair<Piece,Square>> piecelist
 //Updates a position according to an FEN string
 void Position::set(const std::string& fen, Position& p) {
 	//OSI Start
+	//Fully reset the position: set() may be called on an already-used Position
+	//(set_fen), where stale bitboards/hash/history would corrupt the new position
 	for (Square i = a1; i < NO_SQUARE; i = Square(i + 1)){ p.board[i] = NO_PIECE;}
+	for (int i = 0; i < NPIECES; i++) p.piece_bb[i] = 0;
+	p.hash = 0;
+	p.game_ply = 0;
+	p.history[0] = UndoInfo();
+	p.checkers = 0;
+	p.pinned = 0;
+	p.halfmove = 0;
+	p.fullmove = 1;
+
+	const size_t board_end = fen.find(' ');
+	if (board_end == std::string::npos)
+		throw std::invalid_argument("Invalid FEN (missing fields): " + fen);
 	// OSI end
 
 	int square = a8;
-	for (char ch : fen.substr(0, fen.find(' '))) {
+	for (char ch : fen.substr(0, board_end)) {
 		if    (isdigit(ch)) square += (ch - '0') * EAST;
 		else if (ch == '/')	square += 2 * SOUTH;
-		else				p.put_piece(Piece(PIECE_STR.find(ch)), Square(square++));
+		//OSI Start: validate piece char and target square before writing to the board arrays,
+		//otherwise invalid FEN input corrupts memory (PIECE_STR.find returns npos)
+		else {
+			const size_t pc = PIECE_STR.find(ch);
+			if (pc == std::string::npos || ch == '~' || ch == '>' || ch == '.')
+				throw std::invalid_argument("Invalid FEN (bad piece character): " + fen);
+			if (square < a1 || square > h8)
+				throw std::invalid_argument("Invalid FEN (piece placement out of range): " + fen);
+			p.put_piece(Piece(pc), Square(square++));
+		}
+		//OSI end
 	}
-	std::istringstream ss(fen.substr(fen.find(' ')));
+	std::istringstream ss(fen.substr(board_end));
 	unsigned char token;
 	ss >> token;
+	//OSI Start
+	if (token != 'w' && token != 'b')
+		throw std::invalid_argument("Invalid FEN (side to move must be 'w' or 'b'): " + fen);
+	//OSI end
 	p.side_to_play = (token == 'w' ? WHITE : BLACK);
 	//OSI START
 	//en passant square 
@@ -512,8 +543,10 @@ void Position::set(const std::string& fen, Position& p) {
 				int counter=0;
 				for (std::string idx : SQSTR){if (idx == fentoken){sq = Square(counter); break; } counter++;}
 			}
-			p.history[p.game_ply].epsq = sq; 
+			p.history[p.game_ply].epsq = sq;
 		}
+		if (count==4){ try { p.halfmove = std::stoi(fentoken); } catch (...) {} }
+		if (count==5){ try { p.fullmove = std::stoi(fentoken); } catch (...) {} }
 		count++;
 	}
 	//OSI END

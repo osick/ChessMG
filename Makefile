@@ -1,11 +1,10 @@
 SHELL       := /bin/bash
 
-PHONY: clean test install uninstall example pipeline
+.PHONY: all clean test install uninstall example pipeline
 
 .SILENT: clean test
 
-all: pipeine
-	
+all: pipeline
 
 install:
 	pip install .

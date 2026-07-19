@@ -9,15 +9,15 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "chessmg"
-version = "0.4.0"
-description = "High-performance chess move generation and helpmate tablebase system"
+version = "0.5.0"
+description = "High-performance chess move generation library with Python bindings"
 readme = "README.md"
 requires-python = ">=3.8"
 license = {text = "MIT"}
 authors = [
     {name = "Oliver Sick", email = "oliver.sick@gmail.com"}
 ]
-keywords = ["chess", "move generation", "tablebase", "helpmate", "endgame"]
+keywords = ["chess", "move generation", "perft", "bitboard", "engine"]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
@@ -51,9 +51,6 @@ Homepage = "https://github.com/osick/ChessMG"
 Documentation = "https://github.com/osick/ChessMG/tree/main/docs"
 Repository = "https://github.com/osick/ChessMG"
 "Bug Tracker" = "https://github.com/osick/ChessMG/issues"
-
-[project.scripts]
-cmgtb = "cmgtb:main"
 
 [tool.black]
 line-length = 100

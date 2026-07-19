@@ -11,7 +11,7 @@ Example:
     >>> pos.make_move("e2e4")
 """
 
-__version__ = "0.3.0"
+__version__ = "0.5.0"
 __author__ = "Oliver Sick"
 __email__ = "oliver.sick@gmail.com"
 
@@ -42,19 +42,15 @@ import warnings
 
 def __getattr__(name):
     """Provide deprecation warnings for old API usage."""
-    deprecated_names = {
-        'ChessMoveGenerator': 'Use ChessPosition instead',
-        'moves': 'Use ChessPosition.legal_moves() instead',
-        'perft': 'Use ChessPosition.perft() instead',
-    }
-    
-    if name in deprecated_names:
+    if name == 'ChessMoveGeneratorCompat':
         warnings.warn(
-            f"{name} is deprecated. {deprecated_names[name]}",
+            "ChessMoveGeneratorCompat is deprecated. Use ChessPosition instead.",
             DeprecationWarning,
             stacklevel=2
         )
-    
+        from .position import ChessMoveGeneratorCompat
+        return ChessMoveGeneratorCompat
+
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 
 # Define public API

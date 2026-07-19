@@ -70,6 +70,15 @@ def index_to_square(index: int) -> str:
     return INDEX_TO_SQUARE[index]
 
 
+# Move flag values (see MoveFlag in libchessmg) mapped to promotion piece types
+_PROMOTION_FLAGS = {
+    4: PieceType.KNIGHT, 12: PieceType.KNIGHT,
+    5: PieceType.BISHOP, 13: PieceType.BISHOP,
+    6: PieceType.ROOK, 14: PieceType.ROOK,
+    7: PieceType.QUEEN, 15: PieceType.QUEEN,
+}
+
+
 @dataclass(frozen=True)
 class Move:
     """
@@ -226,26 +235,10 @@ class ChessPosition:
         Returns:
             List of Move objects
         """
-        cmoves = self._engine.legal_moves()
-        moves = []
-        
-        for cmove in cmoves:
-            # Parse promotion from flags
-            promotion = None
-            if cmove.is_promotion:
-                flag = cmove.flags
-                if flag in [4, 12]:  # Knight promotion
-                    promotion = PieceType.KNIGHT
-                elif flag in [5, 13]:  # Bishop promotion
-                    promotion = PieceType.BISHOP
-                elif flag in [6, 14]:  # Rook promotion
-                    promotion = PieceType.ROOK
-                elif flag in [7, 15]:  # Queen promotion
-                    promotion = PieceType.QUEEN
-            
-            moves.append(Move(cmove.from_square, cmove.to_square, promotion))
-        
-        return moves
+        return [
+            Move(cmove.from_square, cmove.to_square, _PROMOTION_FLAGS.get(cmove.flags))
+            for cmove in self._engine.legal_moves()
+        ]
     
     def make_move(self, move: Union[Move, str]) -> None:
         """
@@ -259,21 +252,24 @@ class ChessPosition:
         """
         # Store current position for undo
         current_fen = self.fen
-        
+
         if isinstance(move, str):
             move = Move.from_uci(move)
-        
-        # Validate move is legal
-        legal_moves = self.legal_moves()
-        if not any(m.from_square == move.from_square and 
-                  m.to_square == move.to_square and
-                  m.promotion == move.promotion for m in legal_moves):
+
+        # Find the matching generated move; its flags encode capture/castle/
+        # en passant/promotion semantics needed to play the move correctly
+        cmove = next(
+            (m for m in self._engine.legal_moves()
+             if m.from_square == move.from_square
+             and m.to_square == move.to_square
+             and _PROMOTION_FLAGS.get(m.flags) == move.promotion),
+            None
+        )
+        if cmove is None:
             raise ValueError(f"Illegal move: {move}")
-        
-        # Make the move
-        # For now, use move_piece - in future we should implement proper move making
-        self._engine.move_piece(move.from_square, move.to_square)
-        
+
+        self._engine.play(cmove.from_square, cmove.to_square, cmove.flags)
+
         # Store in history
         self._move_history.append((move, current_fen))
     

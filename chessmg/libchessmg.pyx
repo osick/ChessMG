@@ -59,14 +59,15 @@ cdef extern from "libcmg.h" namespace "cmg":
         CMGPosition(string fen) except +
         CMGPosition(vector[ipair] piecelist, bool turn, int epsq, string castling) except +
         string fen()
-        void set_fen(string fen)
+        void set_fen(string fen) except +
         void print()
         int turn()
         bool is_legal()
         uint8_t state(int c)
-        vector[int] moves(int color)              
-        int64_t perft(int depth)        
-        void move_piece(int _from, int _to)
+        vector[int] moves(int color)
+        int64_t perft(int depth)
+        void move_piece(int _from, int _to) except +
+        void play_move(int _from, int _to, int flags) except +
     cdef string sqstr(int idx)
 
 cdef class Move:
@@ -140,13 +141,16 @@ cdef class ChessMoveGenerator:
         self._pos = NULL
         self._initialized = False
     
-    def __init__(self, input=None):
+    def __init__(self, input=None, strict=True):
         """Initialize chess position from FEN string or position dict.
-        
+
         Args:
             input: Either a FEN string or dict with position data
                   Dict format: {"position": [(piece, square)...], "turn": bool, "epsq": int, "castling": str}
-                  
+            strict: If True (default), raise ValueError for parseable but illegal
+                  positions (e.g. adjacent kings). If False, accept them; query
+                  is_legal() to check.
+
         Raises:
             ValueError: If input format is invalid or position is illegal
             TypeError: If input type is not supported
@@ -163,7 +167,7 @@ cdef class ChessMoveGenerator:
                 # Input is FEN string
                 fen_str = input.encode('utf-8')
                 self._pos = new CMGPosition(fen_str)
-                if not self._pos.is_legal():
+                if strict and not self._pos.is_legal():
                     raise ValueError(f"Invalid position from FEN: {input}")
             elif isinstance(input, dict):
                 # Validate dict structure
@@ -183,7 +187,7 @@ cdef class ChessMoveGenerator:
                     raise ValueError("Dict must contain either 'raw' or 'position' key")
                 
                 self._pos = new CMGPosition(pos, turn, epsq, castling)
-                if not self._pos.is_legal():
+                if strict and not self._pos.is_legal():
                     raise ValueError("Invalid position from dict input")
             else:
                 raise TypeError(f"Invalid input type: {type(input)}. Expected str, dict or None")
@@ -251,9 +255,32 @@ cdef class ChessMoveGenerator:
         
         if not (0 <= _from < 64 and 0 <= _to < 64):
             raise ValueError(f"Square indices must be 0-63, got from={_from}, to={_to}")
-            
+
         self._pos.move_piece(_from, _to)
-    
+
+    def play(self, int _from, int _to, int flags):
+        """Play a legal move given by from/to square and move flags.
+
+        Unlike move_piece, this handles captures, castling, en passant and
+        promotion correctly and switches the side to move. The flags value
+        must come from a generated legal move (see legal_moves()).
+
+        Args:
+            _from: Source square (0-63)
+            _to: Destination square (0-63)
+            flags: Move flags of the generated legal move
+
+        Raises:
+            ValueError: If squares are out of bounds
+        """
+        if not self._initialized:
+            raise RuntimeError("ChessMoveGenerator not initialized")
+
+        if not (0 <= _from < 64 and 0 <= _to < 64):
+            raise ValueError(f"Square indices must be 0-63, got from={_from}, to={_to}")
+
+        self._pos.play_move(_from, _to, flags)
+
     def perft(self, int depth):
         """Run perft test to given depth."""
         if not self._initialized:
@@ -347,6 +374,6 @@ def moves(str fen, bool w):
     return position.moves(color=(0 if w == True else 1))
     
 def perft(fen, depth):
-    """Run perft test (legacy API)."""
-    position = ChessMoveGenerator(fen)
+    """Run perft test (legacy API). Returns 0 for illegal positions."""
+    position = ChessMoveGenerator(fen, strict=False)
     return position.perft(depth)

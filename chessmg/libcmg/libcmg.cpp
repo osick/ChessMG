@@ -46,7 +46,9 @@ namespace cmg {
 	/************************************************************************** */
 
 	CMGPosition::CMGPosition () {
-
+		// Default to the standard starting position; an empty board would leave
+		// _state uninitialized and make move generation undefined (no kings)
+		set_fen(DEFAULT_FEN);
 	};
 	
 	CMGPosition::CMGPosition (std::string fen){
@@ -134,7 +136,28 @@ namespace cmg {
 		
 		Piece pc { _position.at(Square(from)) };
 		_position.remove_piece(Square(from));
-		_position.put_piece(pc, Square(to)); 
+		_position.put_piece(pc, Square(to));
+		_init();
+	};
+
+	void CMGPosition::play_move(std::int32_t from, std::int32_t to, std::int32_t flags) {
+		if (from < 0 || from >= 64 || to < 0 || to >= 64) {
+			throw std::out_of_range("Square index out of bounds. Must be 0-63, got from=" +
+									std::to_string(from) + ", to=" + std::to_string(to));
+		}
+		if (_position.at(Square(from)) == NO_PIECE) {
+			throw std::invalid_argument("No piece at source square " + std::to_string(from));
+		}
+
+		const bool pawn_move = (type_of(_position.at(Square(from))) == PAWN);
+		const bool capture = (flags & 0b1000) != 0;
+		const Color mover = _position.turn();
+
+		Move move{Square(from), Square(to), MoveFlags(flags)};
+		mover == WHITE ? _position.play<WHITE>(move) : _position.play<BLACK>(move);
+
+		_position.halfmove = (pawn_move || capture) ? 0 : _position.halfmove + 1;
+		if (mover == BLACK) _position.fullmove++;
 		_init();
 	};
 
@@ -186,6 +209,7 @@ namespace cmg {
 	std::int64_t CMGPosition::_perft(unsigned int depth) {
 		std::int64_t nodes = 0;
 		if (_state >= CMG_ILLEGAL_POSITION) return 0; // Us in illegal position, no legal moves
+		if (depth == 0) return 1; // depth is unsigned, without this base case depth-1 wraps around
 		MoveList<Us> list(_position);
 		if (depth == 1) return (std::int64_t) list.size();
 		for (Move move : list) {
@@ -237,6 +261,10 @@ namespace cmg {
 			_state = CMG_ILLEGAL_POSITION;
 		}
 		else{
+			// _moves() consults _state, which this function is about to compute;
+			// reset it first so a stale/uninitialized ILLEGAL value cannot
+			// suppress move generation and misclassify the position as mate/stalemate
+			_state = CMG_OPEN_STATE;
 			std::vector<std::int32_t> move_list;
 			move_list = _moves<Us>();
 			if (move_list.size() == 0){

@@ -378,9 +378,13 @@ public:
 	//The bitboard of enemy pieces that are currently attacking the king, updated whenever generate_moves()
 	//is called
 	Bitboard checkers;
-	//The bitboard of pieces that are currently pinned to the king by enemy sliders, updated whenever 
+	//The bitboard of pieces that are currently pinned to the king by enemy sliders, updated whenever
 	//generate_moves() is called
 	Bitboard pinned;
+	//FEN halfmove clock and fullmove number (fields 5 and 6); not updated by play()/undo(),
+	//callers that need them maintained must update them per move (see CMGPosition::play_move)
+	int halfmove = 0;
+	int fullmove = 1;
 	Position() : piece_bb{ 0 }, side_to_play(WHITE), game_ply(0), board{}, hash(0), pinned(0), checkers(0) {
 		//Sets all squares on the board as empty
 		for (int i = 0; i < 64; i++) board[i] = NO_PIECE;

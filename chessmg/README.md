@@ -4,11 +4,13 @@ Core Python module providing ultra-fast chess move generation via C++20 engine.
 
 ## Installation
 
+From the repository root:
+
 ```bash
-pip install chessmg
+pip install .
 ```
 
-Or from source:
+Or build the extension in place:
 ```bash
 python setup.py build_ext --inplace
 ```
@@ -61,7 +63,8 @@ pos = ChessPosition({
 - `turn()` - Get active color (0=White, 1=Black)
 - `state(color)` - Get game state for color
 - `is_legal()` - Check if position is legal
-- `move_piece(from_sq, to_sq)` - Make a move
+- `play(from_sq, to_sq, flags)` - Play a generated legal move (handles captures, castling, en passant, promotion, side to move)
+- `move_piece(from_sq, to_sq)` - Low-level board edit: teleport a piece (no move semantics)
 - `perft(depth)` - Performance test (count leaf nodes)
 
 ### Move
@@ -83,18 +86,17 @@ Represents a chess move with rich metadata.
 
 ## Performance
 
-ChessMG achieves 250M+ moves/second through:
+ChessMG achieves 200M+ moves/second through:
 
 - **Magic bitboards** for sliding piece attacks
 - **Perfect hashing** with O(1) lookups
 - **Zero-copy Cython bindings**
 - **Cache-optimized data structures**
 
-Benchmark on AMD Ryzen 9 5900X @ 3.7GHz:
+Typical benchmark results (see `tests/benchmark_perft.py`):
 ```
-Move generation: 250,000,000 moves/sec
-Perft(6): 0.8 seconds
-Perft(7): 12.8 seconds
+Move generation: 200,000,000+ moves/sec
+Perft(6): ~0.5 seconds
 Memory usage: < 1 MB per position
 ```
 
@@ -132,6 +134,5 @@ def validate_moves(fen, uci_moves):
 
 ## See Also
 
-- [tablebase](../tablebase/README.md) - Helpmate tablebase generation
 - [Main README](../README.md) - Project overview
 - [API Documentation](../docs/) - Detailed technical docs

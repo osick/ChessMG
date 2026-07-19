@@ -10,7 +10,6 @@ recursive-include docs *.md
 
 # Subpackage READMEs
 include chessmg/README.md
-include tablebase/README.md
 
 # C++ source files
 recursive-include chessmg/libcmg *.h *.cpp *.hpp Makefile

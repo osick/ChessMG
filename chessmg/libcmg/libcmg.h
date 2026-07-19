@@ -78,6 +78,10 @@ namespace cmg{
             //move a piece from - to with bounds checking
             void move_piece(std::int32_t from, std::int32_t to);
 
+            //play a legal move given as (from, to, flags); handles captures, castling,
+            //en passant, promotion and switches the side to move
+            void play_move(std::int32_t from, std::int32_t to, std::int32_t flags);
+
             //perft test for convenience
             std::int64_t perft(unsigned int depth);
 
@@ -105,7 +109,7 @@ namespace cmg{
             template<Color Us> std::vector<std::int64_t> _perft_moves(unsigned int depth);
             template<Color> std::int64_t _perft(unsigned int depth);
             template<Color> std::vector<std::int32_t> _moves();  
-            CMG_POSITION_STATE _state; //position state when it is Us's turn
+            CMG_POSITION_STATE _state = CMG_OPEN_STATE; //position state when it is Us's turn
     };
     std::string sqstr(int idx);
 }
