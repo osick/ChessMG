@@ -17,15 +17,15 @@
 
 ---
 
-## ✨ Why ChessMG?
+## Why ChessMG?
 
 |  |  |
 |---|---|
-| ⚡ **Fast** | Magic bitboards + zero-copy Cython bindings — roughly **50× faster** than pure-Python move generators |
-| 🐍 **Pythonic** | A clean `ChessPosition` / `Move` API with type annotations, UCI notation and rich move metadata |
-| ♟️ **Complete** | Castling, en passant, promotions, check / checkmate / stalemate detection, legality checks |
-| ✅ **Verified** | Move generation validated against the standard [perft reference values](https://www.chessprogramming.org/Perft_Results) up to depth 8 |
-| 🪶 **Lean** | No runtime dependencies beyond NumPy — and less than 1 MB per position |
+| **Fast** | Magic bitboards + zero-copy Cython bindings — roughly **50× faster** than pure-Python move generators |
+| **Pythonic** | A clean `ChessPosition` / `Move` API with type annotations, UCI notation and rich move metadata |
+| **Complete** | Castling, en passant, promotions, check / checkmate / stalemate detection, legality checks |
+| **Verified** | Move generation validated against the standard [perft reference values](https://www.chessprogramming.org/Perft_Results) up to depth 8 |
+| **Lean** | No runtime dependencies beyond NumPy — and less than 1 MB per position |
 
 Typical uses: engine prototyping, puzzle solvers, dataset generation for ML, move validation backends, perft research — anywhere Python convenience meets the need for raw speed.
 
