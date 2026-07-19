@@ -42,6 +42,8 @@ jobs:
           python tests/test_correctness.py verbose
           python tests/test_set_position.py
           python tests/test_perft_start_fen.py 5
+        env:
+          PYTHONPATH: ${{ github.workspace }}
 
       - name: Verify pip install
         run: |
