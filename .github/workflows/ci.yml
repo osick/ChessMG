@@ -27,7 +27,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Install build and test dependencies
-        run: python -m pip install --upgrade pip Cython numpy pytest
+        run: python -m pip install --upgrade pip setuptools wheel Cython numpy pytest
 
       - name: Build extension in place
         run: python setup.py build_ext --inplace
