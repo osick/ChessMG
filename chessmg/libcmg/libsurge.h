@@ -385,7 +385,7 @@ public:
 	//callers that need them maintained must update them per move (see CMGPosition::play_move)
 	int halfmove = 0;
 	int fullmove = 1;
-	Position() : piece_bb{ 0 }, side_to_play(WHITE), game_ply(0), board{}, hash(0), pinned(0), checkers(0) {
+	Position() : piece_bb{ 0 }, board{}, side_to_play(WHITE), game_ply(0), hash(0), checkers(0), pinned(0) {
 		//Sets all squares on the board as empty
 		for (int i = 0; i < 64; i++) board[i] = NO_PIECE;
 		history[0] = UndoInfo();

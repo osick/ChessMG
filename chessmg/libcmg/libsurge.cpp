@@ -414,13 +414,14 @@ uint64_t zobrist::zobrist_table[NPIECES][NSQUARES];
 
 //Initializes the zobrist table with random 64-bit numbers
 void zobrist::initialise_zobrist_keys() {
-	PRNG rng(70026077756745674561);
+	//Seed is the original literal 70026077756745674561 reduced mod 2^64: the
+	//original exceeds uint64_t and only compiled as a gcc __int128 extension
+	PRNG rng(14685845535617019713ULL);
 	for (int i = 0; i < NPIECES; i++) for (int j = 0; j < NSQUARES; j++) zobrist::zobrist_table[i][j] = rng.rand<uint64_t>();
 }
 
 //Pretty-prints the position
 std::ostream& operator<< (std::ostream& os, const Position& p) {
-	const char* s = " +-+-+-+-+-+-+-+-+\n";
 	const char* t = "  A B C D E F G H\n";
 	os << t;
 	for (int i = 56; i >= 0; i -= 8) {
