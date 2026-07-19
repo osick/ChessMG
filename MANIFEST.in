@@ -11,8 +11,14 @@ recursive-include docs *.md
 # Subpackage READMEs
 include chessmg/README.md
 
+# Cython sources
+include chessmg/libchessmg.pyx
+
 # C++ source files
 recursive-include chessmg/libcmg *.h *.cpp *.hpp Makefile
+
+# Test data
+include tests/testdata.json
 
 # Exclude build artifacts
 global-exclude *.pyc
