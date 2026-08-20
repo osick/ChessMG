@@ -69,7 +69,7 @@ setup(
     packages                            = find_packages(),
     ext_modules                         = cythonize(extensions),
     package_data                        = {
-        'chessmg': ['LICENCE', 'README.md'],
+        'chessmg': ['LICENSE', 'NOTICE', 'README.md'],
     },
     include_package_data                = True,
 

@@ -1,6 +1,7 @@
 include README.md
 include Version.txt
-include LICENCE
+include LICENSE
+include NOTICE
 include requirements.txt
 include setup.py
 include pyproject.toml

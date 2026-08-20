@@ -8,7 +8,7 @@
 [![Python](https://img.shields.io/badge/Python-3.8%2B-blue.svg)](https://www.python.org/downloads/)
 [![C++](https://img.shields.io/badge/C%2B%2B-20-00599C.svg)](https://en.cppreference.com/w/cpp/20)
 [![Perft](https://img.shields.io/badge/Perft-verified-success.svg)](#-performance)
-[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENCE)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 **Blazing-fast chess move generation for Python, powered by a C++20 bitboard engine.**
 
@@ -198,7 +198,8 @@ Further reading:
 
 ## 📄 License
 
-MIT License — see [LICENCE](LICENCE) for details.
+MIT License — see [LICENSE](LICENSE). Third-party attribution is in [NOTICE](NOTICE); it is kept out of LICENSE so the file stays
+byte-identical to the canonical MIT text and licence scanners classify it correctly.
 
 ### Acknowledgments
 
