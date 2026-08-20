@@ -11,7 +11,7 @@ Example:
     >>> pos.make_move("e2e4")
 """
 
-__version__ = "0.5.1"
+__version__ = "0.6.0"
 __author__ = "Oliver Sick"
 __email__ = "oliver.sick@gmail.com"
 
